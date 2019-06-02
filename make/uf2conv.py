@@ -152,7 +152,7 @@ def getdrives():
         rootpath = "/media"
         if sys.platform == "darwin":
             rootpath = "/Volumes"
-        elif sys.platform == "linux":
+        elif sys.platform == "linux2":
             tmp = rootpath + "/" + os.environ["USER"]
             if os.path.isdir(tmp):
                 rootpath = tmp
@@ -234,7 +234,7 @@ def main():
                 error("No drive to deploy.")
         for d in drives:
             print "Flashing %s (%s)" % (d, boardID(d))
-            writeFile(outbuf, d + "/NEW.UF2")
+            writeFile(d + "/NEW.UF2", outbuf)
 
 if __name__ == "__main__":
     main()

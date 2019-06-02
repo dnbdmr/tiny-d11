@@ -77,7 +77,6 @@ void dcd_init (uint8_t rhport)
   // Configure registers
   USB->DEVICE.DESCADD.reg = (uint32_t) &sram_registers;
   USB->DEVICE.CTRLB.reg = USB_DEVICE_CTRLB_SPDCONF_FS;
-  USB->DEVICE.CTRLB.bit.DETACH = 0;
   USB->DEVICE.CTRLA.reg = USB_CTRLA_MODE_DEVICE | USB_CTRLA_RUNSTDBY;
   USB->DEVICE.CTRLA.reg |= USB_CTRLA_ENABLE;
   while (USB->DEVICE.SYNCBUSY.bit.ENABLE == 1) {}

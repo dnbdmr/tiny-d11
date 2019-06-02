@@ -30,7 +30,6 @@
 
 #include "device/dcd.h"
 #include "samd21.h"
-#include "debug.h"
 
 /*------------------------------------------------------------------*/
 /* MACRO TYPEDEF CONSTANT ENUM
@@ -71,7 +70,7 @@ void dcd_init (uint8_t rhport)
   //USB->DEVICE.PADCAL.bit.TRANSN = (*((uint32_t*) USB_FUSES_TRANSN_ADDR) & USB_FUSES_TRANSN_Msk) >> USB_FUSES_TRANSN_Pos;
   //USB->DEVICE.PADCAL.bit.TRIM = (*((uint32_t*) USB_FUSES_TRIM_ADDR) & USB_FUSES_TRIM_Msk) >> USB_FUSES_TRIM_Pos;
 
-  // Load Pad calibration taken from ASF/Arduino
+  // Load Pad calibration, taken from ASF/Arduino
   uint32_t *pad_transn_p = (uint32_t *) USB_FUSES_TRANSN_ADDR;
   uint32_t *pad_transp_p = (uint32_t *) USB_FUSES_TRANSP_ADDR;
   uint32_t *pad_trim_p   = (uint32_t *) USB_FUSES_TRIM_ADDR;

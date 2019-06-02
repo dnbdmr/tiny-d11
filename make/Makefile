@@ -60,6 +60,11 @@ $(BUILD)/$(BIN).bin: $(BUILD)/$(BIN).elf
 	@echo OBJCOPY $@
 	@$(OBJCOPY) -O binary $^ $@
 
+program: $(BUILD)/$(BIN).hex
+	@echo PROGRAM $^
+	./force_reset.py --uf2 /dev/ttyACM0
+	python uf2conv.py $^
+
 %.o:
 	@echo CC $@
 	@$(CC) $(CFLAGS) $(filter %/$(subst .o,.c,$(notdir $@)), $(SRCS)) -c -o $@

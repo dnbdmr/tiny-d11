@@ -72,7 +72,7 @@ static void timer_init(void)
 
   TC3->COUNT16.COUNT.reg = 0;
 
-  TC3->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * 500;
+  TC3->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * 250;
   TC3->COUNT16.COUNT.reg = 0;
 
   TC3->COUNT16.CTRLA.reg |= TC_CTRLA_ENABLE;
@@ -139,6 +139,17 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
   {
     // print initial message when connected
     tud_cdc_write_str("\r\nTinyUSB CDC MSC HID device example\r\n");
+  }
+
+  //Reset into bootloader when baud is 1200 and dtr unasserted
+  if (!dtr) {
+	  cdc_line_coding_t lc;
+	  tud_cdc_get_line_coding(&lc);
+	  if (lc.bit_rate == 1200) {
+		  unsigned long *a = (unsigned long *)(HMCRAMC0_ADDR + HMCRAMC0_SIZE - 4);
+		  *a = 0xf01669ef;
+		  NVIC_SystemReset();
+	  }
   }
 }
 
