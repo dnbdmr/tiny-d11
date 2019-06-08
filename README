@@ -5,4 +5,5 @@ https://github.com/hathach/tinyusb
 
 
 __TODO__
-- arduino style reset to bootloader for uf2 upload
+- set up systick/millis/delay
+- move tud functions to separate file

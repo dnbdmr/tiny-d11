@@ -35,17 +35,19 @@
 #include "samd21.h"
 #include "hal_gpio.h"
 #include "nvm_data.h"
-#include "debug.h"
 #include "tusb.h"
+#include "rgb.h"
+#include "adc.h"
+#include "debug.h"
 
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 17);
 HAL_GPIO_PIN(D5,	A, 15);
 HAL_GPIO_PIN(A5,	B, 02);
-HAL_GPIO_PIN(USB_DM,   A, 24);
-HAL_GPIO_PIN(USB_DP,   A, 25);
 
 /*- Implementations ---------------------------------------------------------*/
+
+uint32_t millis = 0;
 
 //-----------------------------------------------------------------------------
 void irq_handler_tc3(void)
@@ -53,11 +55,16 @@ void irq_handler_tc3(void)
   if (TC3->COUNT16.INTFLAG.reg & TC_INTFLAG_MC(1))
   {
     HAL_GPIO_LED1_toggle();
-    HAL_GPIO_D5_toggle();
 	HAL_GPIO_A5_toggle();
     TC3->COUNT16.INTFLAG.reg = TC_INTFLAG_MC(1);
   }
 }
+
+void irq_handler_sys_tick(void)
+{
+	millis++;
+}
+
 
 //-----------------------------------------------------------------------------
 static void timer_init(void)
@@ -72,7 +79,7 @@ static void timer_init(void)
 
   TC3->COUNT16.COUNT.reg = 0;
 
-  TC3->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * 250;
+  TC3->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * 500;
   TC3->COUNT16.COUNT.reg = 0;
 
   TC3->COUNT16.CTRLA.reg |= TC_CTRLA_ENABLE;
@@ -111,9 +118,9 @@ static void sys_init(void)
       GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
   while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
 
-  HAL_GPIO_USB_DM_pmuxen(PORT_PMUX_PMUXE_G_Val);
-  HAL_GPIO_USB_DP_pmuxen(PORT_PMUX_PMUXE_G_Val);
+  SysTick_Config(48000); //systick at 1ms
 }
+
 //-----------------------------------------------------------------------------
 // Invoked when usb bus is suspended
 // remote_wakeup_en : if host allow us  to perform remote wakeup
@@ -138,7 +145,7 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
   if ( dtr && rts )
   {
     // print initial message when connected
-    tud_cdc_write_str("\r\nTinyUSB CDC MSC HID device example\r\n");
+    tud_cdc_write_str("\r\nDGW-Tiny CDC device example\r\n");
   }
 
   //Reset into bootloader when baud is 1200 and dtr unasserted
@@ -157,12 +164,15 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 void tud_cdc_rx_cb(uint8_t itf)
 {
   (void) itf;
+  tud_cdc_write_str("Stop that!\n");
+  tud_cdc_read_flush();
 }
 
 void cdc_task(void)
 {
   if ( tud_cdc_connected() )
   {
+	/*
     // connected and there are data available
     if ( tud_cdc_available() )
     {
@@ -177,9 +187,9 @@ void cdc_task(void)
 
         //if ( buf[i] == '\r' ) tud_cdc_write_char('\n');
       }
+	  */
 
       tud_cdc_write_flush();
-    }
   }
 }
 //-----------------------------------------------------------------------------
@@ -187,15 +197,12 @@ int main(void)
 {
   sys_init();
   timer_init();
-  debug_init();
-
-  debug_puts("\r\n--- start ---\r\n");
-
-  PM->APBBMASK.reg |= PM_APBBMASK_USB;
-
-  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_ID(USB_GCLK_ID) |
-      GCLK_CLKCTRL_GEN(0);
+  rgb_init();
   tusb_init();
+  debug_init();
+  adc_init();
+
+  debug_puts("----start-----\n");
 
   HAL_GPIO_LED1_out();
   HAL_GPIO_LED1_set();
@@ -204,12 +211,36 @@ int main(void)
   HAL_GPIO_A5_out();
   HAL_GPIO_A5_clr();
 
+  RGB_type led;
+  led.red = 0xFF;
+  led.blue = 0x0;
+  led.green = 0xFF;
+  led.bright = 2;
+  update_LEDs(&led, 1);
+
+  int a = adc_read();
+  debug_puthex(a, 8);
+  debug_putc('\n');
+
+	char s[16];
+	itoa(adc_read(), s, 10);
+	debug_puts(s);
+	debug_putc('\n');
+	
   while (1)
   {
+	  if (millis > 1000) {
+        HAL_GPIO_D5_toggle();
+		millis = 0;
+	  }
+	  if (tud_cdc_connected()) {
+		  itoa(adc_read(), s, 10);
+		  tud_cdc_write_str(s);
+		  tud_cdc_write_char('\n');
+	  }
 	  tud_task();
 	  cdc_task();
   }
 
   return 0;
 }
-

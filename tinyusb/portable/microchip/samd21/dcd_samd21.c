@@ -61,6 +61,19 @@ void dcd_init (uint8_t rhport)
 {
   (void) rhport;
 
+  PM->APBBMASK.reg |= PM_APBBMASK_USB;
+
+  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_ID(USB_GCLK_ID) |
+      GCLK_CLKCTRL_GEN(0);
+
+  // Set up USB pins
+  PORT->Group[0].PINCFG[PIN_PA24G_USB_DM].bit.PMUXEN = 1;
+  PORT->Group[0].PMUX[PIN_PA24G_USB_DM/2].reg &= ~(0xF << (4 * (PIN_PA24G_USB_DM & 0x01u)));
+  PORT->Group[0].PMUX[PIN_PA24G_USB_DM/2].reg |= MUX_PA24G_USB_DM << (4 * (PIN_PA24G_USB_DM & 0x01u));
+  PORT->Group[0].PINCFG[PIN_PA25G_USB_DP].bit.PMUXEN = 1;
+  PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg &= ~(0xF << (4 * (PIN_PA25G_USB_DP & 0x01u)));
+  PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg |= MUX_PA25G_USB_DP << (4 * (PIN_PA25G_USB_DP & 0x01u));
+
   // Reset to get in a clean state.
   USB->DEVICE.CTRLA.bit.SWRST = true;
   //while (USB->DEVICE.SYNCBUSY.bit.SWRST == 0) {}

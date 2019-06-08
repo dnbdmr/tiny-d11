@@ -9,8 +9,8 @@ CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
 SIZE = arm-none-eabi-size
 
-CFLAGS += -W -Wall --std=gnu11 -DDEBUG -g3 -Og
-CFLAGS += -fno-diagnostics-show-caret
+CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og 
+#CFLAGS += -fno-diagnostics-show-caret
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -funsigned-char -funsigned-bitfields
 CFLAGS += -mcpu=cortex-m0plus -mthumb
@@ -28,6 +28,8 @@ INCLUDES += \
 SRCS += \
   ../main.c \
   ../debug.c \
+  ../rgb.c \
+  ../adc.c \
   ../startup_samd21.c \
   ../tinyusb/tusb.c \
   ../tinyusb/common/tusb_fifo.c \
@@ -63,7 +65,7 @@ $(BUILD)/$(BIN).bin: $(BUILD)/$(BIN).elf
 program: $(BUILD)/$(BIN).hex
 	@echo PROGRAM $^
 	./force_reset.py --uf2 /dev/ttyACM0
-	python uf2conv.py $^
+	./uf2conv.py $^
 
 %.o:
 	@echo CC $@
