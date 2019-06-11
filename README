@@ -5,5 +5,6 @@ https://github.com/hathach/tinyusb
 
 
 __TODO__
-- set up systick/millis/delay
++ set up systick/millis/delay
 - move tud functions to separate file
+- uf2 handover with msc device?

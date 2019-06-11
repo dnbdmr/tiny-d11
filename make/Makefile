@@ -18,6 +18,10 @@ CFLAGS += -MD -MP -MT $(BUILD)/$(*F).o -MF $(BUILD)/$(@F).d
 
 LDFLAGS += -mcpu=cortex-m0plus -mthumb
 LDFLAGS += -Wl,--gc-sections
+#LDFLAGS += --specs=nano.specs
+#LDFLAGS += --specs=nosys.specs
+#LDFLAGS += --specs=rdimon.specs
+#LDFLAGS += -Wl,--start-group -lm -Wl,--end-group
 LDFLAGS += -Wl,--script=../linker/samd21g18.ld
 
 INCLUDES += \
@@ -30,6 +34,8 @@ SRCS += \
   ../debug.c \
   ../rgb.c \
   ../adc.c \
+  ../htu21.c \
+  ../i2c_master.c \
   ../startup_samd21.c \
   ../tinyusb/tusb.c \
   ../tinyusb/common/tusb_fifo.c \

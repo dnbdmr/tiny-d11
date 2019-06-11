@@ -33,6 +33,30 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "hal_gpio.h"
+
+/*- Definitions -------------------------------------------------------------*/
+HAL_GPIO_PIN(SDA,             A, 22); //ItsyBitsy pin 
+HAL_GPIO_PIN(SCL,             A, 23); //ItsyBitsy pin
+#define I2C_SERCOM            SERCOM3
+#define I2C_SERCOM_PMUX       PORT_PMUX_PMUXE_C_Val
+#define I2C_SERCOM_GCLK_ID    SERCOM3_GCLK_ID_CORE
+#define I2C_SERCOM_CLK_GEN    0
+#define I2C_SERCOM_APBCMASK   PM_APBCMASK_SERCOM3
+
+#define T_RISE                215e-9 // Depends on the board, actually
+
+enum
+{
+  I2C_TRANSFER_WRITE = 0,
+  I2C_TRANSFER_READ  = 1,
+};
+
+enum
+{
+  I2C_PINS_SDA = (1 << 0),
+  I2C_PINS_SCL = (1 << 1),
+};
 
 /*- Prototypes --------------------------------------------------------------*/
 int i2c_init(int freq);

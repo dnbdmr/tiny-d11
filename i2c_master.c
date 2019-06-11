@@ -31,38 +31,15 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "samd21.h"
-#include "hal_gpio.h"
 #include "i2c_master.h"
-
-/*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(SDA,             A, 8);
-HAL_GPIO_PIN(SCL,             A, 9);
-#define I2C_SERCOM            SERCOM2
-#define I2C_SERCOM_PMUX       PORT_PMUX_PMUXE_D_Val
-#define I2C_SERCOM_GCLK_ID    SERCOM2_GCLK_ID_CORE
-#define I2C_SERCOM_CLK_GEN    0
-#define I2C_SERCOM_APBCMASK   PM_APBCMASK_SERCOM2
-
-#define T_RISE                215e-9 // Depends on the board, actually
-
-enum
-{
-  I2C_TRANSFER_WRITE = 0,
-  I2C_TRANSFER_READ  = 1,
-};
-
-enum
-{
-  I2C_PINS_SDA = (1 << 0),
-  I2C_PINS_SCL = (1 << 1),
-};
 
 /*- Implementations ---------------------------------------------------------*/
 
 //-----------------------------------------------------------------------------
 int i2c_init(int freq)
 {
-  int baud = ((float)F_CPU / freq - (float)F_CPU * T_RISE - 10.0) / 2.0;
+  //int baud = ((float)F_CPU / freq - (float)F_CPU * T_RISE - 10.0) / 2.0;
+  int baud = 240; //floats are huge
 
   if (baud < 0)
     baud = 0;
@@ -85,9 +62,9 @@ int i2c_init(int freq)
   I2C_SERCOM->I2CM.BAUD.reg = SERCOM_I2CM_BAUD_BAUD(baud);
   while (I2C_SERCOM->I2CM.SYNCBUSY.reg);
 
-  I2C_SERCOM->I2CM.CTRLA.reg = SERCOM_I2CM_CTRLA_ENABLE |
-      SERCOM_I2CM_CTRLA_MODE_I2C_MASTER |
+  I2C_SERCOM->I2CM.CTRLA.reg = SERCOM_I2CM_CTRLA_MODE_I2C_MASTER |
       SERCOM_I2CM_CTRLA_SDAHOLD(3);
+  I2C_SERCOM->I2CM.CTRLA.reg |= SERCOM_I2CM_CTRLA_ENABLE;
   while (I2C_SERCOM->I2CM.SYNCBUSY.reg);
 
   I2C_SERCOM->I2CM.STATUS.reg |= SERCOM_I2CM_STATUS_BUSSTATE(1);
