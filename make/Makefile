@@ -9,7 +9,8 @@ CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
 SIZE = arm-none-eabi-size
 
-CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og 
+#CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og 
+CFLAGS += -Wextra -Wall --std=gnu11 -Os 
 #CFLAGS += -fno-diagnostics-show-caret
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -funsigned-char -funsigned-bitfields
@@ -21,7 +22,7 @@ LDFLAGS += -Wl,--gc-sections
 #LDFLAGS += --specs=nano.specs
 #LDFLAGS += --specs=nosys.specs
 #LDFLAGS += --specs=rdimon.specs
-#LDFLAGS += -Wl,--start-group -lm -Wl,--end-group
+LDFLAGS += -Wl,--start-group -lm -Wl,--end-group
 LDFLAGS += -Wl,--script=../linker/samd21g18.ld
 
 INCLUDES += \
@@ -31,11 +32,6 @@ INCLUDES += \
 
 SRCS += \
   ../main.c \
-  ../debug.c \
-  ../rgb.c \
-  ../adc.c \
-  ../htu21.c \
-  ../i2c_master.c \
   ../startup_samd21.c \
   ../tinyusb/tusb.c \
   ../tinyusb/common/tusb_fifo.c \
@@ -43,7 +39,10 @@ SRCS += \
   ../tinyusb/device/usbd_control.c \
   ../tinyusb/portable/microchip/samd21/dcd_samd21.c \
   ../tinyusb/class/cdc/cdc_device.c \
-  ../usb_descriptors.c 
+  ../usb_descriptors.c \
+  ../htu21.c \
+  ../rgb.c \
+  ../i2c_master.c 
 
 DEFINES += \
   -D__SAMD21G18A__ \

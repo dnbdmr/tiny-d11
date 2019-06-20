@@ -23,8 +23,13 @@
 /** Reset command. */
 #define HTU21_RESET           (0xFE)
 
+/* Sets up the HTU21D. Must have configured i2c_master.h */
 bool htu21_init(void);
+
+/* Returns integer Temperature x 100 */
 uint32_t htu21_readtemp(void);
+
+/* Returns integer Humidity x 100 */
 uint32_t htu21_readhumidity(void);
 
 #endif // _HTU21_H_

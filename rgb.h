@@ -12,7 +12,8 @@ typedef struct {
 } RGB_type;
 
 void rgb_sendbyte(uint8_t byte);
-void update_LEDs(RGB_type *leds, uint8_t num);
+void rgb_update(RGB_type *leds, uint8_t num);
 void rgb_init(void);
+void rgb_zero(uint8_t num);
 
 #endif // _RGB_H_ 

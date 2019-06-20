@@ -38,15 +38,15 @@
 //-----------------------------------------------------------------------------
 int i2c_init(int freq)
 {
-  //int baud = ((float)F_CPU / freq - (float)F_CPU * T_RISE - 10.0) / 2.0;
-  int baud = 240; //floats are huge
+  //int baud =((float)F_CPU / freq - (float)F_CPU * T_RISE - 10.0) / 2.0;
+  int baud = 240; //floats are huge, same as above with 48e6 and 100k
 
   if (baud < 0)
     baud = 0;
   else if (baud > 255)
     baud = 255;
 
-  freq = (float)F_CPU / (2.0 * (5.0 + baud) + (float)F_CPU * T_RISE);
+  //freq = (float)F_CPU / (2.0 * (5.0 + baud) + (float)F_CPU * T_RISE);
 
   PM->APBCMASK.reg |= I2C_SERCOM_APBCMASK;
 

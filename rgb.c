@@ -21,7 +21,7 @@ void rgb_sendbyte(uint8_t byte) {
     }
 }
 
-void update_LEDs(RGB_type *leds, uint8_t num)
+void rgb_update(RGB_type *leds, uint8_t num)
 {
     for(uint8_t i=0; i<4; i++){
         rgb_sendbyte(0x00);
@@ -39,3 +39,20 @@ void update_LEDs(RGB_type *leds, uint8_t num)
     }
 }
 
+void rgb_zero(uint8_t num)
+{
+    for(uint8_t i=0; i<4; i++){
+        rgb_sendbyte(0x00);
+    }
+
+    for(uint8_t i=0; i<num; i++) {
+        rgb_sendbyte(0xE0);
+        rgb_sendbyte(0x00);
+        rgb_sendbyte(0x00);
+        rgb_sendbyte(0x00);
+    }
+
+    for(uint8_t i=0; i<4; i++){
+        rgb_sendbyte(0xFF);
+    }
+}
