@@ -234,11 +234,12 @@ int main(void)
 
 	char s[25];
 	uint32_t temp;
+	uint32_t millislocal = millis + 60000;
 
 	while (1)
 	{
-		if (millis > 60000) {
-			millis = 0;
+		if (millis > millislocal) {
+			millislocal = millis + 60000;
 			temp = htu21_readtemp();
 			itoa(temp, s, 10);
 			if (tud_cdc_connected()) {
@@ -253,7 +254,7 @@ int main(void)
 				tud_cdc_write_str(s);
 				tud_cdc_write_char('\n');
 			}
-			led.green = led.green ? 0x00 : 0x10;
+			led.green = led.green ? 0x00 : 0xF0;
 			rgb_update(&led, 1);
 		}
 
