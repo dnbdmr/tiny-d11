@@ -23,7 +23,14 @@
  * THE SOFTWARE.
  */
 
-// This is similar to the drivers found in sam0/drivers but for the PTC.
+/*
+ * This is similar to the drivers found in sam0/drivers but for the PTC.
+ * _Usage_
+ * - set a touch channel with an adafruit_ptc_config struct
+ * - Must set up a gclk between 400kHz to 4MHz
+ * - Enable APBC clock
+ * - Optionally, set a threshold with .threshold member
+ */
 #ifndef ADAFRUIT_FREETOUCH_ADAFRUIT_PTC_H
 #define ADAFRUIT_FREETOUCH_ADAFRUIT_PTC_H
 
@@ -86,7 +93,7 @@ typedef enum tag_freq_hop_t {
 freq_hop_t;
 
 struct adafruit_ptc_config {
-    uint8_t pin;           // ASF pin #
+    uint8_t pin;           // ASF pin #, Add 32 for PORTB
     int8_t yline;      // the Y select line (see datasheet)
     oversample_t oversample;
     series_resistor_t seriesres;
@@ -94,6 +101,7 @@ struct adafruit_ptc_config {
     freq_hop_t hops;
     uint16_t compcap;
     uint8_t  intcap;
+	uint16_t threshold;
 };
 
 void adafruit_ptc_get_config_default(struct adafruit_ptc_config *config);
@@ -102,6 +110,7 @@ void adafruit_ptc_start_conversion(Ptc* module_inst, struct adafruit_ptc_config 
 
 bool adafruit_ptc_is_conversion_finished(Ptc* module_inst);
 uint16_t adafruit_ptc_get_conversion_result(Ptc* module_inst);
+uint16_t adafruit_ptc_single_conversion(struct adafruit_ptc_config const* config);
 
 #ifdef __cplusplus
 }

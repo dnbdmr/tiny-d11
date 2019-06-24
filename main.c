@@ -38,6 +38,7 @@
 #include "tusb.h"
 #include "htu21.h"
 #include "rgb.h"
+#include "adafruit_ptc.h"
 
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 17);
@@ -123,7 +124,11 @@ static void sys_init(void)
 		GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
 	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
 
-	SYSCTRL->OSC8M.bit.ENABLE = 0; // Disable OSC8M
+	//SYSCTRL->OSC8M.bit.ENABLE = 0; // Disable OSC8M
+	SYSCTRL->OSC8M.bit.PRESC = 0x01; // Set OSC8M prescaler to 2
+	//Setup Generic Clock Generator 3 with OSC8M as source:
+	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(3) | GCLK_GENCTRL_SRC(GCLK_SOURCE_OSC8M) |
+		GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
 
 	SysTick_Config(48000); //systick at 1ms
 }
@@ -176,13 +181,9 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 void tud_cdc_rx_cb(uint8_t itf)
 {
 	(void) itf;
-	millis = 60000; //set millis to get immediate result
-	tud_cdc_write_str("Fine!!\n");
+	tud_cdc_write_str("Stop That!!\n");
 	HAL_GPIO_A5_toggle();
-	while (tud_cdc_available()) {
-		tud_cdc_write_char(tud_cdc_read_char());
-	}
-	//tud_cdc_read_flush();
+	tud_cdc_read_flush();
 }
 
 void cdc_task(void)
@@ -232,14 +233,34 @@ int main(void)
 	led.bright = 2;
 	rgb_update(&led, 1);
 
+	struct adafruit_ptc_config touchA4;
+	adafruit_ptc_get_config_default(&touchA4);
+	touchA4.pin = 5;
+	touchA4.yline = 3;
+	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(PTC_GCLK_ID) | 	\
+      GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(3);
+	PM->APBCMASK.reg |= PM_APBCMASK_PTC;
+	adafruit_ptc_init(PTC, &touchA4);
+	touchA4.threshold = adafruit_ptc_single_conversion(&touchA4) + 100;
+
 	char s[25];
 	uint32_t temp;
-	uint32_t millislocal = millis + 60000;
+	uint32_t minutetick = millis + 60000;
+	uint32_t halfsectick = millis + 500;
 
 	while (1)
 	{
-		if (millis > millislocal) {
-			millislocal = millis + 60000;
+		if (millis > halfsectick) {
+			halfsectick = millis + 250;
+			temp = adafruit_ptc_single_conversion(&touchA4);
+			if ( temp  > touchA4.threshold)
+				HAL_GPIO_D5_set();
+			else
+				HAL_GPIO_D5_clr();
+		}
+
+		if (millis > minutetick) {
+			minutetick = millis + 60000;
 			temp = htu21_readtemp();
 			itoa(temp, s, 10);
 			if (tud_cdc_connected()) {

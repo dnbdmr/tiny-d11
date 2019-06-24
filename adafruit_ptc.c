@@ -162,3 +162,9 @@ uint16_t adafruit_ptc_get_conversion_result(Ptc* module_inst) {
     sync_config(module_inst);
     return module_inst->RESULT.reg;
 }
+
+uint16_t adafruit_ptc_single_conversion(struct adafruit_ptc_config const* config) {
+	adafruit_ptc_start_conversion(PTC, config);
+	while (!adafruit_ptc_is_conversion_finished(PTC));
+	return adafruit_ptc_get_conversion_result(PTC);
+}
