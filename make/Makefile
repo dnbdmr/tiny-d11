@@ -15,11 +15,12 @@ CFLAGS += -Wextra -Wall --std=gnu11 -Os
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -funsigned-char -funsigned-bitfields
 CFLAGS += -mcpu=cortex-m0plus -mthumb
+#CFLAGS += --specs=nano.specs -u _printf_float -u _scanf_float
 CFLAGS += -MD -MP -MT $(BUILD)/$(*F).o -MF $(BUILD)/$(@F).d
 
 LDFLAGS += -mcpu=cortex-m0plus -mthumb
 LDFLAGS += -Wl,--gc-sections
-#LDFLAGS += --specs=nano.specs
+#LDFLAGS += --specs=nano.specs -u _printf_float -u _scanf_float
 #LDFLAGS += --specs=nosys.specs
 #LDFLAGS += --specs=rdimon.specs
 LDFLAGS += -Wl,--start-group -lm -Wl,--end-group

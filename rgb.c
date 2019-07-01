@@ -56,3 +56,27 @@ void rgb_zero(uint8_t num)
         rgb_sendbyte(0xFF);
     }
 }
+
+/* Only for single led */
+void rgb_wheel(RGB_type *led, uint8_t pos)
+{
+	if (pos < 85) {
+		led->blue = 255 - pos * 3;
+		led->green = pos * 3;
+		led->red = 0;
+		return;
+	}
+	if (pos < 170) {
+		pos -= 85;
+		led->blue = 0;
+		led->green = 255 - pos * 3;
+		led->red = pos * 3;
+		return;
+	}
+	pos -= 170;
+	led->blue = pos * 3;
+	led->green = 0;
+	led->red = 255 - pos * 3;
+	return;
+}
+

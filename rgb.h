@@ -15,5 +15,6 @@ void rgb_sendbyte(uint8_t byte);
 void rgb_update(RGB_type *leds, uint8_t num);
 void rgb_init(void);
 void rgb_zero(uint8_t num);
+void rgb_wheel(RGB_type *led, uint8_t pos);
 
 #endif // _RGB_H_ 

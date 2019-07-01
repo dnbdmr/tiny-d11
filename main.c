@@ -44,6 +44,7 @@
 HAL_GPIO_PIN(LED1,	A, 17);
 HAL_GPIO_PIN(A5,	B, 2);
 HAL_GPIO_PIN(D5,	A, 15);
+
 RGB_type led;
 
 /*- Implementations ---------------------------------------------------------*/
@@ -125,6 +126,8 @@ static void sys_init(void)
 	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
 
 	//SYSCTRL->OSC8M.bit.ENABLE = 0; // Disable OSC8M
+	//
+	// Enable GCLK3 with OSC8M @ 4MHz for PTC
 	SYSCTRL->OSC8M.bit.PRESC = 0x01; // Set OSC8M prescaler to 2
 	//Setup Generic Clock Generator 3 with OSC8M as source:
 	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(3) | GCLK_GENCTRL_SRC(GCLK_SOURCE_OSC8M) |
@@ -245,22 +248,26 @@ int main(void)
 
 	char s[25];
 	uint32_t temp;
-	uint32_t minutetick = millis + 60000;
-	uint32_t halfsectick = millis + 500;
+	uint32_t minutetick = millis;
+	uint32_t tenthmintick = millis;
+	uint8_t ledpos = 0;
 
 	while (1)
 	{
-		if (millis > halfsectick) {
-			halfsectick = millis + 250;
+		if ((millis - tenthmintick) >= 100) {
+			tenthmintick = millis;
 			temp = adafruit_ptc_single_conversion(&touchA4);
 			if ( temp  > touchA4.threshold)
 				HAL_GPIO_D5_set();
 			else
 				HAL_GPIO_D5_clr();
+
+			rgb_wheel(&led, ledpos);
+			ledpos++;
 		}
 
-		if (millis > minutetick) {
-			minutetick = millis + 60000;
+		if ((millis - minutetick) >= 60000) {
+			minutetick = millis;
 			temp = htu21_readtemp();
 			itoa(temp, s, 10);
 			if (tud_cdc_connected()) {
@@ -275,8 +282,8 @@ int main(void)
 				tud_cdc_write_str(s);
 				tud_cdc_write_char('\n');
 			}
-			led.green = led.green ? 0x00 : 0xF0;
-			rgb_update(&led, 1);
+			//led.green = led.green ? 0x00 : 0xF0;
+			//rgb_update(&led, 1);
 		}
 
 		tud_task();
