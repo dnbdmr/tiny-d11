@@ -28,7 +28,7 @@ LDFLAGS += -Wl,--script=../linker/samd21g18.ld
 
 INCLUDES += \
   -I../include \
-  -I../tinyusb \
+  -I../tinyusb/src \
   -I..
 
 SRCS += \

@@ -44,7 +44,7 @@ DUMMY void irq_handler_rtc(void);
 DUMMY void irq_handler_eic(void);
 DUMMY void irq_handler_nvmctrl(void);
 DUMMY void irq_handler_dmac(void);
-DUMMY void irq_handler_usb(void);
+DUMMY void USB_Handler(void);
 DUMMY void irq_handler_evsys(void);
 DUMMY void irq_handler_sercom0(void);
 DUMMY void irq_handler_sercom1(void);
@@ -106,7 +106,7 @@ void (* const vectors[])(void) =
   irq_handler_eic,               // 4 - External Interrupt Controller
   irq_handler_nvmctrl,           // 5 - Non-Volatile Memory Controller
   irq_handler_dmac,              // 6 - Direct Memory Access Controller
-  irq_handler_usb,               // 7 - Universal Serial Bus Controller
+  USB_Handler,               // 7 - Universal Serial Bus Controller
   irq_handler_evsys,             // 8 - Event System
   irq_handler_sercom0,           // 9 - Serial Communication Interface 0
   irq_handler_sercom1,           // 10 - Serial Communication Interface 1
