@@ -173,7 +173,7 @@ typedef union {
 
 #define ADC_SAMPCTRL_SAMPLEN_Pos    0            /**< \brief (ADC_SAMPCTRL) Sampling Time Length */
 #define ADC_SAMPCTRL_SAMPLEN_Msk    (0x3Ful << ADC_SAMPCTRL_SAMPLEN_Pos)
-#define ADC_SAMPCTRL_SAMPLEN(value) ((ADC_SAMPCTRL_SAMPLEN_Msk & ((value) << ADC_SAMPCTRL_SAMPLEN_Pos)))
+#define ADC_SAMPCTRL_SAMPLEN(value) (ADC_SAMPCTRL_SAMPLEN_Msk & ((value) << ADC_SAMPCTRL_SAMPLEN_Pos))
 #define ADC_SAMPCTRL_MASK           0x3Ful       /**< \brief (ADC_SAMPCTRL) MASK Register */
 
 /* -------- ADC_CTRLB : (ADC Offset: 0x04) (R/W 16) Control B -------- */

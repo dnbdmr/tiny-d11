@@ -44,7 +44,8 @@ SRCS += \
   ../htu21.c \
   ../rgb.c \
   ../i2c_master.c \
-  ../adafruit_ptc.c
+  ../adafruit_ptc.c \
+  ../adc.c
 
 DEFINES += \
   -D__SAMD21G18A__ \

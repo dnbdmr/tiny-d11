@@ -31,7 +31,7 @@
 
 /*- Prototypes --------------------------------------------------------------*/
 void adc_init(void);
-int adc_read(void);
+uint16_t adc_read(void);
 
 #endif // _ADC_H_
 

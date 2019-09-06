@@ -38,6 +38,7 @@
 #include "tusb.h"
 #include "htu21.h"
 #include "rgb.h"
+#include "adc.h"
 #include "adafruit_ptc.h"
 
 /*- Definitions -------------------------------------------------------------*/
@@ -146,6 +147,9 @@ void tud_suspend_cb(bool remote_wakeup_en)
 	rgb_zero(1);
 	HAL_GPIO_LED1_in();
 	HAL_GPIO_A5_in();
+	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
+	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk << SCB_SCR_SLEEPDEEP_Pos;
+	__WFI();
 }
 
 // Invoked when usb bus is resumed
@@ -154,6 +158,7 @@ void tud_resume_cb(void)
 	rgb_update(&led, 1);
 	HAL_GPIO_LED1_out();
 	HAL_GPIO_A5_out();
+	SysTick_Config(48000); //systick at 1ms
 }
 
 //-----------------------------------------------------------------------------
@@ -184,9 +189,34 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 void tud_cdc_rx_cb(uint8_t itf)
 {
 	(void) itf;
-	tud_cdc_write_str("Stop That!!\n");
 	HAL_GPIO_A5_toggle();
-	tud_cdc_read_flush();
+	//tud_cdc_write_str("Stop That!!\n");
+	//tud_cdc_read_flush();
+
+	if ( tud_cdc_connected() )
+	{
+		// connected and there are data available
+		if ( tud_cdc_available() )
+		{
+			uint8_t buf[64];
+			char s[5]; 
+			// read and echo back
+			uint8_t count = tud_cdc_read(buf, sizeof(buf));
+
+			for(uint32_t i=0; i<count; i++)
+			{
+				tud_cdc_write_char(buf[i]);
+				/*
+				tud_cdc_write_str("char: ");
+				itoa(buf[i], s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
+				*/
+
+				//if ( buf[i] == '\r' ) tud_cdc_write_char('\n');
+			}
+		}
+	}
 }
 
 void cdc_task(void)
@@ -223,6 +253,7 @@ int main(void)
 	tusb_init();
 	htu21_init();
 	rgb_init();
+	adc_init();
 
 	HAL_GPIO_LED1_out();
 	HAL_GPIO_LED1_out();
@@ -233,7 +264,7 @@ int main(void)
 	led.red = 0xFF;
 	led.blue = 0x0;
 	led.green = 0xFF;
-	led.bright = 2;
+	led.bright = 0x02;
 	rgb_update(&led, 1);
 
 	struct adafruit_ptc_config touchA4;
@@ -263,7 +294,8 @@ int main(void)
 				HAL_GPIO_D5_clr();
 
 			rgb_wheel(&led, ledpos);
-			ledpos++;
+			rgb_update(&led, 1);
+			ledpos += 4;
 		}
 
 		if ((millis - minutetick) >= 60000) {
@@ -279,6 +311,13 @@ int main(void)
 			itoa(temp, s, 10);
 			if (tud_cdc_connected()) {
 				tud_cdc_write_str("HumX100: ");
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
+			}
+			temp = adc_read();
+			itoa(temp, s, 10);
+			if (tud_cdc_connected()) {
+				tud_cdc_write_str("ADC: ");
 				tud_cdc_write_str(s);
 				tud_cdc_write_char('\n');
 			}

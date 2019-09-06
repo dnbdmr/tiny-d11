@@ -33,10 +33,10 @@
 #include "samd21.h"
 #include "hal_gpio.h"
 #include "nvm_data.h"
-#include "dac.h"
+#include "adc.h"
 
 /*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(ADC,      B, 9)
+HAL_GPIO_PIN(ADC,      B, 9)	//Itsy bitsy A2
 
 /*- Implementations ---------------------------------------------------------*/
 
@@ -54,11 +54,13 @@ void adc_init(void)
   ADC->CTRLA.reg = ADC_CTRLA_SWRST;
   while (ADC->CTRLA.reg & ADC_CTRLA_SWRST);
 
+  //Configuration for maxish accuracy
   ADC->REFCTRL.reg = ADC_REFCTRL_REFSEL_INTVCC1 | ADC_REFCTRL_REFCOMP;
   ADC->CTRLB.reg = ADC_CTRLB_RESSEL_16BIT | ADC_CTRLB_PRESCALER_DIV512;
   ADC->AVGCTRL.reg = ADC_AVGCTRL_SAMPLENUM_1024;
   ADC->INPUTCTRL.reg = ADC_INPUTCTRL_MUXPOS_PIN3 | ADC_INPUTCTRL_MUXNEG_GND |
       ADC_INPUTCTRL_GAIN_DIV2;
+  ADC->SAMPCTRL.reg = ADC_SAMPCTRL_SAMPLEN(63);					// Max sample time
   ADC->CALIB.reg = ADC_CALIB_BIAS_CAL(NVM_READ_CAL(ADC_BIASCAL)) |
       ADC_CALIB_LINEARITY_CAL(NVM_READ_CAL(ADC_LINEARITY));
 
@@ -67,7 +69,7 @@ void adc_init(void)
 }
 
 //-----------------------------------------------------------------------------
-int adc_read(void)
+uint16_t adc_read(void)
 {
   ADC->SWTRIG.reg = ADC_SWTRIG_START;
   while (!(ADC->INTFLAG.reg & ADC_INTFLAG_RESRDY));
