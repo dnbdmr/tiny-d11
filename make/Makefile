@@ -34,12 +34,12 @@ INCLUDES += \
 SRCS += \
   ../main.c \
   ../startup_samd21.c \
-  ../tinyusb/tusb.c \
-  ../tinyusb/common/tusb_fifo.c \
-  ../tinyusb/device/usbd.c \
-  ../tinyusb/device/usbd_control.c \
-  ../tinyusb/portable/microchip/samd21/dcd_samd21.c \
-  ../tinyusb/class/cdc/cdc_device.c \
+  ../tinyusb/src/tusb.c \
+  ../tinyusb/src/common/tusb_fifo.c \
+  ../tinyusb/src/device/usbd.c \
+  ../tinyusb/src/device/usbd_control.c \
+  ../tinyusb/src/portable/microchip/samd21/dcd_samd21.c \
+  ../tinyusb/src/class/cdc/cdc_device.c \
   ../usb_descriptors.c \
   ../htu21.c \
   ../rgb.c \
