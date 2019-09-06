@@ -6,6 +6,7 @@ https://github.com/hathach/tinyusb
 
 __TODO__
 + set up systick/millis/delay
+- make master branch empty
 - move tud functions to separate file
 - uf2 handover with msc device?
 - clean up inclue/ and startup, move to atmel style
