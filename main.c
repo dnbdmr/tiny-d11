@@ -92,7 +92,6 @@ static void timer_init(void)
 //-----------------------------------------------------------------------------
 static void sys_init(void)
 {
-	uint32_t coarse, fine;
 
 	SYSCTRL->OSC8M.bit.PRESC = 0; // Set OSC8M prescaler to 1
 
@@ -102,6 +101,7 @@ static void sys_init(void)
 
 	NVMCTRL->CTRLB.bit.RWS = 1; // Set Flash Wait States to 1 for 3.3V operation
 
+	uint32_t coarse, fine;
 	coarse = NVM_READ_CAL(DFLL48M_COARSE_CAL); // Read factory cals for DFLL48M
 	fine = NVM_READ_CAL(DFLL48M_FINE_CAL);
 
@@ -126,15 +126,28 @@ static void sys_init(void)
 		GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
 	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
 
-	//SYSCTRL->OSC8M.bit.ENABLE = 0; // Disable OSC8M
-	//
-	// Enable GCLK3 with OSC8M @ 4MHz for PTC
 	SYSCTRL->OSC8M.bit.PRESC = 0x01; // Set OSC8M prescaler to 2
 	//Setup Generic Clock Generator 3 with OSC8M as source:
 	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(3) | GCLK_GENCTRL_SRC(GCLK_SOURCE_OSC8M) |
 		GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
 
 	SysTick_Config(48000); //systick at 1ms
+}
+
+void usb_setup(void)
+{
+  PM->APBBMASK.reg |= PM_APBBMASK_USB;
+
+  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_ID(USB_GCLK_ID) |
+      GCLK_CLKCTRL_GEN(0);
+
+  // Set up USB pins
+  PORT->Group[0].PINCFG[PIN_PA24G_USB_DM].bit.PMUXEN = 1;
+  PORT->Group[0].PMUX[PIN_PA24G_USB_DM/2].reg &= ~(0xF << (4 * (PIN_PA24G_USB_DM & 0x01u)));
+  PORT->Group[0].PMUX[PIN_PA24G_USB_DM/2].reg |= MUX_PA24G_USB_DM << (4 * (PIN_PA24G_USB_DM & 0x01u));
+  PORT->Group[0].PINCFG[PIN_PA25G_USB_DP].bit.PMUXEN = 1;
+  PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg &= ~(0xF << (4 * (PIN_PA25G_USB_DP & 0x01u)));
+  PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg |= MUX_PA25G_USB_DP << (4 * (PIN_PA25G_USB_DP & 0x01u));
 }
 
 //-----------------------------------------------------------------------------
@@ -249,8 +262,9 @@ void cdc_task(void)
 int main(void)
 {
 	sys_init();
-	timer_init();
+	usb_setup();
 	tusb_init();
+	timer_init();
 	htu21_init();
 	rgb_init();
 	adc_init();
