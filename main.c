@@ -278,7 +278,7 @@ int main(void)
 	led.red = 0xFF;
 	led.blue = 0x0;
 	led.green = 0xFF;
-	led.bright = 0x02;
+	led.bright = 0x03;
 	rgb_update(&led, 1);
 
 	struct adafruit_ptc_config touchA4;
