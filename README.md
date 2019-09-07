@@ -1,6 +1,9 @@
 __DGW-Tiny__
+
 Combination of Alex Taradov's DGW usb-hid gateway and USBTiny usb stack for a simple usb-cdc device on a SAMD21. Intended as a template for other projects. 
+
 https://github.com/ataradov/dgw
+
 https://github.com/hathach/tinyusb
 
 
