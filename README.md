@@ -10,3 +10,4 @@ __TODO__
 - move tud functions to separate file
 - uf2 handover with msc device?
 - clean up inclue/ and startup, move to atmel style
+- on resume from linux host, cdc receive ATPORTCFG#, or #ATPORTCFG, etc...
