@@ -31,6 +31,18 @@
  * - Enable APBC clock
  * - Optionally, set a threshold with .threshold member
  */
+/*
+	struct adafruit_ptc_config touchA4;
+	adafruit_ptc_get_config_default(&touchA4);
+	touchA4.pin = 5;
+	touchA4.yline = 3;
+	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(PTC_GCLK_ID) | 	\
+      GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(3);
+	PM->APBCMASK.reg |= PM_APBCMASK_PTC;
+	adafruit_ptc_init(PTC, &touchA4);
+	touchA4.threshold = adafruit_ptc_single_conversion(&touchA4) + 100;
+	*/
+
 #ifndef ADAFRUIT_FREETOUCH_ADAFRUIT_PTC_H
 #define ADAFRUIT_FREETOUCH_ADAFRUIT_PTC_H
 

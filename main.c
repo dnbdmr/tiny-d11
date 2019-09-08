@@ -51,6 +51,7 @@ RGB_type led;
 /*- Implementations ---------------------------------------------------------*/
 
 volatile uint32_t millis = 0;
+
 void irq_handler_sys_tick(void)
 {
        millis++;
@@ -198,6 +199,7 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 	}
 }
 
+//-----------------------------------------------------------------------------
 // Invoked when CDC interface received data from host
 void tud_cdc_rx_cb(uint8_t itf)
 {
@@ -212,21 +214,12 @@ void tud_cdc_rx_cb(uint8_t itf)
 		if ( tud_cdc_available() )
 		{
 			uint8_t buf[64];
-			char s[5]; 
 			// read and echo back
 			uint8_t count = tud_cdc_read(buf, sizeof(buf));
 
 			for(uint32_t i=0; i<count; i++)
 			{
 				tud_cdc_write_char(buf[i]);
-				/*
-				tud_cdc_write_str("char: ");
-				itoa(buf[i], s, 10);
-				tud_cdc_write_str(s);
-				tud_cdc_write_char('\n');
-				*/
-
-				//if ( buf[i] == '\r' ) tud_cdc_write_char('\n');
 			}
 		}
 	}
@@ -236,25 +229,6 @@ void cdc_task(void)
 {
 	if ( tud_cdc_connected() )
 	{
-		/*
-		// connected and there are data available
-		if ( tud_cdc_available() )
-		{
-			uint8_t buf[64];
-
-			// read and echo back
-			uint32_t count = tud_cdc_read(buf, sizeof(buf));
-
-			for(uint32_t i=0; i<count; i++)
-			{
-				tud_cdc_write_char(buf[i]);
-
-				//if ( buf[i] == '\r' ) tud_cdc_write_char('\n');
-			}
-		}
-		*/
-
-		//tud_cdc_read_flush(); //Won't read with this
 		tud_cdc_write_flush(); // Freeze without this
 	}
 }
@@ -267,29 +241,17 @@ int main(void)
 	timer_init();
 	htu21_init();
 	rgb_init();
-	adc_init();
 
-	HAL_GPIO_LED1_out();
 	HAL_GPIO_LED1_out();
 	HAL_GPIO_A5_out();
-	HAL_GPIO_A5_set();
 	HAL_GPIO_D5_out();
 
+	RGB_type templed;
 	led.red = 0xFF;
 	led.blue = 0x0;
 	led.green = 0xFF;
-	led.bright = 0x03;
+	led.bright = 0x06;
 	rgb_update(&led, 1);
-
-	struct adafruit_ptc_config touchA4;
-	adafruit_ptc_get_config_default(&touchA4);
-	touchA4.pin = 5;
-	touchA4.yline = 3;
-	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(PTC_GCLK_ID) | 	\
-      GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(3);
-	PM->APBCMASK.reg |= PM_APBCMASK_PTC;
-	adafruit_ptc_init(PTC, &touchA4);
-	touchA4.threshold = adafruit_ptc_single_conversion(&touchA4) + 100;
 
 	char s[25];
 	uint32_t temp;
@@ -301,12 +263,6 @@ int main(void)
 	{
 		if ((millis - tenthmintick) >= 100) {
 			tenthmintick = millis;
-			temp = adafruit_ptc_single_conversion(&touchA4);
-			if ( temp  > touchA4.threshold)
-				HAL_GPIO_D5_set();
-			else
-				HAL_GPIO_D5_clr();
-
 			rgb_wheel(&led, ledpos);
 			rgb_update(&led, 1);
 			ledpos += 4;
@@ -328,15 +284,6 @@ int main(void)
 				tud_cdc_write_str(s);
 				tud_cdc_write_char('\n');
 			}
-			temp = adc_read();
-			itoa(temp, s, 10);
-			if (tud_cdc_connected()) {
-				tud_cdc_write_str("ADC: ");
-				tud_cdc_write_str(s);
-				tud_cdc_write_char('\n');
-			}
-			//led.green = led.green ? 0x00 : 0xF0;
-			//rgb_update(&led, 1);
 		}
 
 		tud_task();
