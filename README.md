@@ -14,3 +14,4 @@ __TODO__
 - move tud functions to separate file
 - uf2 handover with msc device?
 - clean up inclue/ and startup, move to atmel style
+- add msc class with uf2 handover?
