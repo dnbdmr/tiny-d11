@@ -52,14 +52,14 @@ RGB_type led;
 
 volatile uint32_t millis = 0;
 
-void irq_handler_sys_tick(void)
+void SysTick_Handler(void)
 {
        millis++;
 }
 
 
 //-----------------------------------------------------------------------------
-void irq_handler_tc3(void)
+void TC3_Handler(void)
 {
 	if (TC3->COUNT16.INTFLAG.reg & TC_INTFLAG_MC(1))
 	{
