@@ -94,22 +94,16 @@ static void timer_init(void)
 static void sys_init(void)
 {
 
-	SYSCTRL->OSC8M.bit.PRESC = 0; // Set OSC8M prescaler to 1
-
-	SYSCTRL->INTFLAG.reg = SYSCTRL_INTFLAG_BOD33RDY |  // Clear SYSCTL interrupt flags, necessary?
-							SYSCTRL_INTFLAG_BOD33DET |
-							SYSCTRL_INTFLAG_DFLLRDY;
-
-	NVMCTRL->CTRLB.bit.RWS = 1; // Set Flash Wait States to 1 for 3.3V operation
-
-	uint32_t coarse, fine;
-	coarse = NVM_READ_CAL(DFLL48M_COARSE_CAL); // Read factory cals for DFLL48M
-	fine = NVM_READ_CAL(DFLL48M_FINE_CAL);
+	NVMCTRL->CTRLB.bit.RWS = 1; // Set Flash Wait States to 1 for 3.3V operation @ 48MHz
 
 	SYSCTRL->DFLLCTRL.reg = 0; // See Errata 9905
 	while (0 == (SYSCTRL->PCLKSR.reg & SYSCTRL_PCLKSR_DFLLRDY)); // Wait for DFLL sync complete
 
 	SYSCTRL->DFLLMUL.reg = SYSCTRL_DFLLMUL_MUL(48000); // Set to multiply USB SOF frequency (when USB attached)
+	
+	uint32_t coarse, fine;
+	coarse = NVM_READ_CAL(DFLL48M_COARSE_CAL); // Read factory cals for DFLL48M
+	fine = NVM_READ_CAL(DFLL48M_FINE_CAL);
 	SYSCTRL->DFLLVAL.reg = SYSCTRL_DFLLVAL_COARSE(coarse) | SYSCTRL_DFLLVAL_FINE(fine); // Load factory cals
 
 	SYSCTRL->DFLLCTRL.reg = SYSCTRL_DFLLCTRL_ENABLE | 
@@ -120,7 +114,7 @@ static void sys_init(void)
 							SYSCTRL_DFLLCTRL_MODE;   // Set Closed Loop Mode
 							//SYSCTRL_DFLLCTRL_STABLE; // Fine calibration register locks (stable) after fine lock, ignored with USBCRM
 
-	while (0 == (SYSCTRL->PCLKSR.reg & SYSCTRL_PCLKSR_DFLLRDY)); // Wait for DFLL sync complete
+	while (!(SYSCTRL->PCLKSR.reg & SYSCTRL_PCLKSR_DFLLRDY)); // Wait for DFLL sync complete
 
 	//Setup Generic Clock Generator 0 with DFLL48M as source:
 	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(0) | GCLK_GENCTRL_SRC(GCLK_SOURCE_DFLL48M) |
@@ -137,18 +131,19 @@ static void sys_init(void)
 
 void usb_setup(void)
 {
-  PM->APBBMASK.reg |= PM_APBBMASK_USB;
+	// Enable USB Clocks
+	PM->APBBMASK.reg |= PM_APBBMASK_USB;
+	PM->AHBMASK.reg |= PM_AHBMASK_USB;
+	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_ID(USB_GCLK_ID) |
+		GCLK_CLKCTRL_GEN(0);
 
-  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_ID(USB_GCLK_ID) |
-      GCLK_CLKCTRL_GEN(0);
-
-  // Set up USB pins
-  PORT->Group[0].PINCFG[PIN_PA24G_USB_DM].bit.PMUXEN = 1;
-  PORT->Group[0].PMUX[PIN_PA24G_USB_DM/2].reg &= ~(0xF << (4 * (PIN_PA24G_USB_DM & 0x01u)));
-  PORT->Group[0].PMUX[PIN_PA24G_USB_DM/2].reg |= MUX_PA24G_USB_DM << (4 * (PIN_PA24G_USB_DM & 0x01u));
-  PORT->Group[0].PINCFG[PIN_PA25G_USB_DP].bit.PMUXEN = 1;
-  PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg &= ~(0xF << (4 * (PIN_PA25G_USB_DP & 0x01u)));
-  PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg |= MUX_PA25G_USB_DP << (4 * (PIN_PA25G_USB_DP & 0x01u));
+	// Enable USB pins
+	PORT->Group[0].PINCFG[PIN_PA24G_USB_DM].bit.PMUXEN = 1;
+	PORT->Group[0].PMUX[PIN_PA24G_USB_DM/2].reg &= ~(0xF << (4 * (PIN_PA24G_USB_DM & 0x01u)));
+	PORT->Group[0].PMUX[PIN_PA24G_USB_DM/2].reg |= MUX_PA24G_USB_DM << (4 * (PIN_PA24G_USB_DM & 0x01u));
+	PORT->Group[0].PINCFG[PIN_PA25G_USB_DP].bit.PMUXEN = 1;
+	PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg &= ~(0xF << (4 * (PIN_PA25G_USB_DP & 0x01u)));
+	PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg |= MUX_PA25G_USB_DP << (4 * (PIN_PA25G_USB_DP & 0x01u));
 }
 
 //-----------------------------------------------------------------------------
@@ -246,7 +241,6 @@ int main(void)
 	HAL_GPIO_A5_out();
 	HAL_GPIO_D5_out();
 
-	RGB_type templed;
 	led.red = 0xFF;
 	led.blue = 0x0;
 	led.green = 0xFF;
@@ -268,7 +262,7 @@ int main(void)
 			ledpos += 4;
 		}
 
-		if ((millis - minutetick) >= 60000) {
+		if ((millis - minutetick) >= 10000) {
 			minutetick = millis;
 			temp = htu21_readtemp();
 			itoa(temp, s, 10);

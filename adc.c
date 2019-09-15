@@ -48,6 +48,7 @@ void adc_init(void)
 
   PM->APBCMASK.reg |= PM_APBCMASK_ADC;
 
+  // ADC should be clocked between 30k and 2.1MHz
   GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(ADC_GCLK_ID) |
       GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(0);
 
