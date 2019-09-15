@@ -36,6 +36,7 @@
 #include "hal_gpio.h"
 #include "nvm_data.h"
 #include "tusb.h"
+#include "usb_descriptors.h"
 #include "htu21.h"
 #include "rgb.h"
 #include "adc.h"
