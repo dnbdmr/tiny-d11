@@ -39,8 +39,6 @@
 #include "usb_descriptors.h"
 #include "htu21.h"
 #include "rgb.h"
-#include "adc.h"
-#include "adafruit_ptc.h"
 
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 17);
@@ -51,12 +49,24 @@ RGB_type led;
 
 /*- Implementations ---------------------------------------------------------*/
 
-volatile uint32_t millis = 0;
+volatile uint32_t msticks = 0;
 
 void SysTick_Handler(void)
 {
-       millis++;
+       msticks++;
 }
+
+uint32_t millis(void)
+{
+	uint32_t m;
+	__disable_irq();
+	__DMB();
+	m = msticks;
+	__enable_irq();
+	__DMB();
+	return m;
+}
+
 
 
 //-----------------------------------------------------------------------------
@@ -250,21 +260,21 @@ int main(void)
 
 	char s[25];
 	uint32_t temp;
-	uint32_t minutetick = millis;
-	uint32_t tenthmintick = millis;
+	uint32_t minutetick = millis();
+	uint32_t tenthmintick = millis();
 	uint8_t ledpos = 0;
 
 	while (1)
 	{
-		if ((millis - tenthmintick) >= 100) {
-			tenthmintick = millis;
+		if ((millis() - tenthmintick) >= 100) {
+			tenthmintick = millis();
 			rgb_wheel(&led, ledpos);
 			rgb_update(&led, 1);
 			ledpos += 4;
 		}
 
-		if ((millis - minutetick) >= 10000) {
-			minutetick = millis;
+		if ((millis() - minutetick) >= 10000) {
+			minutetick = millis();
 			temp = htu21_readtemp();
 			itoa(temp, s, 10);
 			if (tud_cdc_connected()) {
