@@ -126,11 +126,11 @@ static void sys_init(void)
 	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(0) | GCLK_GENCTRL_SRC(GCLK_SOURCE_DFLL48M) |
 		GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
 	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
-
-	SYSCTRL->OSC8M.bit.PRESC = 0x01; // Set OSC8M prescaler to 2
-	//Setup Generic Clock Generator 3 with OSC8M as source:
-	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(3) | GCLK_GENCTRL_SRC(GCLK_SOURCE_OSC8M) |
-		GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
+	
+	//Disable OSC8M and generator 2 (enabled by UF2 bootloader)
+	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(2);
+	GCLK->GENCTRL.bit.GENEN = 0;
+	SYSCTRL->OSC8M.bit.ENABLE = 0;
 
 	SysTick_Config(48000); //systick at 1ms
 }
