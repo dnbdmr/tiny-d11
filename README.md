@@ -15,3 +15,4 @@ __TODO__
 - move tud functions to separate file
 - uf2 handover with msc device?
 - add msc class with uf2 handover?
+- the switch from dgw linker and startup scripts to asf increased .bss by about 9k
