@@ -24,6 +24,7 @@ LDFLAGS += -Wl,--gc-sections
 #LDFLAGS += --specs=nosys.specs
 #LDFLAGS += --specs=rdimon.specs
 LDFLAGS += -Wl,--start-group -lm -Wl,--end-group
+LDFLAGS += -Wl,-Map=$(BUILD)/$(BIN).map
 LDFLAGS += -Wl,--script=../linker/samd21g18.ld
 
 INCLUDES += \
