@@ -37,8 +37,9 @@ extern uint32_t _srelocate;
 extern uint32_t _erelocate;
 extern uint32_t _szero;
 extern uint32_t _ezero;
-extern uint32_t _sstack;
-extern uint32_t _estack;
+//extern uint32_t _sstack;
+//extern uint32_t _estack;
+extern uint32_t _stack_top;
 
 /** \cond DOXYGEN_SHOULD_SKIP_THIS */
 int main(void);
@@ -108,7 +109,8 @@ void I2S_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
 __attribute__((section(".vectors"))) const DeviceVectors exception_table = {
 
     /* Configure Initial Stack Pointer, using linker-generated symbols */
-    .pvStack = (void *)(&_estack),
+    //.pvStack = (void *)(&_estack),
+    .pvStack = (void *)(&_stack_top),
 
     .pfnReset_Handler          = (void *)Reset_Handler,
     .pfnNonMaskableInt_Handler = (void *)NonMaskableInt_Handler,

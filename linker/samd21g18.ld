@@ -39,8 +39,9 @@ MEMORY
   ram      (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00008000
 }
 
-/* The stack size used by the application. NOTE: you need to adjust according to your application. */
+/* The stack size used by the application. NOTE: you need to adjust according to your application. 
 STACK_SIZE = DEFINED(STACK_SIZE) ? STACK_SIZE : DEFINED(__stack_size__) ? __stack_size__ : 0x2000;
+*/
 
 /* Section Definitions */
 SECTIONS
@@ -128,7 +129,7 @@ SECTIONS
         _ezero = .;
     } > ram
 
-    /* stack section */
+    /* stack section 
     .stack (NOLOAD):
     {
         . = ALIGN(8);
@@ -137,6 +138,9 @@ SECTIONS
         . = ALIGN(8);
         _estack = .;
     } > ram
+	*/
+	/* stack occupies the rest of ram */
+	PROVIDE(_stack_top = ORIGIN(ram) + LENGTH(ram));
 
     . = ALIGN(4);
     _end = . ;
