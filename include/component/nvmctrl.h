@@ -27,17 +27,17 @@
  *
  */
 
-#ifndef _SAMD21_NVMCTRL_COMPONENT_
-#define _SAMD21_NVMCTRL_COMPONENT_
+#ifndef _SAMD11_NVMCTRL_COMPONENT_
+#define _SAMD11_NVMCTRL_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR NVMCTRL */
 /* ========================================================================== */
-/** \addtogroup SAMD21_NVMCTRL Non-Volatile Memory Controller */
+/** \addtogroup SAMD11_NVMCTRL Non-Volatile Memory Controller */
 /*@{*/
 
 #define NVMCTRL_U2207
-#define REV_NVMCTRL                 0x106
+#define REV_NVMCTRL                 0x107
 
 /* -------- NVMCTRL_CTRLA : (NVMCTRL Offset: 0x00) (R/W 16) Control A -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -416,10 +416,10 @@ typedef struct {
 #define FUSES_HOT_TEMP_VAL_INT_Msk  (_U_(0xFF) << FUSES_HOT_TEMP_VAL_INT_Pos)
 #define FUSES_HOT_TEMP_VAL_INT(value) (FUSES_HOT_TEMP_VAL_INT_Msk & ((value) << FUSES_HOT_TEMP_VAL_INT_Pos))
 
-#define FUSES_OSC32K_CAL_ADDR       (NVMCTRL_OTP4 + 4)
-#define FUSES_OSC32K_CAL_Pos        6            /**< \brief (NVMCTRL_OTP4) OSC32K Calibration */
-#define FUSES_OSC32K_CAL_Msk        (_U_(0x7F) << FUSES_OSC32K_CAL_Pos)
-#define FUSES_OSC32K_CAL(value)     (FUSES_OSC32K_CAL_Msk & ((value) << FUSES_OSC32K_CAL_Pos))
+#define FUSES_OSC32K_ADDR           (NVMCTRL_OTP4 + 4)
+#define FUSES_OSC32K_Pos            6            /**< \brief (NVMCTRL_OTP4) OSC32K Calibration */
+#define FUSES_OSC32K_Msk            (_U_(0x7F) << FUSES_OSC32K_Pos)
+#define FUSES_OSC32K(value)         (FUSES_OSC32K_Msk & ((value) << FUSES_OSC32K_Pos))
 
 #define FUSES_ROOM_ADC_VAL_ADDR     (NVMCTRL_TEMP_LOG + 4)
 #define FUSES_ROOM_ADC_VAL_Pos      8            /**< \brief (NVMCTRL_TEMP_LOG) 12-bit ADC conversion at room temperature */
@@ -504,4 +504,4 @@ typedef struct {
 
 /*@}*/
 
-#endif /* _SAMD21_NVMCTRL_COMPONENT_ */
+#endif /* _SAMD11_NVMCTRL_COMPONENT_ */

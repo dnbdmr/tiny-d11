@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _SAMD21_MTB_INSTANCE_
-#define _SAMD21_MTB_INSTANCE_
+#ifndef _SAMD11_MTB_INSTANCE_
+#define _SAMD11_MTB_INSTANCE_
 
 /* ========== Register definition for MTB peripheral ========== */
 #if (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -86,4 +86,4 @@
 #endif /* (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 
-#endif /* _SAMD21_MTB_INSTANCE_ */
+#endif /* _SAMD11_MTB_INSTANCE_ */

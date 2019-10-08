@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _SAMD21_DSU_INSTANCE_
-#define _SAMD21_DSU_INSTANCE_
+#ifndef _SAMD11_DSU_INSTANCE_
+#define _SAMD11_DSU_INSTANCE_
 
 /* ========== Register definition for DSU peripheral ========== */
 #if (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -41,11 +41,16 @@
 #define REG_DSU_DCC0               (0x41002010) /**< \brief (DSU) Debug Communication Channel 0 */
 #define REG_DSU_DCC1               (0x41002014) /**< \brief (DSU) Debug Communication Channel 1 */
 #define REG_DSU_DID                (0x41002018) /**< \brief (DSU) Device Identification */
-#define REG_DSU_ENTRY              (0x41003000) /**< \brief (DSU) CoreSight ROM Table Entry 0 */
+#define REG_DSU_DCFG0              (0x410020F0) /**< \brief (DSU) Device Configuration 0 */
+#define REG_DSU_DCFG1              (0x410020F4) /**< \brief (DSU) Device Configuration 1 */
+#define REG_DSU_ENTRY0             (0x41003000) /**< \brief (DSU) CoreSight ROM Table Entry 0 */
 #define REG_DSU_ENTRY1             (0x41003004) /**< \brief (DSU) CoreSight ROM Table Entry 1 */
 #define REG_DSU_END                (0x41003008) /**< \brief (DSU) CoreSight ROM Table End */
 #define REG_DSU_MEMTYPE            (0x41003FCC) /**< \brief (DSU) CoreSight ROM Table Memory Type */
 #define REG_DSU_PID4               (0x41003FD0) /**< \brief (DSU) Peripheral Identification 4 */
+#define REG_DSU_PID5               (0x41003FD4) /**< \brief (DSU) Peripheral Identification 5 */
+#define REG_DSU_PID6               (0x41003FD8) /**< \brief (DSU) Peripheral Identification 6 */
+#define REG_DSU_PID7               (0x41003FDC) /**< \brief (DSU) Peripheral Identification 7 */
 #define REG_DSU_PID0               (0x41003FE0) /**< \brief (DSU) Peripheral Identification 0 */
 #define REG_DSU_PID1               (0x41003FE4) /**< \brief (DSU) Peripheral Identification 1 */
 #define REG_DSU_PID2               (0x41003FE8) /**< \brief (DSU) Peripheral Identification 2 */
@@ -64,11 +69,16 @@
 #define REG_DSU_DCC0               (*(RwReg  *)0x41002010UL) /**< \brief (DSU) Debug Communication Channel 0 */
 #define REG_DSU_DCC1               (*(RwReg  *)0x41002014UL) /**< \brief (DSU) Debug Communication Channel 1 */
 #define REG_DSU_DID                (*(RoReg  *)0x41002018UL) /**< \brief (DSU) Device Identification */
-#define REG_DSU_ENTRY              (*(RoReg  *)0x41003000UL) /**< \brief (DSU) CoreSight ROM Table Entry 0 */
+#define REG_DSU_DCFG0              (*(RwReg  *)0x410020F0UL) /**< \brief (DSU) Device Configuration 0 */
+#define REG_DSU_DCFG1              (*(RwReg  *)0x410020F4UL) /**< \brief (DSU) Device Configuration 1 */
+#define REG_DSU_ENTRY0             (*(RoReg  *)0x41003000UL) /**< \brief (DSU) CoreSight ROM Table Entry 0 */
 #define REG_DSU_ENTRY1             (*(RoReg  *)0x41003004UL) /**< \brief (DSU) CoreSight ROM Table Entry 1 */
 #define REG_DSU_END                (*(RoReg  *)0x41003008UL) /**< \brief (DSU) CoreSight ROM Table End */
 #define REG_DSU_MEMTYPE            (*(RoReg  *)0x41003FCCUL) /**< \brief (DSU) CoreSight ROM Table Memory Type */
 #define REG_DSU_PID4               (*(RoReg  *)0x41003FD0UL) /**< \brief (DSU) Peripheral Identification 4 */
+#define REG_DSU_PID5               (*(RoReg  *)0x41003FD4UL) /**< \brief (DSU) Peripheral Identification 5 */
+#define REG_DSU_PID6               (*(RoReg  *)0x41003FD8UL) /**< \brief (DSU) Peripheral Identification 6 */
+#define REG_DSU_PID7               (*(RoReg  *)0x41003FDCUL) /**< \brief (DSU) Peripheral Identification 7 */
 #define REG_DSU_PID0               (*(RoReg  *)0x41003FE0UL) /**< \brief (DSU) Peripheral Identification 0 */
 #define REG_DSU_PID1               (*(RoReg  *)0x41003FE4UL) /**< \brief (DSU) Peripheral Identification 1 */
 #define REG_DSU_PID2               (*(RoReg  *)0x41003FE8UL) /**< \brief (DSU) Peripheral Identification 2 */
@@ -80,6 +90,7 @@
 #endif /* (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 /* ========== Instance parameters for DSU peripheral ========== */
-#define DSU_CLK_HSB_ID              3        // Index of AHB clock in PM.AHBMASK register
+#define DSU_CLK_AHB_DOMAIN                   // Clock domain of AHB clock
+#define DSU_CLK_AHB_ID              3        // Index of AHB clock in PM.AHBMASK register
 
-#endif /* _SAMD21_DSU_INSTANCE_ */
+#endif /* _SAMD11_DSU_INSTANCE_ */

@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _SAMD21_PAC2_INSTANCE_
-#define _SAMD21_PAC2_INSTANCE_
+#ifndef _SAMD11_PAC2_INSTANCE_
+#define _SAMD11_PAC2_INSTANCE_
 
 /* ========== Register definition for PAC2 peripheral ========== */
 #if (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -40,6 +40,6 @@
 #endif /* (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 /* ========== Instance parameters for PAC2 peripheral ========== */
-#define PAC2_WPROT_DEFAULT_VAL      0x00800000 // PAC protection mask at reset
+#define PAC2_WPROT_DEFAULT_VAL      0x00001000 // PAC protection mask at reset
 
-#endif /* _SAMD21_PAC2_INSTANCE_ */
+#endif /* _SAMD11_PAC2_INSTANCE_ */

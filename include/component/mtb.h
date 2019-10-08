@@ -27,13 +27,13 @@
  *
  */
 
-#ifndef _SAMD21_MTB_COMPONENT_
-#define _SAMD21_MTB_COMPONENT_
+#ifndef _SAMD11_MTB_COMPONENT_
+#define _SAMD11_MTB_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR MTB */
 /* ========================================================================== */
-/** \addtogroup SAMD21_MTB Cortex-M0+ Micro-Trace Buffer */
+/** \addtogroup SAMD11_MTB Cortex-M0+ Micro-Trace Buffer */
 /*@{*/
 
 #define MTB_U2002
@@ -379,4 +379,4 @@ typedef struct {
 
 /*@}*/
 
-#endif /* _SAMD21_MTB_COMPONENT_ */
+#endif /* _SAMD11_MTB_COMPONENT_ */

@@ -27,17 +27,17 @@
  *
  */
 
-#ifndef _SAMD21_TCC_COMPONENT_
-#define _SAMD21_TCC_COMPONENT_
+#ifndef _SAMD11_TCC_COMPONENT_
+#define _SAMD11_TCC_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR TCC */
 /* ========================================================================== */
-/** \addtogroup SAMD21_TCC Timer Counter Control */
+/** \addtogroup SAMD11_TCC Timer Counter Control */
 /*@{*/
 
 #define TCC_U2213
-#define REV_TCC                     0x101
+#define REV_TCC                     0x111
 
 /* -------- TCC_CTRLA : (TCC Offset: 0x00) (R/W 32) Control A -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -171,7 +171,7 @@ typedef union {
 #define   TCC_CTRLBCLR_CMD_NONE_Val       _U_(0x0)   /**< \brief (TCC_CTRLBCLR) No action */
 #define   TCC_CTRLBCLR_CMD_RETRIGGER_Val  _U_(0x1)   /**< \brief (TCC_CTRLBCLR) Clear start, restart or retrigger */
 #define   TCC_CTRLBCLR_CMD_STOP_Val       _U_(0x2)   /**< \brief (TCC_CTRLBCLR) Force stop */
-#define   TCC_CTRLBCLR_CMD_UPDATE_Val     _U_(0x3)   /**< \brief (TCC_CTRLBCLR) Force update of double buffered registers */
+#define   TCC_CTRLBCLR_CMD_UPDATE_Val     _U_(0x3)   /**< \brief (TCC_CTRLBCLR) Force update or double buffered registers */
 #define   TCC_CTRLBCLR_CMD_READSYNC_Val   _U_(0x4)   /**< \brief (TCC_CTRLBCLR) Force COUNT read synchronization */
 #define TCC_CTRLBCLR_CMD_NONE       (TCC_CTRLBCLR_CMD_NONE_Val     << TCC_CTRLBCLR_CMD_Pos)
 #define TCC_CTRLBCLR_CMD_RETRIGGER  (TCC_CTRLBCLR_CMD_RETRIGGER_Val << TCC_CTRLBCLR_CMD_Pos)
@@ -220,7 +220,7 @@ typedef union {
 #define   TCC_CTRLBSET_CMD_NONE_Val       _U_(0x0)   /**< \brief (TCC_CTRLBSET) No action */
 #define   TCC_CTRLBSET_CMD_RETRIGGER_Val  _U_(0x1)   /**< \brief (TCC_CTRLBSET) Clear start, restart or retrigger */
 #define   TCC_CTRLBSET_CMD_STOP_Val       _U_(0x2)   /**< \brief (TCC_CTRLBSET) Force stop */
-#define   TCC_CTRLBSET_CMD_UPDATE_Val     _U_(0x3)   /**< \brief (TCC_CTRLBSET) Force update of double buffered registers */
+#define   TCC_CTRLBSET_CMD_UPDATE_Val     _U_(0x3)   /**< \brief (TCC_CTRLBSET) Force update or double buffered registers */
 #define   TCC_CTRLBSET_CMD_READSYNC_Val   _U_(0x4)   /**< \brief (TCC_CTRLBSET) Force COUNT read synchronization */
 #define TCC_CTRLBSET_CMD_NONE       (TCC_CTRLBSET_CMD_NONE_Val     << TCC_CTRLBSET_CMD_Pos)
 #define TCC_CTRLBSET_CMD_RETRIGGER  (TCC_CTRLBSET_CMD_RETRIGGER_Val << TCC_CTRLBSET_CMD_Pos)
@@ -328,7 +328,7 @@ typedef union {
     uint32_t HALT:2;           /*!< bit:  8.. 9  Fault A Halt Mode                  */
     uint32_t CHSEL:2;          /*!< bit: 10..11  Fault A Capture Channel            */
     uint32_t CAPTURE:3;        /*!< bit: 12..14  Fault A Capture Action             */
-    uint32_t :1;               /*!< bit:     15  Reserved                           */
+    uint32_t BLANKPRESC:1;     /*!< bit:     15  Fault A Blanking Prescaler         */
     uint32_t BLANKVAL:8;       /*!< bit: 16..23  Fault A Blanking Time              */
     uint32_t FILTERVAL:4;      /*!< bit: 24..27  Fault A Filter Value               */
     uint32_t :4;               /*!< bit: 28..31  Reserved                           */
@@ -358,11 +358,11 @@ typedef union {
 #define TCC_FCTRLA_BLANK_Pos        5            /**< \brief (TCC_FCTRLA) Fault A Blanking Mode */
 #define TCC_FCTRLA_BLANK_Msk        (_U_(0x3) << TCC_FCTRLA_BLANK_Pos)
 #define TCC_FCTRLA_BLANK(value)     (TCC_FCTRLA_BLANK_Msk & ((value) << TCC_FCTRLA_BLANK_Pos))
-#define   TCC_FCTRLA_BLANK_NONE_Val       _U_(0x0)   /**< \brief (TCC_FCTRLA) No blanking applied */
+#define   TCC_FCTRLA_BLANK_START_Val      _U_(0x0)   /**< \brief (TCC_FCTRLA) Blanking applied from start of ramp */
 #define   TCC_FCTRLA_BLANK_RISE_Val       _U_(0x1)   /**< \brief (TCC_FCTRLA) Blanking applied from rising edge of the output waveform */
 #define   TCC_FCTRLA_BLANK_FALL_Val       _U_(0x2)   /**< \brief (TCC_FCTRLA) Blanking applied from falling edge of the output waveform */
 #define   TCC_FCTRLA_BLANK_BOTH_Val       _U_(0x3)   /**< \brief (TCC_FCTRLA) Blanking applied from each toggle of the output waveform */
-#define TCC_FCTRLA_BLANK_NONE       (TCC_FCTRLA_BLANK_NONE_Val     << TCC_FCTRLA_BLANK_Pos)
+#define TCC_FCTRLA_BLANK_START      (TCC_FCTRLA_BLANK_START_Val    << TCC_FCTRLA_BLANK_Pos)
 #define TCC_FCTRLA_BLANK_RISE       (TCC_FCTRLA_BLANK_RISE_Val     << TCC_FCTRLA_BLANK_Pos)
 #define TCC_FCTRLA_BLANK_FALL       (TCC_FCTRLA_BLANK_FALL_Val     << TCC_FCTRLA_BLANK_Pos)
 #define TCC_FCTRLA_BLANK_BOTH       (TCC_FCTRLA_BLANK_BOTH_Val     << TCC_FCTRLA_BLANK_Pos)
@@ -400,6 +400,7 @@ typedef union {
 #define   TCC_FCTRLA_CAPTURE_LOCMIN_Val   _U_(0x4)   /**< \brief (TCC_FCTRLA) Minimum local detection */
 #define   TCC_FCTRLA_CAPTURE_LOCMAX_Val   _U_(0x5)   /**< \brief (TCC_FCTRLA) Maximum local detection */
 #define   TCC_FCTRLA_CAPTURE_DERIV0_Val   _U_(0x6)   /**< \brief (TCC_FCTRLA) Minimum and maximum local detection */
+#define   TCC_FCTRLA_CAPTURE_CAPTMARK_Val _U_(0x7)   /**< \brief (TCC_FCTRLA) Capture with ramp index as MSB value */
 #define TCC_FCTRLA_CAPTURE_DISABLE  (TCC_FCTRLA_CAPTURE_DISABLE_Val << TCC_FCTRLA_CAPTURE_Pos)
 #define TCC_FCTRLA_CAPTURE_CAPT     (TCC_FCTRLA_CAPTURE_CAPT_Val   << TCC_FCTRLA_CAPTURE_Pos)
 #define TCC_FCTRLA_CAPTURE_CAPTMIN  (TCC_FCTRLA_CAPTURE_CAPTMIN_Val << TCC_FCTRLA_CAPTURE_Pos)
@@ -407,13 +408,16 @@ typedef union {
 #define TCC_FCTRLA_CAPTURE_LOCMIN   (TCC_FCTRLA_CAPTURE_LOCMIN_Val << TCC_FCTRLA_CAPTURE_Pos)
 #define TCC_FCTRLA_CAPTURE_LOCMAX   (TCC_FCTRLA_CAPTURE_LOCMAX_Val << TCC_FCTRLA_CAPTURE_Pos)
 #define TCC_FCTRLA_CAPTURE_DERIV0   (TCC_FCTRLA_CAPTURE_DERIV0_Val << TCC_FCTRLA_CAPTURE_Pos)
+#define TCC_FCTRLA_CAPTURE_CAPTMARK (TCC_FCTRLA_CAPTURE_CAPTMARK_Val << TCC_FCTRLA_CAPTURE_Pos)
+#define TCC_FCTRLA_BLANKPRESC_Pos   15           /**< \brief (TCC_FCTRLA) Fault A Blanking Prescaler */
+#define TCC_FCTRLA_BLANKPRESC       (_U_(0x1) << TCC_FCTRLA_BLANKPRESC_Pos)
 #define TCC_FCTRLA_BLANKVAL_Pos     16           /**< \brief (TCC_FCTRLA) Fault A Blanking Time */
 #define TCC_FCTRLA_BLANKVAL_Msk     (_U_(0xFF) << TCC_FCTRLA_BLANKVAL_Pos)
 #define TCC_FCTRLA_BLANKVAL(value)  (TCC_FCTRLA_BLANKVAL_Msk & ((value) << TCC_FCTRLA_BLANKVAL_Pos))
 #define TCC_FCTRLA_FILTERVAL_Pos    24           /**< \brief (TCC_FCTRLA) Fault A Filter Value */
 #define TCC_FCTRLA_FILTERVAL_Msk    (_U_(0xF) << TCC_FCTRLA_FILTERVAL_Pos)
 #define TCC_FCTRLA_FILTERVAL(value) (TCC_FCTRLA_FILTERVAL_Msk & ((value) << TCC_FCTRLA_FILTERVAL_Pos))
-#define TCC_FCTRLA_MASK             _U_(0x0FFF7FFB) /**< \brief (TCC_FCTRLA) MASK Register */
+#define TCC_FCTRLA_MASK             _U_(0x0FFFFFFB) /**< \brief (TCC_FCTRLA) MASK Register */
 
 /* -------- TCC_FCTRLB : (TCC Offset: 0x10) (R/W 32) Recoverable Fault B Configuration -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -428,7 +432,7 @@ typedef union {
     uint32_t HALT:2;           /*!< bit:  8.. 9  Fault B Halt Mode                  */
     uint32_t CHSEL:2;          /*!< bit: 10..11  Fault B Capture Channel            */
     uint32_t CAPTURE:3;        /*!< bit: 12..14  Fault B Capture Action             */
-    uint32_t :1;               /*!< bit:     15  Reserved                           */
+    uint32_t BLANKPRESC:1;     /*!< bit:     15  Fault B Blanking Prescaler         */
     uint32_t BLANKVAL:8;       /*!< bit: 16..23  Fault B Blanking Time              */
     uint32_t FILTERVAL:4;      /*!< bit: 24..27  Fault B Filter Value               */
     uint32_t :4;               /*!< bit: 28..31  Reserved                           */
@@ -458,11 +462,11 @@ typedef union {
 #define TCC_FCTRLB_BLANK_Pos        5            /**< \brief (TCC_FCTRLB) Fault B Blanking Mode */
 #define TCC_FCTRLB_BLANK_Msk        (_U_(0x3) << TCC_FCTRLB_BLANK_Pos)
 #define TCC_FCTRLB_BLANK(value)     (TCC_FCTRLB_BLANK_Msk & ((value) << TCC_FCTRLB_BLANK_Pos))
-#define   TCC_FCTRLB_BLANK_NONE_Val       _U_(0x0)   /**< \brief (TCC_FCTRLB) No blanking applied */
+#define   TCC_FCTRLB_BLANK_START_Val      _U_(0x0)   /**< \brief (TCC_FCTRLB) Blanking applied from start of ramp */
 #define   TCC_FCTRLB_BLANK_RISE_Val       _U_(0x1)   /**< \brief (TCC_FCTRLB) Blanking applied from rising edge of the output waveform */
 #define   TCC_FCTRLB_BLANK_FALL_Val       _U_(0x2)   /**< \brief (TCC_FCTRLB) Blanking applied from falling edge of the output waveform */
 #define   TCC_FCTRLB_BLANK_BOTH_Val       _U_(0x3)   /**< \brief (TCC_FCTRLB) Blanking applied from each toggle of the output waveform */
-#define TCC_FCTRLB_BLANK_NONE       (TCC_FCTRLB_BLANK_NONE_Val     << TCC_FCTRLB_BLANK_Pos)
+#define TCC_FCTRLB_BLANK_START      (TCC_FCTRLB_BLANK_START_Val    << TCC_FCTRLB_BLANK_Pos)
 #define TCC_FCTRLB_BLANK_RISE       (TCC_FCTRLB_BLANK_RISE_Val     << TCC_FCTRLB_BLANK_Pos)
 #define TCC_FCTRLB_BLANK_FALL       (TCC_FCTRLB_BLANK_FALL_Val     << TCC_FCTRLB_BLANK_Pos)
 #define TCC_FCTRLB_BLANK_BOTH       (TCC_FCTRLB_BLANK_BOTH_Val     << TCC_FCTRLB_BLANK_Pos)
@@ -500,6 +504,7 @@ typedef union {
 #define   TCC_FCTRLB_CAPTURE_LOCMIN_Val   _U_(0x4)   /**< \brief (TCC_FCTRLB) Minimum local detection */
 #define   TCC_FCTRLB_CAPTURE_LOCMAX_Val   _U_(0x5)   /**< \brief (TCC_FCTRLB) Maximum local detection */
 #define   TCC_FCTRLB_CAPTURE_DERIV0_Val   _U_(0x6)   /**< \brief (TCC_FCTRLB) Minimum and maximum local detection */
+#define   TCC_FCTRLB_CAPTURE_CAPTMARK_Val _U_(0x7)   /**< \brief (TCC_FCTRLB) Capture with ramp index as MSB value */
 #define TCC_FCTRLB_CAPTURE_DISABLE  (TCC_FCTRLB_CAPTURE_DISABLE_Val << TCC_FCTRLB_CAPTURE_Pos)
 #define TCC_FCTRLB_CAPTURE_CAPT     (TCC_FCTRLB_CAPTURE_CAPT_Val   << TCC_FCTRLB_CAPTURE_Pos)
 #define TCC_FCTRLB_CAPTURE_CAPTMIN  (TCC_FCTRLB_CAPTURE_CAPTMIN_Val << TCC_FCTRLB_CAPTURE_Pos)
@@ -507,13 +512,16 @@ typedef union {
 #define TCC_FCTRLB_CAPTURE_LOCMIN   (TCC_FCTRLB_CAPTURE_LOCMIN_Val << TCC_FCTRLB_CAPTURE_Pos)
 #define TCC_FCTRLB_CAPTURE_LOCMAX   (TCC_FCTRLB_CAPTURE_LOCMAX_Val << TCC_FCTRLB_CAPTURE_Pos)
 #define TCC_FCTRLB_CAPTURE_DERIV0   (TCC_FCTRLB_CAPTURE_DERIV0_Val << TCC_FCTRLB_CAPTURE_Pos)
+#define TCC_FCTRLB_CAPTURE_CAPTMARK (TCC_FCTRLB_CAPTURE_CAPTMARK_Val << TCC_FCTRLB_CAPTURE_Pos)
+#define TCC_FCTRLB_BLANKPRESC_Pos   15           /**< \brief (TCC_FCTRLB) Fault B Blanking Prescaler */
+#define TCC_FCTRLB_BLANKPRESC       (_U_(0x1) << TCC_FCTRLB_BLANKPRESC_Pos)
 #define TCC_FCTRLB_BLANKVAL_Pos     16           /**< \brief (TCC_FCTRLB) Fault B Blanking Time */
 #define TCC_FCTRLB_BLANKVAL_Msk     (_U_(0xFF) << TCC_FCTRLB_BLANKVAL_Pos)
 #define TCC_FCTRLB_BLANKVAL(value)  (TCC_FCTRLB_BLANKVAL_Msk & ((value) << TCC_FCTRLB_BLANKVAL_Pos))
 #define TCC_FCTRLB_FILTERVAL_Pos    24           /**< \brief (TCC_FCTRLB) Fault B Filter Value */
 #define TCC_FCTRLB_FILTERVAL_Msk    (_U_(0xF) << TCC_FCTRLB_FILTERVAL_Pos)
 #define TCC_FCTRLB_FILTERVAL(value) (TCC_FCTRLB_FILTERVAL_Msk & ((value) << TCC_FCTRLB_FILTERVAL_Pos))
-#define TCC_FCTRLB_MASK             _U_(0x0FFF7FFB) /**< \brief (TCC_FCTRLB) MASK Register */
+#define TCC_FCTRLB_MASK             _U_(0x0FFFFFFB) /**< \brief (TCC_FCTRLB) MASK Register */
 
 /* -------- TCC_WEXCTRL : (TCC Offset: 0x14) (R/W 32) Waveform Extension Configuration -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -1303,9 +1311,11 @@ typedef union {
 #define   TCC_WAVE_RAMP_RAMP1_Val         _U_(0x0)   /**< \brief (TCC_WAVE) RAMP1 operation */
 #define   TCC_WAVE_RAMP_RAMP2A_Val        _U_(0x1)   /**< \brief (TCC_WAVE) Alternative RAMP2 operation */
 #define   TCC_WAVE_RAMP_RAMP2_Val         _U_(0x2)   /**< \brief (TCC_WAVE) RAMP2 operation */
+#define   TCC_WAVE_RAMP_RAMP2C_Val        _U_(0x3)   /**< \brief (TCC_WAVE) Critical RAMP2 operation */
 #define TCC_WAVE_RAMP_RAMP1         (TCC_WAVE_RAMP_RAMP1_Val       << TCC_WAVE_RAMP_Pos)
 #define TCC_WAVE_RAMP_RAMP2A        (TCC_WAVE_RAMP_RAMP2A_Val      << TCC_WAVE_RAMP_Pos)
 #define TCC_WAVE_RAMP_RAMP2         (TCC_WAVE_RAMP_RAMP2_Val       << TCC_WAVE_RAMP_Pos)
+#define TCC_WAVE_RAMP_RAMP2C        (TCC_WAVE_RAMP_RAMP2C_Val      << TCC_WAVE_RAMP_Pos)
 #define TCC_WAVE_CIPEREN_Pos        7            /**< \brief (TCC_WAVE) Circular period Enable */
 #define TCC_WAVE_CIPEREN            (_U_(0x1) << TCC_WAVE_CIPEREN_Pos)
 #define TCC_WAVE_CICCEN0_Pos        8            /**< \brief (TCC_WAVE) Circular Channel 0 Enable */
@@ -1800,4 +1810,4 @@ typedef struct {
 
 /*@}*/
 
-#endif /* _SAMD21_TCC_COMPONENT_ */
+#endif /* _SAMD11_TCC_COMPONENT_ */

@@ -27,17 +27,17 @@
  *
  */
 
-#ifndef _SAMD21_SYSCTRL_COMPONENT_
-#define _SAMD21_SYSCTRL_COMPONENT_
+#ifndef _SAMD11_SYSCTRL_COMPONENT_
+#define _SAMD11_SYSCTRL_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR SYSCTRL */
 /* ========================================================================== */
-/** \addtogroup SAMD21_SYSCTRL System Control */
+/** \addtogroup SAMD11_SYSCTRL System Control */
 /*@{*/
 
 #define SYSCTRL_U2100
-#define REV_SYSCTRL                 0x201
+#define REV_SYSCTRL                 0x202
 
 /* -------- SYSCTRL_INTENCLR : (SYSCTRL Offset: 0x00) (R/W 32) Interrupt Enable Clear -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -702,29 +702,6 @@ typedef union {
 #define SYSCTRL_BOD33_LEVEL(value)  (SYSCTRL_BOD33_LEVEL_Msk & ((value) << SYSCTRL_BOD33_LEVEL_Pos))
 #define SYSCTRL_BOD33_MASK          _U_(0x003FF35E) /**< \brief (SYSCTRL_BOD33) MASK Register */
 
-/* -------- SYSCTRL_VREG : (SYSCTRL Offset: 0x3C) (R/W 16) Voltage Regulator System (VREG) Control -------- */
-#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
-typedef union {
-  struct {
-    uint16_t :6;               /*!< bit:  0.. 5  Reserved                           */
-    uint16_t RUNSTDBY:1;       /*!< bit:      6  Run in Standby                     */
-    uint16_t :6;               /*!< bit:  7..12  Reserved                           */
-    uint16_t FORCELDO:1;       /*!< bit:     13  Force LDO Voltage Regulator        */
-    uint16_t :2;               /*!< bit: 14..15  Reserved                           */
-  } bit;                       /*!< Structure used for bit  access                  */
-  uint16_t reg;                /*!< Type      used for register access              */
-} SYSCTRL_VREG_Type;
-#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
-
-#define SYSCTRL_VREG_OFFSET         0x3C         /**< \brief (SYSCTRL_VREG offset) Voltage Regulator System (VREG) Control */
-#define SYSCTRL_VREG_RESETVALUE     _U_(0x0000)  /**< \brief (SYSCTRL_VREG reset_value) Voltage Regulator System (VREG) Control */
-
-#define SYSCTRL_VREG_RUNSTDBY_Pos   6            /**< \brief (SYSCTRL_VREG) Run in Standby */
-#define SYSCTRL_VREG_RUNSTDBY       (_U_(0x1) << SYSCTRL_VREG_RUNSTDBY_Pos)
-#define SYSCTRL_VREG_FORCELDO_Pos   13           /**< \brief (SYSCTRL_VREG) Force LDO Voltage Regulator */
-#define SYSCTRL_VREG_FORCELDO       (_U_(0x1) << SYSCTRL_VREG_FORCELDO_Pos)
-#define SYSCTRL_VREG_MASK           _U_(0x2040)  /**< \brief (SYSCTRL_VREG) MASK Register */
-
 /* -------- SYSCTRL_VREF : (SYSCTRL Offset: 0x40) (R/W 32) Voltage References System (VREF) Control -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef union {
@@ -851,12 +828,12 @@ typedef union {
 #define SYSCTRL_DPLLCTRLB_LTIME_Pos 8            /**< \brief (SYSCTRL_DPLLCTRLB) Lock Time */
 #define SYSCTRL_DPLLCTRLB_LTIME_Msk (_U_(0x7) << SYSCTRL_DPLLCTRLB_LTIME_Pos)
 #define SYSCTRL_DPLLCTRLB_LTIME(value) (SYSCTRL_DPLLCTRLB_LTIME_Msk & ((value) << SYSCTRL_DPLLCTRLB_LTIME_Pos))
-#define   SYSCTRL_DPLLCTRLB_LTIME_DEFAULT_Val _U_(0x0)   /**< \brief (SYSCTRL_DPLLCTRLB) No time-out */
-#define   SYSCTRL_DPLLCTRLB_LTIME_8MS_Val _U_(0x4)   /**< \brief (SYSCTRL_DPLLCTRLB) Time-out if no lock within 8 ms */
-#define   SYSCTRL_DPLLCTRLB_LTIME_9MS_Val _U_(0x5)   /**< \brief (SYSCTRL_DPLLCTRLB) Time-out if no lock within 9 ms */
-#define   SYSCTRL_DPLLCTRLB_LTIME_10MS_Val _U_(0x6)   /**< \brief (SYSCTRL_DPLLCTRLB) Time-out if no lock within 10 ms */
-#define   SYSCTRL_DPLLCTRLB_LTIME_11MS_Val _U_(0x7)   /**< \brief (SYSCTRL_DPLLCTRLB) Time-out if no lock within 11 ms */
-#define SYSCTRL_DPLLCTRLB_LTIME_DEFAULT (SYSCTRL_DPLLCTRLB_LTIME_DEFAULT_Val << SYSCTRL_DPLLCTRLB_LTIME_Pos)
+#define   SYSCTRL_DPLLCTRLB_LTIME_NONE_Val _U_(0x0)   /**< \brief (SYSCTRL_DPLLCTRLB) Default	No time-out */
+#define   SYSCTRL_DPLLCTRLB_LTIME_8MS_Val _U_(0x4)   /**< \brief (SYSCTRL_DPLLCTRLB) 8MS	Time-out if no lock within 8 ms */
+#define   SYSCTRL_DPLLCTRLB_LTIME_9MS_Val _U_(0x5)   /**< \brief (SYSCTRL_DPLLCTRLB) 9MS	Time-out if no lock within 9 ms */
+#define   SYSCTRL_DPLLCTRLB_LTIME_10MS_Val _U_(0x6)   /**< \brief (SYSCTRL_DPLLCTRLB) 10MS	Time-out if no lock within 10 ms */
+#define   SYSCTRL_DPLLCTRLB_LTIME_11MS_Val _U_(0x7)   /**< \brief (SYSCTRL_DPLLCTRLB) 11MS	Time-out if no lock within 11 ms */
+#define SYSCTRL_DPLLCTRLB_LTIME_NONE (SYSCTRL_DPLLCTRLB_LTIME_NONE_Val << SYSCTRL_DPLLCTRLB_LTIME_Pos)
 #define SYSCTRL_DPLLCTRLB_LTIME_8MS (SYSCTRL_DPLLCTRLB_LTIME_8MS_Val << SYSCTRL_DPLLCTRLB_LTIME_Pos)
 #define SYSCTRL_DPLLCTRLB_LTIME_9MS (SYSCTRL_DPLLCTRLB_LTIME_9MS_Val << SYSCTRL_DPLLCTRLB_LTIME_Pos)
 #define SYSCTRL_DPLLCTRLB_LTIME_10MS (SYSCTRL_DPLLCTRLB_LTIME_10MS_Val << SYSCTRL_DPLLCTRLB_LTIME_Pos)
@@ -917,12 +894,10 @@ typedef struct {
   __IO SYSCTRL_DFLLSYNC_Type     DFLLSYNC;    /**< \brief Offset: 0x30 (R/W  8) DFLL48M Synchronization */
        RoReg8                    Reserved5[0x3];
   __IO SYSCTRL_BOD33_Type        BOD33;       /**< \brief Offset: 0x34 (R/W 32) 3.3V Brown-Out Detector (BOD33) Control */
-       RoReg8                    Reserved6[0x4];
-  __IO SYSCTRL_VREG_Type         VREG;        /**< \brief Offset: 0x3C (R/W 16) Voltage Regulator System (VREG) Control */
-       RoReg8                    Reserved7[0x2];
+       RoReg8                    Reserved6[0x8];
   __IO SYSCTRL_VREF_Type         VREF;        /**< \brief Offset: 0x40 (R/W 32) Voltage References System (VREF) Control */
   __IO SYSCTRL_DPLLCTRLA_Type    DPLLCTRLA;   /**< \brief Offset: 0x44 (R/W  8) DPLL Control A */
-       RoReg8                    Reserved8[0x3];
+       RoReg8                    Reserved7[0x3];
   __IO SYSCTRL_DPLLRATIO_Type    DPLLRATIO;   /**< \brief Offset: 0x48 (R/W 32) DPLL Ratio Control */
   __IO SYSCTRL_DPLLCTRLB_Type    DPLLCTRLB;   /**< \brief Offset: 0x4C (R/W 32) DPLL Control B */
   __I  SYSCTRL_DPLLSTATUS_Type   DPLLSTATUS;  /**< \brief Offset: 0x50 (R/   8) DPLL Status */
@@ -931,4 +906,4 @@ typedef struct {
 
 /*@}*/
 
-#endif /* _SAMD21_SYSCTRL_COMPONENT_ */
+#endif /* _SAMD11_SYSCTRL_COMPONENT_ */

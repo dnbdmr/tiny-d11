@@ -27,13 +27,14 @@
  *
  */
 
-#ifndef _SAMD21_PM_INSTANCE_
-#define _SAMD21_PM_INSTANCE_
+#ifndef _SAMD11_PM_INSTANCE_
+#define _SAMD11_PM_INSTANCE_
 
 /* ========== Register definition for PM peripheral ========== */
 #if (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 #define REG_PM_CTRL                (0x40000400) /**< \brief (PM) Control */
 #define REG_PM_SLEEP               (0x40000401) /**< \brief (PM) Sleep Mode */
+#define REG_PM_EXTCTRL             (0x40000402) /**< \brief (PM) External Reset Controller */
 #define REG_PM_CPUSEL              (0x40000408) /**< \brief (PM) CPU Clock Select */
 #define REG_PM_APBASEL             (0x40000409) /**< \brief (PM) APBA Clock Select */
 #define REG_PM_APBBSEL             (0x4000040A) /**< \brief (PM) APBB Clock Select */
@@ -49,6 +50,7 @@
 #else
 #define REG_PM_CTRL                (*(RwReg8 *)0x40000400UL) /**< \brief (PM) Control */
 #define REG_PM_SLEEP               (*(RwReg8 *)0x40000401UL) /**< \brief (PM) Sleep Mode */
+#define REG_PM_EXTCTRL             (*(RwReg8 *)0x40000402UL) /**< \brief (PM) External Reset Controller */
 #define REG_PM_CPUSEL              (*(RwReg8 *)0x40000408UL) /**< \brief (PM) CPU Clock Select */
 #define REG_PM_APBASEL             (*(RwReg8 *)0x40000409UL) /**< \brief (PM) APBA Clock Select */
 #define REG_PM_APBBSEL             (*(RwReg8 *)0x4000040AUL) /**< \brief (PM) APBB Clock Select */
@@ -70,4 +72,4 @@
 #define PM_CTRL_MCSEL_XOSC          2       
 #define PM_PM_CLK_APB_NUM           2       
 
-#endif /* _SAMD21_PM_INSTANCE_ */
+#endif /* _SAMD11_PM_INSTANCE_ */

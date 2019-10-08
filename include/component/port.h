@@ -27,13 +27,13 @@
  *
  */
 
-#ifndef _SAMD21_PORT_COMPONENT_
-#define _SAMD21_PORT_COMPONENT_
+#ifndef _SAMD11_PORT_COMPONENT_
+#define _SAMD11_PORT_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR PORT */
 /* ========================================================================== */
-/** \addtogroup SAMD21_PORT Port Module */
+/** \addtogroup SAMD11_PORT Port Module */
 /*@{*/
 
 #define PORT_U2210
@@ -371,10 +371,10 @@ typedef struct {
 /** \brief PORT hardware registers */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
-       PortGroup                 Group[2];    /**< \brief Offset: 0x00 PortGroup groups [GROUPS] */
+       PortGroup                 Group[1];    /**< \brief Offset: 0x00 PortGroup groups [GROUPS] */
 } Port;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 /*@}*/
 
-#endif /* _SAMD21_PORT_COMPONENT_ */
+#endif /* _SAMD11_PORT_COMPONENT_ */

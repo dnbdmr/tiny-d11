@@ -27,13 +27,13 @@
  *
  */
 
-#ifndef _SAMD21_PAC_COMPONENT_
-#define _SAMD21_PAC_COMPONENT_
+#ifndef _SAMD11_PAC_COMPONENT_
+#define _SAMD11_PAC_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR PAC */
 /* ========================================================================== */
-/** \addtogroup SAMD21_PAC Peripheral Access Controller */
+/** \addtogroup SAMD11_PAC Peripheral Access Controller */
 /*@{*/
 
 #define PAC_U2211
@@ -87,4 +87,4 @@ typedef struct {
 
 /*@}*/
 
-#endif /* _SAMD21_PAC_COMPONENT_ */
+#endif /* _SAMD11_PAC_COMPONENT_ */

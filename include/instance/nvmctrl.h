@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _SAMD21_NVMCTRL_INSTANCE_
-#define _SAMD21_NVMCTRL_INSTANCE_
+#ifndef _SAMD11_NVMCTRL_INSTANCE_
+#define _SAMD11_NVMCTRL_INSTANCE_
 
 /* ========== Register definition for NVMCTRL peripheral ========== */
 #if (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -60,7 +60,7 @@
 #define NVMCTRL_AUX3_ADDRESS        0x0080A000
 #define NVMCTRL_CLK_AHB_ID          4        // Index of AHB Clock in PM.AHBMASK register
 #define NVMCTRL_FACTORY_WORD_IMPLEMENTED_MASK 0xC0000007FFFFFFFF
-#define NVMCTRL_FLASH_SIZE          262144  
+#define NVMCTRL_FLASH_SIZE          16384   
 #define NVMCTRL_LOCKBIT_ADDRESS     0x00802000
 #define NVMCTRL_PAGE_HW             32      
 #define NVMCTRL_PAGE_SIZE           64      
@@ -69,9 +69,8 @@
 #define NVMCTRL_PSZ_BITS            6       
 #define NVMCTRL_ROW_PAGES           4       
 #define NVMCTRL_ROW_SIZE            256     
-#define NVMCTRL_TEMP_LOG_ADDRESS    0x00806030
 #define NVMCTRL_USER_PAGE_ADDRESS   0x00800000
 #define NVMCTRL_USER_PAGE_OFFSET    0x00800000
 #define NVMCTRL_USER_WORD_IMPLEMENTED_MASK 0xC01FFFFFFFFFFFFF
 
-#endif /* _SAMD21_NVMCTRL_INSTANCE_ */
+#endif /* _SAMD11_NVMCTRL_INSTANCE_ */

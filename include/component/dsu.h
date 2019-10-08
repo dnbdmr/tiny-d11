@@ -27,17 +27,17 @@
  *
  */
 
-#ifndef _SAMD21_DSU_COMPONENT_
-#define _SAMD21_DSU_COMPONENT_
+#ifndef _SAMD11_DSU_COMPONENT_
+#define _SAMD11_DSU_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR DSU */
 /* ========================================================================== */
-/** \addtogroup SAMD21_DSU Device Service Unit */
+/** \addtogroup SAMD11_DSU Device Service Unit */
 /*@{*/
 
 #define DSU_U2209
-#define REV_DSU                     0x200
+#define REV_DSU                     0x211
 
 /* -------- DSU_CTRL : (DSU Offset: 0x0000) ( /W  8) Control -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -45,10 +45,12 @@ typedef union {
   struct {
     uint8_t  SWRST:1;          /*!< bit:      0  Software Reset                     */
     uint8_t  :1;               /*!< bit:      1  Reserved                           */
-    uint8_t  CRC:1;            /*!< bit:      2  32-bit Cyclic Redundancy Check     */
-    uint8_t  MBIST:1;          /*!< bit:      3  Memory Built-In Self-Test          */
-    uint8_t  CE:1;             /*!< bit:      4  Chip Erase                         */
-    uint8_t  :3;               /*!< bit:  5.. 7  Reserved                           */
+    uint8_t  CRC:1;            /*!< bit:      2  32-bit Cyclic Redundancy Code      */
+    uint8_t  MBIST:1;          /*!< bit:      3  Memory built-in self-test          */
+    uint8_t  CE:1;             /*!< bit:      4  Chip-Erase                         */
+    uint8_t  :1;               /*!< bit:      5  Reserved                           */
+    uint8_t  ARR:1;            /*!< bit:      6  Auxiliary Row Read                 */
+    uint8_t  SMSA:1;           /*!< bit:      7  Start Memory Stream Access         */
   } bit;                       /*!< Structure used for bit  access                  */
   uint8_t reg;                 /*!< Type      used for register access              */
 } DSU_CTRL_Type;
@@ -59,13 +61,17 @@ typedef union {
 
 #define DSU_CTRL_SWRST_Pos          0            /**< \brief (DSU_CTRL) Software Reset */
 #define DSU_CTRL_SWRST              (_U_(0x1) << DSU_CTRL_SWRST_Pos)
-#define DSU_CTRL_CRC_Pos            2            /**< \brief (DSU_CTRL) 32-bit Cyclic Redundancy Check */
+#define DSU_CTRL_CRC_Pos            2            /**< \brief (DSU_CTRL) 32-bit Cyclic Redundancy Code */
 #define DSU_CTRL_CRC                (_U_(0x1) << DSU_CTRL_CRC_Pos)
-#define DSU_CTRL_MBIST_Pos          3            /**< \brief (DSU_CTRL) Memory Built-In Self-Test */
+#define DSU_CTRL_MBIST_Pos          3            /**< \brief (DSU_CTRL) Memory built-in self-test */
 #define DSU_CTRL_MBIST              (_U_(0x1) << DSU_CTRL_MBIST_Pos)
-#define DSU_CTRL_CE_Pos             4            /**< \brief (DSU_CTRL) Chip Erase */
+#define DSU_CTRL_CE_Pos             4            /**< \brief (DSU_CTRL) Chip-Erase */
 #define DSU_CTRL_CE                 (_U_(0x1) << DSU_CTRL_CE_Pos)
-#define DSU_CTRL_MASK               _U_(0x1D)    /**< \brief (DSU_CTRL) MASK Register */
+#define DSU_CTRL_ARR_Pos            6            /**< \brief (DSU_CTRL) Auxiliary Row Read */
+#define DSU_CTRL_ARR                (_U_(0x1) << DSU_CTRL_ARR_Pos)
+#define DSU_CTRL_SMSA_Pos           7            /**< \brief (DSU_CTRL) Start Memory Stream Access */
+#define DSU_CTRL_SMSA               (_U_(0x1) << DSU_CTRL_SMSA_Pos)
+#define DSU_CTRL_MASK               _U_(0xDD)    /**< \brief (DSU_CTRL) MASK Register */
 
 /* -------- DSU_STATUSA : (DSU Offset: 0x0001) (R/W  8) Status A -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -118,7 +124,7 @@ typedef union {
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 #define DSU_STATUSB_OFFSET          0x0002       /**< \brief (DSU_STATUSB offset) Status B */
-#define DSU_STATUSB_RESETVALUE      _U_(0x10)    /**< \brief (DSU_STATUSB reset_value) Status B */
+#define DSU_STATUSB_RESETVALUE      _U_(0x00)    /**< \brief (DSU_STATUSB reset_value) Status B */
 
 #define DSU_STATUSB_PROT_Pos        0            /**< \brief (DSU_STATUSB) Protected */
 #define DSU_STATUSB_PROT            (_U_(0x1) << DSU_STATUSB_PROT_Pos)
@@ -139,7 +145,7 @@ typedef union {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef union {
   struct {
-    uint32_t :2;               /*!< bit:  0.. 1  Reserved                           */
+    uint32_t AMOD:2;           /*!< bit:  0.. 1  Access Mode                        */
     uint32_t ADDR:30;          /*!< bit:  2..31  Address                            */
   } bit;                       /*!< Structure used for bit  access                  */
   uint32_t reg;                /*!< Type      used for register access              */
@@ -149,10 +155,13 @@ typedef union {
 #define DSU_ADDR_OFFSET             0x0004       /**< \brief (DSU_ADDR offset) Address */
 #define DSU_ADDR_RESETVALUE         _U_(0x00000000) /**< \brief (DSU_ADDR reset_value) Address */
 
+#define DSU_ADDR_AMOD_Pos           0            /**< \brief (DSU_ADDR) Access Mode */
+#define DSU_ADDR_AMOD_Msk           (_U_(0x3) << DSU_ADDR_AMOD_Pos)
+#define DSU_ADDR_AMOD(value)        (DSU_ADDR_AMOD_Msk & ((value) << DSU_ADDR_AMOD_Pos))
 #define DSU_ADDR_ADDR_Pos           2            /**< \brief (DSU_ADDR) Address */
 #define DSU_ADDR_ADDR_Msk           (_U_(0x3FFFFFFF) << DSU_ADDR_ADDR_Pos)
 #define DSU_ADDR_ADDR(value)        (DSU_ADDR_ADDR_Msk & ((value) << DSU_ADDR_ADDR_Pos))
-#define DSU_ADDR_MASK               _U_(0xFFFFFFFC) /**< \brief (DSU_ADDR) MASK Register */
+#define DSU_ADDR_MASK               _U_(0xFFFFFFFF) /**< \brief (DSU_ADDR) MASK Register */
 
 /* -------- DSU_LENGTH : (DSU Offset: 0x0008) (R/W 32) Length -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -214,11 +223,11 @@ typedef union {
 typedef union {
   struct {
     uint32_t DEVSEL:8;         /*!< bit:  0.. 7  Device Select                      */
-    uint32_t REVISION:4;       /*!< bit:  8..11  Revision                           */
-    uint32_t DIE:4;            /*!< bit: 12..15  Die Identification                 */
-    uint32_t SERIES:6;         /*!< bit: 16..21  Product Series                     */
+    uint32_t REVISION:4;       /*!< bit:  8..11  Revision Number                    */
+    uint32_t DIE:4;            /*!< bit: 12..15  Die Number                         */
+    uint32_t SERIES:6;         /*!< bit: 16..21  Series                             */
     uint32_t :1;               /*!< bit:     22  Reserved                           */
-    uint32_t FAMILY:5;         /*!< bit: 23..27  Product Family                     */
+    uint32_t FAMILY:5;         /*!< bit: 23..27  Family                             */
     uint32_t PROCESSOR:4;      /*!< bit: 28..31  Processor                          */
   } bit;                       /*!< Structure used for bit  access                  */
   uint32_t reg;                /*!< Type      used for register access              */
@@ -230,24 +239,58 @@ typedef union {
 #define DSU_DID_DEVSEL_Pos          0            /**< \brief (DSU_DID) Device Select */
 #define DSU_DID_DEVSEL_Msk          (_U_(0xFF) << DSU_DID_DEVSEL_Pos)
 #define DSU_DID_DEVSEL(value)       (DSU_DID_DEVSEL_Msk & ((value) << DSU_DID_DEVSEL_Pos))
-#define DSU_DID_REVISION_Pos        8            /**< \brief (DSU_DID) Revision */
+#define DSU_DID_REVISION_Pos        8            /**< \brief (DSU_DID) Revision Number */
 #define DSU_DID_REVISION_Msk        (_U_(0xF) << DSU_DID_REVISION_Pos)
 #define DSU_DID_REVISION(value)     (DSU_DID_REVISION_Msk & ((value) << DSU_DID_REVISION_Pos))
-#define DSU_DID_DIE_Pos             12           /**< \brief (DSU_DID) Die Identification */
+#define DSU_DID_DIE_Pos             12           /**< \brief (DSU_DID) Die Number */
 #define DSU_DID_DIE_Msk             (_U_(0xF) << DSU_DID_DIE_Pos)
 #define DSU_DID_DIE(value)          (DSU_DID_DIE_Msk & ((value) << DSU_DID_DIE_Pos))
-#define DSU_DID_SERIES_Pos          16           /**< \brief (DSU_DID) Product Series */
+#define DSU_DID_SERIES_Pos          16           /**< \brief (DSU_DID) Series */
 #define DSU_DID_SERIES_Msk          (_U_(0x3F) << DSU_DID_SERIES_Pos)
 #define DSU_DID_SERIES(value)       (DSU_DID_SERIES_Msk & ((value) << DSU_DID_SERIES_Pos))
-#define DSU_DID_FAMILY_Pos          23           /**< \brief (DSU_DID) Product Family */
+#define   DSU_DID_SERIES_0_Val            _U_(0x0)   /**< \brief (DSU_DID) Cortex-M0+ processor, basic feature set */
+#define   DSU_DID_SERIES_1_Val            _U_(0x1)   /**< \brief (DSU_DID) Cortex-M0+ processor, USB */
+#define DSU_DID_SERIES_0            (DSU_DID_SERIES_0_Val          << DSU_DID_SERIES_Pos)
+#define DSU_DID_SERIES_1            (DSU_DID_SERIES_1_Val          << DSU_DID_SERIES_Pos)
+#define DSU_DID_FAMILY_Pos          23           /**< \brief (DSU_DID) Family */
 #define DSU_DID_FAMILY_Msk          (_U_(0x1F) << DSU_DID_FAMILY_Pos)
 #define DSU_DID_FAMILY(value)       (DSU_DID_FAMILY_Msk & ((value) << DSU_DID_FAMILY_Pos))
+#define   DSU_DID_FAMILY_0_Val            _U_(0x0)   /**< \brief (DSU_DID) General purpose microcontroller */
+#define   DSU_DID_FAMILY_1_Val            _U_(0x1)   /**< \brief (DSU_DID) PicoPower */
+#define DSU_DID_FAMILY_0            (DSU_DID_FAMILY_0_Val          << DSU_DID_FAMILY_Pos)
+#define DSU_DID_FAMILY_1            (DSU_DID_FAMILY_1_Val          << DSU_DID_FAMILY_Pos)
 #define DSU_DID_PROCESSOR_Pos       28           /**< \brief (DSU_DID) Processor */
 #define DSU_DID_PROCESSOR_Msk       (_U_(0xF) << DSU_DID_PROCESSOR_Pos)
 #define DSU_DID_PROCESSOR(value)    (DSU_DID_PROCESSOR_Msk & ((value) << DSU_DID_PROCESSOR_Pos))
+#define   DSU_DID_PROCESSOR_0_Val         _U_(0x0)   /**< \brief (DSU_DID) Cortex-M0 */
+#define   DSU_DID_PROCESSOR_1_Val         _U_(0x1)   /**< \brief (DSU_DID) Cortex-M0+ */
+#define   DSU_DID_PROCESSOR_2_Val         _U_(0x2)   /**< \brief (DSU_DID) Cortex-M3 */
+#define   DSU_DID_PROCESSOR_3_Val         _U_(0x3)   /**< \brief (DSU_DID) Cortex-M4 */
+#define DSU_DID_PROCESSOR_0         (DSU_DID_PROCESSOR_0_Val       << DSU_DID_PROCESSOR_Pos)
+#define DSU_DID_PROCESSOR_1         (DSU_DID_PROCESSOR_1_Val       << DSU_DID_PROCESSOR_Pos)
+#define DSU_DID_PROCESSOR_2         (DSU_DID_PROCESSOR_2_Val       << DSU_DID_PROCESSOR_Pos)
+#define DSU_DID_PROCESSOR_3         (DSU_DID_PROCESSOR_3_Val       << DSU_DID_PROCESSOR_Pos)
 #define DSU_DID_MASK                _U_(0xFFBFFFFF) /**< \brief (DSU_DID) MASK Register */
 
-/* -------- DSU_ENTRY : (DSU Offset: 0x1000) (R/  32) CoreSight ROM Table Entry 0 -------- */
+/* -------- DSU_DCFG : (DSU Offset: 0x00F0) (R/W 32) Device Configuration -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t DCFG:32;          /*!< bit:  0..31  Device Configuration               */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} DSU_DCFG_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
+#define DSU_DCFG_OFFSET             0x00F0       /**< \brief (DSU_DCFG offset) Device Configuration */
+#define DSU_DCFG_RESETVALUE         _U_(0x00000000) /**< \brief (DSU_DCFG reset_value) Device Configuration */
+
+#define DSU_DCFG_DCFG_Pos           0            /**< \brief (DSU_DCFG) Device Configuration */
+#define DSU_DCFG_DCFG_Msk           (_U_(0xFFFFFFFF) << DSU_DCFG_DCFG_Pos)
+#define DSU_DCFG_DCFG(value)        (DSU_DCFG_DCFG_Msk & ((value) << DSU_DCFG_DCFG_Pos))
+#define DSU_DCFG_MASK               _U_(0xFFFFFFFF) /**< \brief (DSU_DCFG) MASK Register */
+
+/* -------- DSU_ENTRY0 : (DSU Offset: 0x1000) (R/  32) CoreSight ROM Table Entry 0 -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef union {
   struct {
@@ -257,20 +300,20 @@ typedef union {
     uint32_t ADDOFF:20;        /*!< bit: 12..31  Address Offset                     */
   } bit;                       /*!< Structure used for bit  access                  */
   uint32_t reg;                /*!< Type      used for register access              */
-} DSU_ENTRY_Type;
+} DSU_ENTRY0_Type;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
-#define DSU_ENTRY_OFFSET            0x1000       /**< \brief (DSU_ENTRY offset) CoreSight ROM Table Entry 0 */
-#define DSU_ENTRY_RESETVALUE        _U_(0x9F9FC002) /**< \brief (DSU_ENTRY reset_value) CoreSight ROM Table Entry 0 */
+#define DSU_ENTRY0_OFFSET           0x1000       /**< \brief (DSU_ENTRY0 offset) CoreSight ROM Table Entry 0 */
+#define DSU_ENTRY0_RESETVALUE       _U_(0x9F0FC002) /**< \brief (DSU_ENTRY0 reset_value) CoreSight ROM Table Entry 0 */
 
-#define DSU_ENTRY_EPRES_Pos         0            /**< \brief (DSU_ENTRY) Entry Present */
-#define DSU_ENTRY_EPRES             (_U_(0x1) << DSU_ENTRY_EPRES_Pos)
-#define DSU_ENTRY_FMT_Pos           1            /**< \brief (DSU_ENTRY) Format */
-#define DSU_ENTRY_FMT               (_U_(0x1) << DSU_ENTRY_FMT_Pos)
-#define DSU_ENTRY_ADDOFF_Pos        12           /**< \brief (DSU_ENTRY) Address Offset */
-#define DSU_ENTRY_ADDOFF_Msk        (_U_(0xFFFFF) << DSU_ENTRY_ADDOFF_Pos)
-#define DSU_ENTRY_ADDOFF(value)     (DSU_ENTRY_ADDOFF_Msk & ((value) << DSU_ENTRY_ADDOFF_Pos))
-#define DSU_ENTRY_MASK              _U_(0xFFFFF003) /**< \brief (DSU_ENTRY) MASK Register */
+#define DSU_ENTRY0_EPRES_Pos        0            /**< \brief (DSU_ENTRY0) Entry Present */
+#define DSU_ENTRY0_EPRES            (_U_(0x1) << DSU_ENTRY0_EPRES_Pos)
+#define DSU_ENTRY0_FMT_Pos          1            /**< \brief (DSU_ENTRY0) Format */
+#define DSU_ENTRY0_FMT              (_U_(0x1) << DSU_ENTRY0_FMT_Pos)
+#define DSU_ENTRY0_ADDOFF_Pos       12           /**< \brief (DSU_ENTRY0) Address Offset */
+#define DSU_ENTRY0_ADDOFF_Msk       (_U_(0xFFFFF) << DSU_ENTRY0_ADDOFF_Pos)
+#define DSU_ENTRY0_ADDOFF(value)    (DSU_ENTRY0_ADDOFF_Msk & ((value) << DSU_ENTRY0_ADDOFF_Pos))
+#define DSU_ENTRY0_MASK             _U_(0xFFFFF003) /**< \brief (DSU_ENTRY0) MASK Register */
 
 /* -------- DSU_ENTRY1 : (DSU Offset: 0x1004) (R/  32) CoreSight ROM Table Entry 1 -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -324,7 +367,7 @@ typedef union {
 typedef union {
   struct {
     uint32_t JEPCC:4;          /*!< bit:  0.. 3  JEP-106 Continuation Code          */
-    uint32_t FKBC:4;           /*!< bit:  4.. 7  4KB Count                          */
+    uint32_t FKBC:4;           /*!< bit:  4.. 7  4KB count                          */
     uint32_t :24;              /*!< bit:  8..31  Reserved                           */
   } bit;                       /*!< Structure used for bit  access                  */
   uint32_t reg;                /*!< Type      used for register access              */
@@ -337,10 +380,43 @@ typedef union {
 #define DSU_PID4_JEPCC_Pos          0            /**< \brief (DSU_PID4) JEP-106 Continuation Code */
 #define DSU_PID4_JEPCC_Msk          (_U_(0xF) << DSU_PID4_JEPCC_Pos)
 #define DSU_PID4_JEPCC(value)       (DSU_PID4_JEPCC_Msk & ((value) << DSU_PID4_JEPCC_Pos))
-#define DSU_PID4_FKBC_Pos           4            /**< \brief (DSU_PID4) 4KB Count */
+#define DSU_PID4_FKBC_Pos           4            /**< \brief (DSU_PID4) 4KB count */
 #define DSU_PID4_FKBC_Msk           (_U_(0xF) << DSU_PID4_FKBC_Pos)
 #define DSU_PID4_FKBC(value)        (DSU_PID4_FKBC_Msk & ((value) << DSU_PID4_FKBC_Pos))
 #define DSU_PID4_MASK               _U_(0x000000FF) /**< \brief (DSU_PID4) MASK Register */
+
+/* -------- DSU_PID5 : (DSU Offset: 0x1FD4) (R/  32) Peripheral Identification 5 -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  uint32_t reg;                /*!< Type      used for register access              */
+} DSU_PID5_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
+#define DSU_PID5_OFFSET             0x1FD4       /**< \brief (DSU_PID5 offset) Peripheral Identification 5 */
+#define DSU_PID5_RESETVALUE         _U_(0x00000000) /**< \brief (DSU_PID5 reset_value) Peripheral Identification 5 */
+#define DSU_PID5_MASK               _U_(0x00000000) /**< \brief (DSU_PID5) MASK Register */
+
+/* -------- DSU_PID6 : (DSU Offset: 0x1FD8) (R/  32) Peripheral Identification 6 -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  uint32_t reg;                /*!< Type      used for register access              */
+} DSU_PID6_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
+#define DSU_PID6_OFFSET             0x1FD8       /**< \brief (DSU_PID6 offset) Peripheral Identification 6 */
+#define DSU_PID6_RESETVALUE         _U_(0x00000000) /**< \brief (DSU_PID6 reset_value) Peripheral Identification 6 */
+#define DSU_PID6_MASK               _U_(0x00000000) /**< \brief (DSU_PID6) MASK Register */
+
+/* -------- DSU_PID7 : (DSU Offset: 0x1FDC) (R/  32) Peripheral Identification 7 -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  uint32_t reg;                /*!< Type      used for register access              */
+} DSU_PID7_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
+#define DSU_PID7_OFFSET             0x1FDC       /**< \brief (DSU_PID7 offset) Peripheral Identification 7 */
+#define DSU_PID7_RESETVALUE         _U_(0x00000000) /**< \brief (DSU_PID7 reset_value) Peripheral Identification 7 */
+#define DSU_PID7_MASK               _U_(0x00000000) /**< \brief (DSU_PID7) MASK Register */
 
 /* -------- DSU_PID0 : (DSU Offset: 0x1FE0) (R/  32) Peripheral Identification 0 -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -525,14 +601,18 @@ typedef struct {
   __IO DSU_DATA_Type             DATA;        /**< \brief Offset: 0x000C (R/W 32) Data */
   __IO DSU_DCC_Type              DCC[2];      /**< \brief Offset: 0x0010 (R/W 32) Debug Communication Channel n */
   __I  DSU_DID_Type              DID;         /**< \brief Offset: 0x0018 (R/  32) Device Identification */
-       RoReg8                    Reserved2[0xFE4];
-  __I  DSU_ENTRY_Type            ENTRY;       /**< \brief Offset: 0x1000 (R/  32) CoreSight ROM Table Entry 0 */
+       RoReg8                    Reserved2[0xD4];
+  __IO DSU_DCFG_Type             DCFG[2];     /**< \brief Offset: 0x00F0 (R/W 32) Device Configuration */
+       RoReg8                    Reserved3[0xF08];
+  __I  DSU_ENTRY0_Type           ENTRY0;      /**< \brief Offset: 0x1000 (R/  32) CoreSight ROM Table Entry 0 */
   __I  DSU_ENTRY1_Type           ENTRY1;      /**< \brief Offset: 0x1004 (R/  32) CoreSight ROM Table Entry 1 */
   __I  DSU_END_Type              END;         /**< \brief Offset: 0x1008 (R/  32) CoreSight ROM Table End */
-       RoReg8                    Reserved3[0xFC0];
+       RoReg8                    Reserved4[0xFC0];
   __I  DSU_MEMTYPE_Type          MEMTYPE;     /**< \brief Offset: 0x1FCC (R/  32) CoreSight ROM Table Memory Type */
   __I  DSU_PID4_Type             PID4;        /**< \brief Offset: 0x1FD0 (R/  32) Peripheral Identification 4 */
-       RoReg8                    Reserved4[0xC];
+  __I  DSU_PID5_Type             PID5;        /**< \brief Offset: 0x1FD4 (R/  32) Peripheral Identification 5 */
+  __I  DSU_PID6_Type             PID6;        /**< \brief Offset: 0x1FD8 (R/  32) Peripheral Identification 6 */
+  __I  DSU_PID7_Type             PID7;        /**< \brief Offset: 0x1FDC (R/  32) Peripheral Identification 7 */
   __I  DSU_PID0_Type             PID0;        /**< \brief Offset: 0x1FE0 (R/  32) Peripheral Identification 0 */
   __I  DSU_PID1_Type             PID1;        /**< \brief Offset: 0x1FE4 (R/  32) Peripheral Identification 1 */
   __I  DSU_PID2_Type             PID2;        /**< \brief Offset: 0x1FE8 (R/  32) Peripheral Identification 2 */
@@ -546,4 +626,4 @@ typedef struct {
 
 /*@}*/
 
-#endif /* _SAMD21_DSU_COMPONENT_ */
+#endif /* _SAMD11_DSU_COMPONENT_ */

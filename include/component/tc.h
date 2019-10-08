@@ -27,17 +27,17 @@
  *
  */
 
-#ifndef _SAMD21_TC_COMPONENT_
-#define _SAMD21_TC_COMPONENT_
+#ifndef _SAMD11_TC_COMPONENT_
+#define _SAMD11_TC_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR TC */
 /* ========================================================================== */
-/** \addtogroup SAMD21_TC Basic Timer Counter */
+/** \addtogroup SAMD11_TC Basic Timer Counter */
 /*@{*/
 
 #define TC_U2212
-#define REV_TC                      0x121
+#define REV_TC                      0x140
 
 /* -------- TC_CTRLA : (TC Offset: 0x00) (R/W 16) Control A -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -667,4 +667,4 @@ typedef union {
 
 /*@}*/
 
-#endif /* _SAMD21_TC_COMPONENT_ */
+#endif /* _SAMD11_TC_COMPONENT_ */

@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _SAMD21_SERCOM2_INSTANCE_
-#define _SAMD21_SERCOM2_INSTANCE_
+#ifndef _SAMD11_SERCOM2_INSTANCE_
+#define _SAMD11_SERCOM2_INSTANCE_
 
 /* ========== Register definition for SERCOM2 peripheral ========== */
 #if (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -122,8 +122,8 @@
 /* ========== Instance parameters for SERCOM2 peripheral ========== */
 #define SERCOM2_DMAC_ID_RX          5        // Index of DMA RX trigger
 #define SERCOM2_DMAC_ID_TX          6        // Index of DMA TX trigger
-#define SERCOM2_GCLK_ID_CORE        22       // Index of Generic Clock for Core
-#define SERCOM2_GCLK_ID_SLOW        19       // Index of Generic Clock for SMbus timeout
+#define SERCOM2_GCLK_ID_CORE        16       // Index of Generic Clock for Core
+#define SERCOM2_GCLK_ID_SLOW        13       // Index of Generic Clock for SMbus Timeout
 #define SERCOM2_INT_MSB             6       
 
-#endif /* _SAMD21_SERCOM2_INSTANCE_ */
+#endif /* _SAMD11_SERCOM2_INSTANCE_ */

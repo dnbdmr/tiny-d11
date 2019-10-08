@@ -27,13 +27,13 @@
  *
  */
 
-#ifndef _SAMD21_SERCOM_COMPONENT_
-#define _SAMD21_SERCOM_COMPONENT_
+#ifndef _SAMD11_SERCOM_COMPONENT_
+#define _SAMD11_SERCOM_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR SERCOM */
 /* ========================================================================== */
-/** \addtogroup SAMD21_SERCOM Serial Communication Interface */
+/** \addtogroup SAMD11_SERCOM Serial Communication Interface */
 /*@{*/
 
 #define SERCOM_U2201
@@ -1491,4 +1491,4 @@ typedef union {
 
 /*@}*/
 
-#endif /* _SAMD21_SERCOM_COMPONENT_ */
+#endif /* _SAMD11_SERCOM_COMPONENT_ */

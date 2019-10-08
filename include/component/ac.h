@@ -27,13 +27,13 @@
  *
  */
 
-#ifndef _SAMD21_AC_COMPONENT_
-#define _SAMD21_AC_COMPONENT_
+#ifndef _SAMD11_AC_COMPONENT_
+#define _SAMD11_AC_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR AC */
 /* ========================================================================== */
-/** \addtogroup SAMD21_AC Analog Comparators */
+/** \addtogroup SAMD11_AC Analog Comparators */
 /*@{*/
 
 #define AC_U2205
@@ -542,4 +542,4 @@ typedef struct {
 
 /*@}*/
 
-#endif /* _SAMD21_AC_COMPONENT_ */
+#endif /* _SAMD11_AC_COMPONENT_ */

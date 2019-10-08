@@ -27,13 +27,13 @@
  *
  */
 
-#ifndef _SAMD21_RTC_COMPONENT_
-#define _SAMD21_RTC_COMPONENT_
+#ifndef _SAMD11_RTC_COMPONENT_
+#define _SAMD11_RTC_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR RTC */
 /* ========================================================================== */
-/** \addtogroup SAMD21_RTC Real-Time Counter */
+/** \addtogroup SAMD11_RTC Real-Time Counter */
 /*@{*/
 
 #define RTC_U2202
@@ -1051,4 +1051,4 @@ typedef union {
 
 /*@}*/
 
-#endif /* _SAMD21_RTC_COMPONENT_ */
+#endif /* _SAMD11_RTC_COMPONENT_ */

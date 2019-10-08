@@ -27,13 +27,13 @@
  *
  */
 
-#ifndef _SAMD21_DAC_COMPONENT_
-#define _SAMD21_DAC_COMPONENT_
+#ifndef _SAMD11_DAC_COMPONENT_
+#define _SAMD11_DAC_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR DAC */
 /* ========================================================================== */
-/** \addtogroup SAMD21_DAC Digital Analog Converter */
+/** \addtogroup SAMD11_DAC Digital Analog Converter */
 /*@{*/
 
 #define DAC_U2214
@@ -269,4 +269,4 @@ typedef struct {
 
 /*@}*/
 
-#endif /* _SAMD21_DAC_COMPONENT_ */
+#endif /* _SAMD11_DAC_COMPONENT_ */

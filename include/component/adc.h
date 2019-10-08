@@ -27,13 +27,13 @@
  *
  */
 
-#ifndef _SAMD21_ADC_COMPONENT_
-#define _SAMD21_ADC_COMPONENT_
+#ifndef _SAMD11_ADC_COMPONENT_
+#define _SAMD11_ADC_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR ADC */
 /* ========================================================================== */
-/** \addtogroup SAMD21_ADC Analog Digital Converter */
+/** \addtogroup SAMD11_ADC Analog Digital Converter */
 /*@{*/
 
 #define ADC_U2204
@@ -682,4 +682,4 @@ typedef struct {
 
 /*@}*/
 
-#endif /* _SAMD21_ADC_COMPONENT_ */
+#endif /* _SAMD11_ADC_COMPONENT_ */

@@ -27,13 +27,13 @@
  *
  */
 
-#ifndef _SAMD21_GCLK_COMPONENT_
-#define _SAMD21_GCLK_COMPONENT_
+#ifndef _SAMD11_GCLK_COMPONENT_
+#define _SAMD11_GCLK_COMPONENT_
 
 /* ========================================================================== */
 /**  SOFTWARE API DEFINITION FOR GCLK */
 /* ========================================================================== */
-/** \addtogroup SAMD21_GCLK Generic Clock Generator */
+/** \addtogroup SAMD11_GCLK Generic Clock Generator */
 /*@{*/
 
 #define GCLK_U2102
@@ -109,30 +109,17 @@ typedef union {
 #define   GCLK_CLKCTRL_ID_EVSYS_3_Val     _U_(0xA)   /**< \brief (GCLK_CLKCTRL) EVSYS_3 */
 #define   GCLK_CLKCTRL_ID_EVSYS_4_Val     _U_(0xB)   /**< \brief (GCLK_CLKCTRL) EVSYS_4 */
 #define   GCLK_CLKCTRL_ID_EVSYS_5_Val     _U_(0xC)   /**< \brief (GCLK_CLKCTRL) EVSYS_5 */
-#define   GCLK_CLKCTRL_ID_EVSYS_6_Val     _U_(0xD)   /**< \brief (GCLK_CLKCTRL) EVSYS_6 */
-#define   GCLK_CLKCTRL_ID_EVSYS_7_Val     _U_(0xE)   /**< \brief (GCLK_CLKCTRL) EVSYS_7 */
-#define   GCLK_CLKCTRL_ID_EVSYS_8_Val     _U_(0xF)   /**< \brief (GCLK_CLKCTRL) EVSYS_8 */
-#define   GCLK_CLKCTRL_ID_EVSYS_9_Val     _U_(0x10)   /**< \brief (GCLK_CLKCTRL) EVSYS_9 */
-#define   GCLK_CLKCTRL_ID_EVSYS_10_Val    _U_(0x11)   /**< \brief (GCLK_CLKCTRL) EVSYS_10 */
-#define   GCLK_CLKCTRL_ID_EVSYS_11_Val    _U_(0x12)   /**< \brief (GCLK_CLKCTRL) EVSYS_11 */
-#define   GCLK_CLKCTRL_ID_SERCOMX_SLOW_Val _U_(0x13)   /**< \brief (GCLK_CLKCTRL) SERCOMX_SLOW */
-#define   GCLK_CLKCTRL_ID_SERCOM0_CORE_Val _U_(0x14)   /**< \brief (GCLK_CLKCTRL) SERCOM0_CORE */
-#define   GCLK_CLKCTRL_ID_SERCOM1_CORE_Val _U_(0x15)   /**< \brief (GCLK_CLKCTRL) SERCOM1_CORE */
-#define   GCLK_CLKCTRL_ID_SERCOM2_CORE_Val _U_(0x16)   /**< \brief (GCLK_CLKCTRL) SERCOM2_CORE */
-#define   GCLK_CLKCTRL_ID_SERCOM3_CORE_Val _U_(0x17)   /**< \brief (GCLK_CLKCTRL) SERCOM3_CORE */
-#define   GCLK_CLKCTRL_ID_SERCOM4_CORE_Val _U_(0x18)   /**< \brief (GCLK_CLKCTRL) SERCOM4_CORE */
-#define   GCLK_CLKCTRL_ID_SERCOM5_CORE_Val _U_(0x19)   /**< \brief (GCLK_CLKCTRL) SERCOM5_CORE */
-#define   GCLK_CLKCTRL_ID_TCC0_TCC1_Val   _U_(0x1A)   /**< \brief (GCLK_CLKCTRL) TCC0_TCC1 */
-#define   GCLK_CLKCTRL_ID_TCC2_TC3_Val    _U_(0x1B)   /**< \brief (GCLK_CLKCTRL) TCC2_TC3 */
-#define   GCLK_CLKCTRL_ID_TC4_TC5_Val     _U_(0x1C)   /**< \brief (GCLK_CLKCTRL) TC4_TC5 */
-#define   GCLK_CLKCTRL_ID_TC6_TC7_Val     _U_(0x1D)   /**< \brief (GCLK_CLKCTRL) TC6_TC7 */
-#define   GCLK_CLKCTRL_ID_ADC_Val         _U_(0x1E)   /**< \brief (GCLK_CLKCTRL) ADC */
-#define   GCLK_CLKCTRL_ID_AC_DIG_Val      _U_(0x1F)   /**< \brief (GCLK_CLKCTRL) AC_DIG */
-#define   GCLK_CLKCTRL_ID_AC_ANA_Val      _U_(0x20)   /**< \brief (GCLK_CLKCTRL) AC_ANA */
-#define   GCLK_CLKCTRL_ID_DAC_Val         _U_(0x21)   /**< \brief (GCLK_CLKCTRL) DAC */
-#define   GCLK_CLKCTRL_ID_PTC_Val         _U_(0x22)   /**< \brief (GCLK_CLKCTRL) PTC */
-#define   GCLK_CLKCTRL_ID_I2S_0_Val       _U_(0x23)   /**< \brief (GCLK_CLKCTRL) I2S_0 */
-#define   GCLK_CLKCTRL_ID_I2S_1_Val       _U_(0x24)   /**< \brief (GCLK_CLKCTRL) I2S_1 */
+#define   GCLK_CLKCTRL_ID_SERCOMX_SLOW_Val _U_(0xD)   /**< \brief (GCLK_CLKCTRL) SERCOMX_SLOW */
+#define   GCLK_CLKCTRL_ID_SERCOM0_CORE_Val _U_(0xE)   /**< \brief (GCLK_CLKCTRL) SERCOM0_CORE */
+#define   GCLK_CLKCTRL_ID_SERCOM1_CORE_Val _U_(0xF)   /**< \brief (GCLK_CLKCTRL) SERCOM1_CORE */
+#define   GCLK_CLKCTRL_ID_SERCOM2_CORE_Val _U_(0x10)   /**< \brief (GCLK_CLKCTRL) SERCOM2_CORE */
+#define   GCLK_CLKCTRL_ID_TCC0_Val        _U_(0x11)   /**< \brief (GCLK_CLKCTRL) TCC0 */
+#define   GCLK_CLKCTRL_ID_TC1_TC2_Val     _U_(0x12)   /**< \brief (GCLK_CLKCTRL) TC1_TC2 */
+#define   GCLK_CLKCTRL_ID_ADC_Val         _U_(0x13)   /**< \brief (GCLK_CLKCTRL) ADC */
+#define   GCLK_CLKCTRL_ID_AC_DIG_Val      _U_(0x14)   /**< \brief (GCLK_CLKCTRL) AC_DIG */
+#define   GCLK_CLKCTRL_ID_AC_ANA_Val      _U_(0x15)   /**< \brief (GCLK_CLKCTRL) AC_ANA */
+#define   GCLK_CLKCTRL_ID_DAC_Val         _U_(0x16)   /**< \brief (GCLK_CLKCTRL) DAC */
+#define   GCLK_CLKCTRL_ID_PTC_Val         _U_(0x17)   /**< \brief (GCLK_CLKCTRL) PTC */
 #define GCLK_CLKCTRL_ID_DFLL48      (GCLK_CLKCTRL_ID_DFLL48_Val    << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_FDPLL       (GCLK_CLKCTRL_ID_FDPLL_Val     << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_FDPLL32K    (GCLK_CLKCTRL_ID_FDPLL32K_Val  << GCLK_CLKCTRL_ID_Pos)
@@ -146,30 +133,17 @@ typedef union {
 #define GCLK_CLKCTRL_ID_EVSYS_3     (GCLK_CLKCTRL_ID_EVSYS_3_Val   << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_EVSYS_4     (GCLK_CLKCTRL_ID_EVSYS_4_Val   << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_EVSYS_5     (GCLK_CLKCTRL_ID_EVSYS_5_Val   << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_EVSYS_6     (GCLK_CLKCTRL_ID_EVSYS_6_Val   << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_EVSYS_7     (GCLK_CLKCTRL_ID_EVSYS_7_Val   << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_EVSYS_8     (GCLK_CLKCTRL_ID_EVSYS_8_Val   << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_EVSYS_9     (GCLK_CLKCTRL_ID_EVSYS_9_Val   << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_EVSYS_10    (GCLK_CLKCTRL_ID_EVSYS_10_Val  << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_EVSYS_11    (GCLK_CLKCTRL_ID_EVSYS_11_Val  << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_SERCOMX_SLOW (GCLK_CLKCTRL_ID_SERCOMX_SLOW_Val << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_SERCOM0_CORE (GCLK_CLKCTRL_ID_SERCOM0_CORE_Val << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_SERCOM1_CORE (GCLK_CLKCTRL_ID_SERCOM1_CORE_Val << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_SERCOM2_CORE (GCLK_CLKCTRL_ID_SERCOM2_CORE_Val << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_SERCOM3_CORE (GCLK_CLKCTRL_ID_SERCOM3_CORE_Val << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_SERCOM4_CORE (GCLK_CLKCTRL_ID_SERCOM4_CORE_Val << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_SERCOM5_CORE (GCLK_CLKCTRL_ID_SERCOM5_CORE_Val << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_TCC0_TCC1   (GCLK_CLKCTRL_ID_TCC0_TCC1_Val << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_TCC2_TC3    (GCLK_CLKCTRL_ID_TCC2_TC3_Val  << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_TC4_TC5     (GCLK_CLKCTRL_ID_TC4_TC5_Val   << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_TC6_TC7     (GCLK_CLKCTRL_ID_TC6_TC7_Val   << GCLK_CLKCTRL_ID_Pos)
+#define GCLK_CLKCTRL_ID_TCC0        (GCLK_CLKCTRL_ID_TCC0_Val      << GCLK_CLKCTRL_ID_Pos)
+#define GCLK_CLKCTRL_ID_TC1_TC2     (GCLK_CLKCTRL_ID_TC1_TC2_Val   << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_ADC         (GCLK_CLKCTRL_ID_ADC_Val       << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_AC_DIG      (GCLK_CLKCTRL_ID_AC_DIG_Val    << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_AC_ANA      (GCLK_CLKCTRL_ID_AC_ANA_Val    << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_DAC         (GCLK_CLKCTRL_ID_DAC_Val       << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_ID_PTC         (GCLK_CLKCTRL_ID_PTC_Val       << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_I2S_0       (GCLK_CLKCTRL_ID_I2S_0_Val     << GCLK_CLKCTRL_ID_Pos)
-#define GCLK_CLKCTRL_ID_I2S_1       (GCLK_CLKCTRL_ID_I2S_1_Val     << GCLK_CLKCTRL_ID_Pos)
 #define GCLK_CLKCTRL_GEN_Pos        8            /**< \brief (GCLK_CLKCTRL) Generic Clock Generator */
 #define GCLK_CLKCTRL_GEN_Msk        (_U_(0xF) << GCLK_CLKCTRL_GEN_Pos)
 #define GCLK_CLKCTRL_GEN(value)     (GCLK_CLKCTRL_GEN_Msk & ((value) << GCLK_CLKCTRL_GEN_Pos))
@@ -179,18 +153,12 @@ typedef union {
 #define   GCLK_CLKCTRL_GEN_GCLK3_Val      _U_(0x3)   /**< \brief (GCLK_CLKCTRL) Generic clock generator 3 */
 #define   GCLK_CLKCTRL_GEN_GCLK4_Val      _U_(0x4)   /**< \brief (GCLK_CLKCTRL) Generic clock generator 4 */
 #define   GCLK_CLKCTRL_GEN_GCLK5_Val      _U_(0x5)   /**< \brief (GCLK_CLKCTRL) Generic clock generator 5 */
-#define   GCLK_CLKCTRL_GEN_GCLK6_Val      _U_(0x6)   /**< \brief (GCLK_CLKCTRL) Generic clock generator 6 */
-#define   GCLK_CLKCTRL_GEN_GCLK7_Val      _U_(0x7)   /**< \brief (GCLK_CLKCTRL) Generic clock generator 7 */
-#define   GCLK_CLKCTRL_GEN_GCLK8_Val      _U_(0x8)   /**< \brief (GCLK_CLKCTRL) Generic clock generator 8 */
 #define GCLK_CLKCTRL_GEN_GCLK0      (GCLK_CLKCTRL_GEN_GCLK0_Val    << GCLK_CLKCTRL_GEN_Pos)
 #define GCLK_CLKCTRL_GEN_GCLK1      (GCLK_CLKCTRL_GEN_GCLK1_Val    << GCLK_CLKCTRL_GEN_Pos)
 #define GCLK_CLKCTRL_GEN_GCLK2      (GCLK_CLKCTRL_GEN_GCLK2_Val    << GCLK_CLKCTRL_GEN_Pos)
 #define GCLK_CLKCTRL_GEN_GCLK3      (GCLK_CLKCTRL_GEN_GCLK3_Val    << GCLK_CLKCTRL_GEN_Pos)
 #define GCLK_CLKCTRL_GEN_GCLK4      (GCLK_CLKCTRL_GEN_GCLK4_Val    << GCLK_CLKCTRL_GEN_Pos)
 #define GCLK_CLKCTRL_GEN_GCLK5      (GCLK_CLKCTRL_GEN_GCLK5_Val    << GCLK_CLKCTRL_GEN_Pos)
-#define GCLK_CLKCTRL_GEN_GCLK6      (GCLK_CLKCTRL_GEN_GCLK6_Val    << GCLK_CLKCTRL_GEN_Pos)
-#define GCLK_CLKCTRL_GEN_GCLK7      (GCLK_CLKCTRL_GEN_GCLK7_Val    << GCLK_CLKCTRL_GEN_Pos)
-#define GCLK_CLKCTRL_GEN_GCLK8      (GCLK_CLKCTRL_GEN_GCLK8_Val    << GCLK_CLKCTRL_GEN_Pos)
 #define GCLK_CLKCTRL_CLKEN_Pos      14           /**< \brief (GCLK_CLKCTRL) Clock Enable */
 #define GCLK_CLKCTRL_CLKEN          (_U_(0x1) << GCLK_CLKCTRL_CLKEN_Pos)
 #define GCLK_CLKCTRL_WRTLOCK_Pos    15           /**< \brief (GCLK_CLKCTRL) Write Lock */
@@ -295,4 +263,4 @@ typedef struct {
 
 /*@}*/
 
-#endif /* _SAMD21_GCLK_COMPONENT_ */
+#endif /* _SAMD11_GCLK_COMPONENT_ */

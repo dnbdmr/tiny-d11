@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _SAMD21_USB_INSTANCE_
-#define _SAMD21_USB_INSTANCE_
+#ifndef _SAMD11_USB_INSTANCE_
+#define _SAMD11_USB_INSTANCE_
 
 /* ========== Register definition for USB peripheral ========== */
 #if (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -102,79 +102,6 @@
 #define REG_USB_DEVICE_ENDPOINT_EPINTFLAG7 (0x410051E7) /**< \brief (USB) DEVICE_ENDPOINT End Point Interrupt Flag 7 */
 #define REG_USB_DEVICE_ENDPOINT_EPINTENCLR7 (0x410051E8) /**< \brief (USB) DEVICE_ENDPOINT End Point Interrupt Clear Flag 7 */
 #define REG_USB_DEVICE_ENDPOINT_EPINTENSET7 (0x410051E9) /**< \brief (USB) DEVICE_ENDPOINT End Point Interrupt Set Flag 7 */
-#define REG_USB_HOST_CTRLB         (0x41005008) /**< \brief (USB) HOST Control B */
-#define REG_USB_HOST_HSOFC         (0x4100500A) /**< \brief (USB) HOST Host Start Of Frame Control */
-#define REG_USB_HOST_STATUS        (0x4100500C) /**< \brief (USB) HOST Status */
-#define REG_USB_HOST_FNUM          (0x41005010) /**< \brief (USB) HOST Host Frame Number */
-#define REG_USB_HOST_FLENHIGH      (0x41005012) /**< \brief (USB) HOST Host Frame Length */
-#define REG_USB_HOST_INTENCLR      (0x41005014) /**< \brief (USB) HOST Host Interrupt Enable Clear */
-#define REG_USB_HOST_INTENSET      (0x41005018) /**< \brief (USB) HOST Host Interrupt Enable Set */
-#define REG_USB_HOST_INTFLAG       (0x4100501C) /**< \brief (USB) HOST Host Interrupt Flag */
-#define REG_USB_HOST_PINTSMRY      (0x41005020) /**< \brief (USB) HOST Pipe Interrupt Summary */
-#define REG_USB_HOST_PIPE_PCFG0    (0x41005100) /**< \brief (USB) HOST_PIPE End Point Configuration 0 */
-#define REG_USB_HOST_PIPE_BINTERVAL0 (0x41005103) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 0 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR0 (0x41005104) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 0 */
-#define REG_USB_HOST_PIPE_PSTATUSSET0 (0x41005105) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 0 */
-#define REG_USB_HOST_PIPE_PSTATUS0 (0x41005106) /**< \brief (USB) HOST_PIPE End Point Pipe Status 0 */
-#define REG_USB_HOST_PIPE_PINTFLAG0 (0x41005107) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 0 */
-#define REG_USB_HOST_PIPE_PINTENCLR0 (0x41005108) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 0 */
-#define REG_USB_HOST_PIPE_PINTENSET0 (0x41005109) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 0 */
-#define REG_USB_HOST_PIPE_PCFG1    (0x41005120) /**< \brief (USB) HOST_PIPE End Point Configuration 1 */
-#define REG_USB_HOST_PIPE_BINTERVAL1 (0x41005123) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 1 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR1 (0x41005124) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 1 */
-#define REG_USB_HOST_PIPE_PSTATUSSET1 (0x41005125) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 1 */
-#define REG_USB_HOST_PIPE_PSTATUS1 (0x41005126) /**< \brief (USB) HOST_PIPE End Point Pipe Status 1 */
-#define REG_USB_HOST_PIPE_PINTFLAG1 (0x41005127) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 1 */
-#define REG_USB_HOST_PIPE_PINTENCLR1 (0x41005128) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 1 */
-#define REG_USB_HOST_PIPE_PINTENSET1 (0x41005129) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 1 */
-#define REG_USB_HOST_PIPE_PCFG2    (0x41005140) /**< \brief (USB) HOST_PIPE End Point Configuration 2 */
-#define REG_USB_HOST_PIPE_BINTERVAL2 (0x41005143) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 2 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR2 (0x41005144) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 2 */
-#define REG_USB_HOST_PIPE_PSTATUSSET2 (0x41005145) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 2 */
-#define REG_USB_HOST_PIPE_PSTATUS2 (0x41005146) /**< \brief (USB) HOST_PIPE End Point Pipe Status 2 */
-#define REG_USB_HOST_PIPE_PINTFLAG2 (0x41005147) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 2 */
-#define REG_USB_HOST_PIPE_PINTENCLR2 (0x41005148) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 2 */
-#define REG_USB_HOST_PIPE_PINTENSET2 (0x41005149) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 2 */
-#define REG_USB_HOST_PIPE_PCFG3    (0x41005160) /**< \brief (USB) HOST_PIPE End Point Configuration 3 */
-#define REG_USB_HOST_PIPE_BINTERVAL3 (0x41005163) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 3 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR3 (0x41005164) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 3 */
-#define REG_USB_HOST_PIPE_PSTATUSSET3 (0x41005165) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 3 */
-#define REG_USB_HOST_PIPE_PSTATUS3 (0x41005166) /**< \brief (USB) HOST_PIPE End Point Pipe Status 3 */
-#define REG_USB_HOST_PIPE_PINTFLAG3 (0x41005167) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 3 */
-#define REG_USB_HOST_PIPE_PINTENCLR3 (0x41005168) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 3 */
-#define REG_USB_HOST_PIPE_PINTENSET3 (0x41005169) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 3 */
-#define REG_USB_HOST_PIPE_PCFG4    (0x41005180) /**< \brief (USB) HOST_PIPE End Point Configuration 4 */
-#define REG_USB_HOST_PIPE_BINTERVAL4 (0x41005183) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 4 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR4 (0x41005184) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 4 */
-#define REG_USB_HOST_PIPE_PSTATUSSET4 (0x41005185) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 4 */
-#define REG_USB_HOST_PIPE_PSTATUS4 (0x41005186) /**< \brief (USB) HOST_PIPE End Point Pipe Status 4 */
-#define REG_USB_HOST_PIPE_PINTFLAG4 (0x41005187) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 4 */
-#define REG_USB_HOST_PIPE_PINTENCLR4 (0x41005188) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 4 */
-#define REG_USB_HOST_PIPE_PINTENSET4 (0x41005189) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 4 */
-#define REG_USB_HOST_PIPE_PCFG5    (0x410051A0) /**< \brief (USB) HOST_PIPE End Point Configuration 5 */
-#define REG_USB_HOST_PIPE_BINTERVAL5 (0x410051A3) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 5 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR5 (0x410051A4) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 5 */
-#define REG_USB_HOST_PIPE_PSTATUSSET5 (0x410051A5) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 5 */
-#define REG_USB_HOST_PIPE_PSTATUS5 (0x410051A6) /**< \brief (USB) HOST_PIPE End Point Pipe Status 5 */
-#define REG_USB_HOST_PIPE_PINTFLAG5 (0x410051A7) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 5 */
-#define REG_USB_HOST_PIPE_PINTENCLR5 (0x410051A8) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 5 */
-#define REG_USB_HOST_PIPE_PINTENSET5 (0x410051A9) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 5 */
-#define REG_USB_HOST_PIPE_PCFG6    (0x410051C0) /**< \brief (USB) HOST_PIPE End Point Configuration 6 */
-#define REG_USB_HOST_PIPE_BINTERVAL6 (0x410051C3) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 6 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR6 (0x410051C4) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 6 */
-#define REG_USB_HOST_PIPE_PSTATUSSET6 (0x410051C5) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 6 */
-#define REG_USB_HOST_PIPE_PSTATUS6 (0x410051C6) /**< \brief (USB) HOST_PIPE End Point Pipe Status 6 */
-#define REG_USB_HOST_PIPE_PINTFLAG6 (0x410051C7) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 6 */
-#define REG_USB_HOST_PIPE_PINTENCLR6 (0x410051C8) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 6 */
-#define REG_USB_HOST_PIPE_PINTENSET6 (0x410051C9) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 6 */
-#define REG_USB_HOST_PIPE_PCFG7    (0x410051E0) /**< \brief (USB) HOST_PIPE End Point Configuration 7 */
-#define REG_USB_HOST_PIPE_BINTERVAL7 (0x410051E3) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 7 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR7 (0x410051E4) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 7 */
-#define REG_USB_HOST_PIPE_PSTATUSSET7 (0x410051E5) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 7 */
-#define REG_USB_HOST_PIPE_PSTATUS7 (0x410051E6) /**< \brief (USB) HOST_PIPE End Point Pipe Status 7 */
-#define REG_USB_HOST_PIPE_PINTFLAG7 (0x410051E7) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 7 */
-#define REG_USB_HOST_PIPE_PINTENCLR7 (0x410051E8) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 7 */
-#define REG_USB_HOST_PIPE_PINTENSET7 (0x410051E9) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 7 */
 #else
 #define REG_USB_CTRLA              (*(RwReg8 *)0x41005000UL) /**< \brief (USB) Control A */
 #define REG_USB_SYNCBUSY           (*(RoReg8 *)0x41005002UL) /**< \brief (USB) Synchronization Busy */
@@ -246,79 +173,6 @@
 #define REG_USB_DEVICE_ENDPOINT_EPINTFLAG7 (*(RwReg8 *)0x410051E7UL) /**< \brief (USB) DEVICE_ENDPOINT End Point Interrupt Flag 7 */
 #define REG_USB_DEVICE_ENDPOINT_EPINTENCLR7 (*(RwReg8 *)0x410051E8UL) /**< \brief (USB) DEVICE_ENDPOINT End Point Interrupt Clear Flag 7 */
 #define REG_USB_DEVICE_ENDPOINT_EPINTENSET7 (*(RwReg8 *)0x410051E9UL) /**< \brief (USB) DEVICE_ENDPOINT End Point Interrupt Set Flag 7 */
-#define REG_USB_HOST_CTRLB         (*(RwReg16*)0x41005008UL) /**< \brief (USB) HOST Control B */
-#define REG_USB_HOST_HSOFC         (*(RwReg8 *)0x4100500AUL) /**< \brief (USB) HOST Host Start Of Frame Control */
-#define REG_USB_HOST_STATUS        (*(RwReg8 *)0x4100500CUL) /**< \brief (USB) HOST Status */
-#define REG_USB_HOST_FNUM          (*(RwReg16*)0x41005010UL) /**< \brief (USB) HOST Host Frame Number */
-#define REG_USB_HOST_FLENHIGH      (*(RoReg8 *)0x41005012UL) /**< \brief (USB) HOST Host Frame Length */
-#define REG_USB_HOST_INTENCLR      (*(RwReg16*)0x41005014UL) /**< \brief (USB) HOST Host Interrupt Enable Clear */
-#define REG_USB_HOST_INTENSET      (*(RwReg16*)0x41005018UL) /**< \brief (USB) HOST Host Interrupt Enable Set */
-#define REG_USB_HOST_INTFLAG       (*(RwReg16*)0x4100501CUL) /**< \brief (USB) HOST Host Interrupt Flag */
-#define REG_USB_HOST_PINTSMRY      (*(RoReg16*)0x41005020UL) /**< \brief (USB) HOST Pipe Interrupt Summary */
-#define REG_USB_HOST_PIPE_PCFG0    (*(RwReg8 *)0x41005100UL) /**< \brief (USB) HOST_PIPE End Point Configuration 0 */
-#define REG_USB_HOST_PIPE_BINTERVAL0 (*(RwReg8 *)0x41005103UL) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 0 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR0 (*(WoReg8 *)0x41005104UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 0 */
-#define REG_USB_HOST_PIPE_PSTATUSSET0 (*(WoReg8 *)0x41005105UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 0 */
-#define REG_USB_HOST_PIPE_PSTATUS0 (*(RoReg8 *)0x41005106UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status 0 */
-#define REG_USB_HOST_PIPE_PINTFLAG0 (*(RwReg8 *)0x41005107UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 0 */
-#define REG_USB_HOST_PIPE_PINTENCLR0 (*(RwReg8 *)0x41005108UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 0 */
-#define REG_USB_HOST_PIPE_PINTENSET0 (*(RwReg8 *)0x41005109UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 0 */
-#define REG_USB_HOST_PIPE_PCFG1    (*(RwReg8 *)0x41005120UL) /**< \brief (USB) HOST_PIPE End Point Configuration 1 */
-#define REG_USB_HOST_PIPE_BINTERVAL1 (*(RwReg8 *)0x41005123UL) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 1 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR1 (*(WoReg8 *)0x41005124UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 1 */
-#define REG_USB_HOST_PIPE_PSTATUSSET1 (*(WoReg8 *)0x41005125UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 1 */
-#define REG_USB_HOST_PIPE_PSTATUS1 (*(RoReg8 *)0x41005126UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status 1 */
-#define REG_USB_HOST_PIPE_PINTFLAG1 (*(RwReg8 *)0x41005127UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 1 */
-#define REG_USB_HOST_PIPE_PINTENCLR1 (*(RwReg8 *)0x41005128UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 1 */
-#define REG_USB_HOST_PIPE_PINTENSET1 (*(RwReg8 *)0x41005129UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 1 */
-#define REG_USB_HOST_PIPE_PCFG2    (*(RwReg8 *)0x41005140UL) /**< \brief (USB) HOST_PIPE End Point Configuration 2 */
-#define REG_USB_HOST_PIPE_BINTERVAL2 (*(RwReg8 *)0x41005143UL) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 2 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR2 (*(WoReg8 *)0x41005144UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 2 */
-#define REG_USB_HOST_PIPE_PSTATUSSET2 (*(WoReg8 *)0x41005145UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 2 */
-#define REG_USB_HOST_PIPE_PSTATUS2 (*(RoReg8 *)0x41005146UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status 2 */
-#define REG_USB_HOST_PIPE_PINTFLAG2 (*(RwReg8 *)0x41005147UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 2 */
-#define REG_USB_HOST_PIPE_PINTENCLR2 (*(RwReg8 *)0x41005148UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 2 */
-#define REG_USB_HOST_PIPE_PINTENSET2 (*(RwReg8 *)0x41005149UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 2 */
-#define REG_USB_HOST_PIPE_PCFG3    (*(RwReg8 *)0x41005160UL) /**< \brief (USB) HOST_PIPE End Point Configuration 3 */
-#define REG_USB_HOST_PIPE_BINTERVAL3 (*(RwReg8 *)0x41005163UL) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 3 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR3 (*(WoReg8 *)0x41005164UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 3 */
-#define REG_USB_HOST_PIPE_PSTATUSSET3 (*(WoReg8 *)0x41005165UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 3 */
-#define REG_USB_HOST_PIPE_PSTATUS3 (*(RoReg8 *)0x41005166UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status 3 */
-#define REG_USB_HOST_PIPE_PINTFLAG3 (*(RwReg8 *)0x41005167UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 3 */
-#define REG_USB_HOST_PIPE_PINTENCLR3 (*(RwReg8 *)0x41005168UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 3 */
-#define REG_USB_HOST_PIPE_PINTENSET3 (*(RwReg8 *)0x41005169UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 3 */
-#define REG_USB_HOST_PIPE_PCFG4    (*(RwReg8 *)0x41005180UL) /**< \brief (USB) HOST_PIPE End Point Configuration 4 */
-#define REG_USB_HOST_PIPE_BINTERVAL4 (*(RwReg8 *)0x41005183UL) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 4 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR4 (*(WoReg8 *)0x41005184UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 4 */
-#define REG_USB_HOST_PIPE_PSTATUSSET4 (*(WoReg8 *)0x41005185UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 4 */
-#define REG_USB_HOST_PIPE_PSTATUS4 (*(RoReg8 *)0x41005186UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status 4 */
-#define REG_USB_HOST_PIPE_PINTFLAG4 (*(RwReg8 *)0x41005187UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 4 */
-#define REG_USB_HOST_PIPE_PINTENCLR4 (*(RwReg8 *)0x41005188UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 4 */
-#define REG_USB_HOST_PIPE_PINTENSET4 (*(RwReg8 *)0x41005189UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 4 */
-#define REG_USB_HOST_PIPE_PCFG5    (*(RwReg8 *)0x410051A0UL) /**< \brief (USB) HOST_PIPE End Point Configuration 5 */
-#define REG_USB_HOST_PIPE_BINTERVAL5 (*(RwReg8 *)0x410051A3UL) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 5 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR5 (*(WoReg8 *)0x410051A4UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 5 */
-#define REG_USB_HOST_PIPE_PSTATUSSET5 (*(WoReg8 *)0x410051A5UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 5 */
-#define REG_USB_HOST_PIPE_PSTATUS5 (*(RoReg8 *)0x410051A6UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status 5 */
-#define REG_USB_HOST_PIPE_PINTFLAG5 (*(RwReg8 *)0x410051A7UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 5 */
-#define REG_USB_HOST_PIPE_PINTENCLR5 (*(RwReg8 *)0x410051A8UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 5 */
-#define REG_USB_HOST_PIPE_PINTENSET5 (*(RwReg8 *)0x410051A9UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 5 */
-#define REG_USB_HOST_PIPE_PCFG6    (*(RwReg8 *)0x410051C0UL) /**< \brief (USB) HOST_PIPE End Point Configuration 6 */
-#define REG_USB_HOST_PIPE_BINTERVAL6 (*(RwReg8 *)0x410051C3UL) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 6 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR6 (*(WoReg8 *)0x410051C4UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 6 */
-#define REG_USB_HOST_PIPE_PSTATUSSET6 (*(WoReg8 *)0x410051C5UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 6 */
-#define REG_USB_HOST_PIPE_PSTATUS6 (*(RoReg8 *)0x410051C6UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status 6 */
-#define REG_USB_HOST_PIPE_PINTFLAG6 (*(RwReg8 *)0x410051C7UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 6 */
-#define REG_USB_HOST_PIPE_PINTENCLR6 (*(RwReg8 *)0x410051C8UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 6 */
-#define REG_USB_HOST_PIPE_PINTENSET6 (*(RwReg8 *)0x410051C9UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 6 */
-#define REG_USB_HOST_PIPE_PCFG7    (*(RwReg8 *)0x410051E0UL) /**< \brief (USB) HOST_PIPE End Point Configuration 7 */
-#define REG_USB_HOST_PIPE_BINTERVAL7 (*(RwReg8 *)0x410051E3UL) /**< \brief (USB) HOST_PIPE Bus Access Period of Pipe 7 */
-#define REG_USB_HOST_PIPE_PSTATUSCLR7 (*(WoReg8 *)0x410051E4UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Clear 7 */
-#define REG_USB_HOST_PIPE_PSTATUSSET7 (*(WoReg8 *)0x410051E5UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status Set 7 */
-#define REG_USB_HOST_PIPE_PSTATUS7 (*(RoReg8 *)0x410051E6UL) /**< \brief (USB) HOST_PIPE End Point Pipe Status 7 */
-#define REG_USB_HOST_PIPE_PINTFLAG7 (*(RwReg8 *)0x410051E7UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag 7 */
-#define REG_USB_HOST_PIPE_PINTENCLR7 (*(RwReg8 *)0x410051E8UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Clear 7 */
-#define REG_USB_HOST_PIPE_PINTENSET7 (*(RwReg8 *)0x410051E9UL) /**< \brief (USB) HOST_PIPE Pipe Interrupt Flag Set 7 */
 #endif /* (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 /* ========== Instance parameters for USB peripheral ========== */
@@ -327,4 +181,4 @@
 #define USB_GCLK_ID                 6        // Index of Generic Clock
 #define USB_PIPE_NUM                8        // Number of USB pipes
 
-#endif /* _SAMD21_USB_INSTANCE_ */
+#endif /* _SAMD11_USB_INSTANCE_ */

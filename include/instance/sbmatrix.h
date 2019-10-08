@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _SAMD21_SBMATRIX_INSTANCE_
-#define _SAMD21_SBMATRIX_INSTANCE_
+#ifndef _SAMD11_SBMATRIX_INSTANCE_
+#define _SAMD11_SBMATRIX_INSTANCE_
 
 /* ========== Register definition for SBMATRIX peripheral ========== */
 #if (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -148,4 +148,4 @@
 #define SBMATRIX_MASTER_DMAC        2
 #define SBMATRIX_MASTER_NUM         3
 
-#endif /* _SAMD21_SBMATRIX_INSTANCE_ */
+#endif /* _SAMD11_SBMATRIX_INSTANCE_ */
