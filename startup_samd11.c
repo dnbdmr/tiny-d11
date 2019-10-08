@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief gcc starttup file for SAMD21
+ * \brief gcc starttup file for SAMD11
  *
  * Copyright (c) 2018 Microchip Technology Inc.
  *
@@ -27,7 +27,7 @@
  *
  */
 
-#include "samd21.h"
+#include "samd11.h"
 
 /* Initialize segments */
 extern uint32_t _sfixed;
@@ -71,39 +71,18 @@ void USB_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
 void EVSYS_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
 void SERCOM0_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
 void SERCOM1_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
+#ifdef ID_SERCOM2
 void SERCOM2_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void SERCOM3_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#ifdef ID_SERCOM4
-void SERCOM4_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#endif
-#ifdef ID_SERCOM5
-void SERCOM5_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
 #endif
 void TCC0_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void TCC1_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void TCC2_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void TC3_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void TC4_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void TC5_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#ifdef ID_TC6
-void TC6_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#endif
-#ifdef ID_TC7
-void TC7_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#endif
-#ifdef ID_ADC
+void TC1_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
+void TC2_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
 void ADC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#endif
-#ifdef ID_AC
 void AC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#endif
 #ifdef ID_DAC
 void DAC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
 #endif
-#ifdef ID_PTC
 void PTC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#endif
-void I2S_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
 
 /* Exception Table */
 __attribute__((section(".vectors"))) const DeviceVectors exception_table = {
@@ -144,56 +123,22 @@ __attribute__((section(".vectors"))) const DeviceVectors exception_table = {
     .pfnEVSYS_Handler   = (void *)EVSYS_Handler,   /*  8 Event System Interface */
     .pfnSERCOM0_Handler = (void *)SERCOM0_Handler, /*  9 Serial Communication Interface 0 */
     .pfnSERCOM1_Handler = (void *)SERCOM1_Handler, /* 10 Serial Communication Interface 1 */
+#ifdef ID_SERCOM2
     .pfnSERCOM2_Handler = (void *)SERCOM2_Handler, /* 11 Serial Communication Interface 2 */
-    .pfnSERCOM3_Handler = (void *)SERCOM3_Handler, /* 12 Serial Communication Interface 3 */
-#ifdef ID_SERCOM4
-    .pfnSERCOM4_Handler = (void *)SERCOM4_Handler, /* 13 Serial Communication Interface 4 */
 #else
-    .pvReserved13 = (void *)(0UL), /* 13 Reserved */
+    .pvReserved11 = (void *)(0UL), /* 11 Reserved */
 #endif
-#ifdef ID_SERCOM5
-    .pfnSERCOM5_Handler = (void *)SERCOM5_Handler, /* 14 Serial Communication Interface 5 */
-#else
-    .pvReserved14 = (void *)(0UL), /* 14 Reserved */
-#endif
-    .pfnTCC0_Handler = (void *)TCC0_Handler, /* 15 Timer Counter Control 0 */
-    .pfnTCC1_Handler = (void *)TCC1_Handler, /* 16 Timer Counter Control 1 */
-    .pfnTCC2_Handler = (void *)TCC2_Handler, /* 17 Timer Counter Control 2 */
-    .pfnTC3_Handler  = (void *)TC3_Handler,  /* 18 Basic Timer Counter 0 */
-    .pfnTC4_Handler  = (void *)TC4_Handler,  /* 19 Basic Timer Counter 1 */
-    .pfnTC5_Handler  = (void *)TC5_Handler,  /* 20 Basic Timer Counter 2 */
-#ifdef ID_TC6
-    .pfnTC6_Handler = (void *)TC6_Handler, /* 21 Basic Timer Counter 3 */
-#else
-    .pvReserved21 = (void *)(0UL), /* 21 Reserved */
-#endif
-#ifdef ID_TC7
-    .pfnTC7_Handler = (void *)TC7_Handler, /* 22 Basic Timer Counter 4 */
-#else
-    .pvReserved22 = (void *)(0UL), /* 22 Reserved */
-#endif
-#ifdef ID_ADC
-    .pfnADC_Handler = (void *)ADC_Handler, /* 23 Analog Digital Converter */
-#else
-    .pvReserved23 = (void *)(0UL), /* 23 Reserved */
-#endif
-#ifdef ID_AC
-    .pfnAC_Handler = (void *)AC_Handler, /* 24 Analog Comparators */
-#else
-    .pvReserved24 = (void *)(0UL), /* 24 Reserved */
-#endif
+    .pfnTCC0_Handler = (void *)TCC0_Handler, /* 12 Timer Counter Control */
+    .pfnTC1_Handler  = (void *)TC1_Handler,  /* 13 Basic Timer Counter 0 */
+    .pfnTC2_Handler  = (void *)TC2_Handler,  /* 14 Basic Timer Counter 1 */
+    .pfnADC_Handler  = (void *)ADC_Handler,  /* 15 Analog Digital Converter */
+    .pfnAC_Handler   = (void *)AC_Handler,   /* 16 Analog Comparators */
 #ifdef ID_DAC
-    .pfnDAC_Handler = (void *)DAC_Handler, /* 25 Digital Analog Converter */
+    .pfnDAC_Handler = (void *)DAC_Handler, /* 17 Digital Analog Converter */
 #else
-    .pvReserved25 = (void *)(0UL), /* 25 Reserved */
+    .pvReserved17 = (void *)(0UL), /* 17 Reserved */
 #endif
-#ifdef ID_PTC
-    .pfnPTC_Handler = (void *)PTC_Handler, /* 26 Peripheral Touch Controller */
-#else
-    .pvReserved26 = (void *)(0UL), /* 26 Reserved */
-#endif
-    .pfnI2S_Handler = (void *)I2S_Handler, /* 27 Inter-IC Sound Interface */
-    .pvReserved28   = (void *)(0UL)        /* 28 Reserved */
+    .pfnPTC_Handler = (void *)PTC_Handler /* 18 Peripheral Touch Controller */
 };
 
 /**

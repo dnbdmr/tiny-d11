@@ -25,7 +25,7 @@ LDFLAGS += -Wl,--gc-sections
 #LDFLAGS += --specs=rdimon.specs
 LDFLAGS += -Wl,--start-group -lm -Wl,--end-group
 LDFLAGS += -Wl,-Map=$(BUILD)/$(BIN).map
-LDFLAGS += -Wl,--script=../linker/samd21g18.ld
+LDFLAGS += -Wl,--script=../linker/samd11c14.ld
 
 INCLUDES += \
   -I../include \
@@ -34,22 +34,17 @@ INCLUDES += \
 
 SRCS += \
   ../main.c \
-  ../startup_samd21.c \
+  ../startup_samd11.c \
   ../tinyusb/src/tusb.c \
   ../tinyusb/src/common/tusb_fifo.c \
   ../tinyusb/src/device/usbd.c \
   ../tinyusb/src/device/usbd_control.c \
   ../tinyusb/src/portable/microchip/samd21/dcd_samd21.c \
   ../tinyusb/src/class/cdc/cdc_device.c \
-  ../usb_descriptors.c \
-  ../htu21.c \
-  ../rgb.c \
-  ../i2c_master.c \
-  ../adafruit_ptc.c \
-  ../adc.c
+  ../usb_descriptors.c 
 
 DEFINES += \
-  -D__SAMD21G18A__ \
+  -D__SAMD11C14A__ \
   -DDONT_USE_CMSIS_INIT \
   -DF_CPU=48000000 
 
@@ -71,10 +66,10 @@ $(BUILD)/$(BIN).bin: $(BUILD)/$(BIN).elf
 	@echo OBJCOPY $@
 	@$(OBJCOPY) -O binary $^ $@
 
-program: $(BUILD)/$(BIN).hex
+program: $(BUILD)/$(BIN).bin
 	@echo PROGRAM $^
-	./force_reset.py --uf2 /dev/ttyACM0
-	./uf2conv.py $^
+	./force_reset.py --caterina /dev/ttyACM1
+	./boss.sh $^
 
 %.o:
 	@echo CC $@

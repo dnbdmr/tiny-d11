@@ -32,20 +32,14 @@
 #include <stdbool.h>
 #include <stdalign.h>
 #include <string.h>
-#include "samd21.h"
+#include "sam.h"
 #include "hal_gpio.h"
 #include "nvm_data.h"
 #include "tusb.h"
 #include "usb_descriptors.h"
-#include "htu21.h"
-#include "rgb.h"
 
 /*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(LED1,	A, 17);
-HAL_GPIO_PIN(A5,	B, 2);
-HAL_GPIO_PIN(D5,	A, 15);
-
-RGB_type led;
+HAL_GPIO_PIN(LED1,	A, 5);
 
 /*- Implementations ---------------------------------------------------------*/
 
@@ -70,35 +64,35 @@ uint32_t millis(void)
 
 
 //-----------------------------------------------------------------------------
-void TC3_Handler(void)
+void TC1_Handler(void)
 {
-	if (TC3->COUNT16.INTFLAG.reg & TC_INTFLAG_MC(1))
+	if (TC1->COUNT16.INTFLAG.reg & TC_INTFLAG_MC(1))
 	{
 		HAL_GPIO_LED1_toggle();
-		TC3->COUNT16.INTFLAG.reg = TC_INTFLAG_MC(1);
+		TC1->COUNT16.INTFLAG.reg = TC_INTFLAG_MC(1);
 	}
 }
 
 //-----------------------------------------------------------------------------
 static void timer_init(void)
 {
-	PM->APBCMASK.reg |= PM_APBCMASK_TC3;
+	PM->APBCMASK.reg |= PM_APBCMASK_TC1;
 
-	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(TC3_GCLK_ID) |
+	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(TC1_GCLK_ID) |
 		GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(0);
 
-	TC3->COUNT16.CTRLA.reg = TC_CTRLA_MODE_COUNT16 | TC_CTRLA_WAVEGEN_MFRQ |
+	TC1->COUNT16.CTRLA.reg = TC_CTRLA_MODE_COUNT16 | TC_CTRLA_WAVEGEN_MFRQ |
 		TC_CTRLA_PRESCALER_DIV1024 | TC_CTRLA_PRESCSYNC_RESYNC;
 
-	TC3->COUNT16.COUNT.reg = 0;
+	TC1->COUNT16.COUNT.reg = 0;
 
-	TC3->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * 500; // 500ms
-	TC3->COUNT16.COUNT.reg = 0;
+	TC1->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * 500; // 500ms
+	TC1->COUNT16.COUNT.reg = 0;
 
-	TC3->COUNT16.CTRLA.reg |= TC_CTRLA_ENABLE;
+	TC1->COUNT16.CTRLA.reg |= TC_CTRLA_ENABLE;
 
-	TC3->COUNT16.INTENSET.reg = TC_INTENSET_MC(1);
-	NVIC_EnableIRQ(TC3_IRQn);
+	TC1->COUNT16.INTENSET.reg = TC_INTENSET_MC(1);
+	NVIC_EnableIRQ(TC1_IRQn);
 }
 
 //-----------------------------------------------------------------------------
@@ -164,9 +158,7 @@ void usb_setup(void)
 void tud_suspend_cb(bool remote_wakeup_en)
 {
 	(void) remote_wakeup_en;
-	rgb_zero(1);
 	HAL_GPIO_LED1_in();
-	HAL_GPIO_A5_in();
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk << SCB_SCR_SLEEPDEEP_Pos;
 	__WFI();
@@ -175,9 +167,7 @@ void tud_suspend_cb(bool remote_wakeup_en)
 // Invoked when usb bus is resumed
 void tud_resume_cb(void)
 {
-	rgb_update(&led, 1);
 	HAL_GPIO_LED1_out();
-	HAL_GPIO_A5_out();
 	SysTick_Config(48000); //systick at 1ms
 }
 
@@ -199,7 +189,7 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 		tud_cdc_get_line_coding(&lc);
 		if (lc.bit_rate == 1200) {
 			unsigned long *a = (unsigned long *)(HMCRAMC0_ADDR + HMCRAMC0_SIZE - 4); // Make a boot key at end of RAM
-			*a = 0xf01669ef; // Set boot key to uf2 magic value
+			*a = 0x07738135; // Set boot key to mattair magic value
 			NVIC_SystemReset();
 		}
 	}
@@ -210,7 +200,6 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 void tud_cdc_rx_cb(uint8_t itf)
 {
 	(void) itf;
-	HAL_GPIO_A5_toggle();
 	//tud_cdc_write_str("Stop That!!\n");
 	//tud_cdc_read_flush();
 
@@ -245,52 +234,11 @@ int main(void)
 	usb_setup();
 	tusb_init();
 	timer_init();
-	htu21_init();
-	rgb_init();
 
 	HAL_GPIO_LED1_out();
-	HAL_GPIO_A5_out();
-	HAL_GPIO_D5_out();
-
-	led.red = 0xFF;
-	led.blue = 0x0;
-	led.green = 0xFF;
-	led.bright = 0x06;
-	rgb_update(&led, 1);
-
-	char s[25];
-	uint32_t temp;
-	uint32_t minutetick = millis();
-	uint32_t tenthmintick = millis();
-	uint8_t ledpos = 0;
 
 	while (1)
 	{
-		if ((millis() - tenthmintick) >= 100) {
-			tenthmintick = millis();
-			rgb_wheel(&led, ledpos);
-			rgb_update(&led, 1);
-			ledpos += 4;
-		}
-
-		if ((millis() - minutetick) >= 10000) {
-			minutetick = millis();
-			temp = htu21_readtemp();
-			itoa(temp, s, 10);
-			if (tud_cdc_connected()) {
-				tud_cdc_write_str("TempX100: ");
-				tud_cdc_write_str(s);
-				tud_cdc_write_char('\t');
-			}
-			temp = htu21_readhumidity();
-			itoa(temp, s, 10);
-			if (tud_cdc_connected()) {
-				tud_cdc_write_str("HumX100: ");
-				tud_cdc_write_str(s);
-				tud_cdc_write_char('\n');
-			}
-		}
-
 		tud_task();
 		cdc_task();
 	}
