@@ -9,8 +9,8 @@ CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
 SIZE = arm-none-eabi-size
 
-#CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og 
-CFLAGS += -Wextra -Wall --std=gnu11 -Os 
+CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og
+#CFLAGS += -Wextra -Wall --std=gnu11 -Os
 #CFLAGS += -fno-diagnostics-show-caret
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -funsigned-char -funsigned-bitfields
@@ -41,7 +41,8 @@ SRCS += \
   ../tinyusb/src/device/usbd_control.c \
   ../tinyusb/src/portable/microchip/samd21/dcd_samd21.c \
   ../tinyusb/src/class/cdc/cdc_device.c \
-  ../usb_descriptors.c 
+  ../usb_descriptors.c \
+  ../adc.c
 
 DEFINES += \
   -D__SAMD11C14A__ \
@@ -68,7 +69,7 @@ $(BUILD)/$(BIN).bin: $(BUILD)/$(BIN).elf
 
 program: $(BUILD)/$(BIN).bin
 	@echo PROGRAM $^
-	./force_reset.py --caterina /dev/ttyACM1
+	./force_reset.py --caterina /dev/ttyACM2
 	./boss.sh $^
 
 %.o:
