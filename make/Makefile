@@ -69,7 +69,7 @@ $(BUILD)/$(BIN).bin: $(BUILD)/$(BIN).elf
 
 program: $(BUILD)/$(BIN).bin
 	@echo PROGRAM $^
-	./force_reset.py --caterina /dev/ttyACM2
+	./force_reset.py --caterina /dev/ttyACM1
 	./boss.sh $^
 
 %.o:

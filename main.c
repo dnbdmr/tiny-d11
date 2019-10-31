@@ -37,9 +37,11 @@
 #include "nvm_data.h"
 #include "tusb.h"
 #include "usb_descriptors.h"
+#include "adc.h"
 
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 5);
+HAL_GPIO_PIN(LED2, 	A, 14);
 
 /*- Implementations ---------------------------------------------------------*/
 
@@ -47,7 +49,7 @@ volatile uint32_t msticks = 0;
 
 void SysTick_Handler(void)
 {
-       msticks++;
+	msticks++;
 }
 
 uint32_t millis(void)
@@ -61,15 +63,27 @@ uint32_t millis(void)
 	return m;
 }
 
-
-
 //-----------------------------------------------------------------------------
 void TC1_Handler(void)
 {
 	if (TC1->COUNT16.INTFLAG.reg & TC_INTFLAG_MC(1))
 	{
 		HAL_GPIO_LED1_toggle();
+		HAL_GPIO_LED2_toggle();
 		TC1->COUNT16.INTFLAG.reg = TC_INTFLAG_MC(1);
+	}
+}
+
+void adc_task(void) 
+{
+	static uint32_t time = 0;
+	if (((millis() - time) > 2000) && tud_cdc_connected()) {
+		time = millis();
+		uint32_t v = (adc_read() * 3300) / 65536;
+		char s[10];
+		itoa(v, s, 10);
+		tud_cdc_write_str(s);
+		tud_cdc_write_char('\n');
 	}
 }
 
@@ -159,6 +173,7 @@ void tud_suspend_cb(bool remote_wakeup_en)
 {
 	(void) remote_wakeup_en;
 	HAL_GPIO_LED1_in();
+	HAL_GPIO_LED2_in();
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk << SCB_SCR_SLEEPDEEP_Pos;
 	__WFI();
@@ -168,6 +183,7 @@ void tud_suspend_cb(bool remote_wakeup_en)
 void tud_resume_cb(void)
 {
 	HAL_GPIO_LED1_out();
+	HAL_GPIO_LED2_out();
 	SysTick_Config(48000); //systick at 1ms
 }
 
@@ -234,11 +250,15 @@ int main(void)
 	usb_setup();
 	tusb_init();
 	timer_init();
+	adc_init();
 
 	HAL_GPIO_LED1_out();
+	HAL_GPIO_LED2_out();
+	HAL_GPIO_LED2_set();
 
 	while (1)
 	{
+		adc_task();
 		tud_task();
 		cdc_task();
 	}
