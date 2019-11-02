@@ -107,9 +107,26 @@ typedef union {
 #define USB_QOSCTRL_CQOS_Pos        0            /**< \brief (USB_QOSCTRL) Configuration Quality of Service */
 #define USB_QOSCTRL_CQOS_Msk        (_U_(0x3) << USB_QOSCTRL_CQOS_Pos)
 #define USB_QOSCTRL_CQOS(value)     (USB_QOSCTRL_CQOS_Msk & ((value) << USB_QOSCTRL_CQOS_Pos))
+#define   USB_QOSCTRL_CQOS_DISABLE_Val    _U_(0x0)   /**< \brief (USB_QOSCTRL) Background (no sensitive operation) */
+#define   USB_QOSCTRL_CQOS_LOW_Val        _U_(0x1)   /**< \brief (USB_QOSCTRL) Sensitive Bandwidth */
+#define   USB_QOSCTRL_CQOS_MEDIUM_Val     _U_(0x2)   /**< \brief (USB_QOSCTRL) Sensitive Latency */
+#define   USB_QOSCTRL_CQOS_HIGH_Val       _U_(0x3)   /**< \brief (USB_QOSCTRL) Critical Latency */
+#define USB_QOSCTRL_CQOS_DISABLE    (USB_QOSCTRL_CQOS_DISABLE_Val  << USB_QOSCTRL_CQOS_Pos)
+#define USB_QOSCTRL_CQOS_LOW        (USB_QOSCTRL_CQOS_LOW_Val      << USB_QOSCTRL_CQOS_Pos)
+#define USB_QOSCTRL_CQOS_MEDIUM     (USB_QOSCTRL_CQOS_MEDIUM_Val   << USB_QOSCTRL_CQOS_Pos)
+#define USB_QOSCTRL_CQOS_HIGH       (USB_QOSCTRL_CQOS_HIGH_Val     << USB_QOSCTRL_CQOS_Pos)
+#define USB_QOSCTRL_DQOS_Pos        2            /**< \brief (USB_QOSCTRL) Data Quality of Service */
 #define USB_QOSCTRL_DQOS_Pos        2            /**< \brief (USB_QOSCTRL) Data Quality of Service */
 #define USB_QOSCTRL_DQOS_Msk        (_U_(0x3) << USB_QOSCTRL_DQOS_Pos)
 #define USB_QOSCTRL_DQOS(value)     (USB_QOSCTRL_DQOS_Msk & ((value) << USB_QOSCTRL_DQOS_Pos))
+#define   USB_QOSCTRL_DQOS_DISABLE_Val    _U_(0x0)   /**< \brief (USB_QOSCTRL) Background (no sensitive operation) */
+#define   USB_QOSCTRL_DQOS_LOW_Val        _U_(0x1)   /**< \brief (USB_QOSCTRL) Sensitive Bandwidth */
+#define   USB_QOSCTRL_DQOS_MEDIUM_Val     _U_(0x2)   /**< \brief (USB_QOSCTRL) Sensitive Latency */
+#define   USB_QOSCTRL_DQOS_HIGH_Val       _U_(0x3)   /**< \brief (USB_QOSCTRL) Critical Latency */
+#define USB_QOSCTRL_DQOS_DISABLE    (USB_QOSCTRL_DQOS_DISABLE_Val  << USB_QOSCTRL_DQOS_Pos)
+#define USB_QOSCTRL_DQOS_LOW        (USB_QOSCTRL_DQOS_LOW_Val      << USB_QOSCTRL_DQOS_Pos)
+#define USB_QOSCTRL_DQOS_MEDIUM     (USB_QOSCTRL_DQOS_MEDIUM_Val   << USB_QOSCTRL_DQOS_Pos)
+#define USB_QOSCTRL_DQOS_HIGH       (USB_QOSCTRL_DQOS_HIGH_Val     << USB_QOSCTRL_DQOS_Pos)
 #define USB_QOSCTRL_MASK            _U_(0x0F)    /**< \brief (USB_QOSCTRL) MASK Register */
 
 /* -------- USB_DEVICE_CTRLB : (USB Offset: 0x008) (R/W 16) DEVICE DEVICE Control B -------- */
