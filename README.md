@@ -11,8 +11,8 @@ __TODO__
 + set up systick/millis/delay
 + on resume from linux host, cdc receive ATPORTCFG#, or #ATPORTCFG, etc... removed modemmanager
 + clean up inclue/ and startup, move to atmel style
++ the switch from dgw linker and startup scripts to asf increased .bss by about 9k( pre-allocated stack)
 - make master branch empty
-- move tud functions to separate file
+- move tud functions to separate file?
 - uf2 handover with msc device?
 - add msc class with uf2 handover?
-- the switch from dgw linker and startup scripts to asf increased .bss by about 9k
