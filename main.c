@@ -175,8 +175,11 @@ void tud_suspend_cb(bool remote_wakeup_en)
 	HAL_GPIO_LED1_in();
 	HAL_GPIO_LED2_in();
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
+	uint32_t *a = (uint32_t *)(0x40000838); // Disable BOD12, SAMD11 errata #15513
+	*a = 0x00000004;
 	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk << SCB_SCR_SLEEPDEEP_Pos;
 	__WFI();
+	*a = 0x00000006; // Enable BOD12, SAMD11 errata #15513
 }
 
 // Invoked when usb bus is resumed
