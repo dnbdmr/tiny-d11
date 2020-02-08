@@ -16,3 +16,17 @@ __TODO__
 - move tud functions to separate file?
 - uf2 handover with msc device?
 - add msc class with uf2 handover?
+
+__dx1 bootloader problems__
+1. Start with regular load.
+link at 0x0
+load
+dump flash
+2. Same with bootloader
+link at 0x400
+convert elf to dfu
+load bootloader
+dfu upload .dfu
+dump flash
+3. add offset to noboot dump
+4. compare dumps
