@@ -1,202 +1,156 @@
-/**
- * \file
+/*
+MODIFIED:
+- handler names replaced with more industry-standard ones
+- linker memory map locations replaced with Rowley-convention ones
+*/
+
+/*
+ * Copyright (c) 2016, Alex Taradov <alex@taradov.com>
+ * All rights reserved.
  *
- * \brief gcc starttup file for SAMD11
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- * Copyright (c) 2018 Microchip Technology Inc.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
  *
- * \asf_license_start
- *
- * \page License
- *
- * SPDX-License-Identifier: Apache-2.0
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the Licence at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an AS IS BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * \asf_license_stop
- *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "samd11.h"
+//-----------------------------------------------------------------------------
+#define DUMMY __attribute__ ((weak, alias ("irq_handler_dummy")))
 
-/* Initialize segments */
-extern uint32_t _sfixed;
-extern uint32_t _efixed;
-extern uint32_t _etext;
-extern uint32_t _srelocate;
-extern uint32_t _erelocate;
-extern uint32_t _szero;
-extern uint32_t _ezero;
-//extern uint32_t _sstack;
-//extern uint32_t _estack;
-extern uint32_t _stack_top;
-
-/** \cond DOXYGEN_SHOULD_SKIP_THIS */
-int main(void);
-/** \endcond */
-
-void __libc_init_array(void);
-
-/* Default empty handler */
-void Dummy_Handler(void);
-
-/* Cortex-M0+ core handlers */
-void NonMaskableInt_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void HardFault_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void SVCall_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void PendSV_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void SysTick_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-
-/* Peripherals handlers */
-void PM_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void SYSCTRL_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void WDT_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void RTC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void EIC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void NVMCTRL_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void DMAC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#ifdef ID_USB
-void USB_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
+//-----------------------------------------------------------------------------
+void Reset_Handler(void);
+#ifndef STARTUP_FROM_RESET
+void Reset_Wait(void) {while (1);}
 #endif
-void EVSYS_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void SERCOM0_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void SERCOM1_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#ifdef ID_SERCOM2
-void SERCOM2_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#endif
-void TCC0_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void TC1_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void TC2_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void ADC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-void AC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#ifdef ID_DAC
-void DAC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
-#endif
-void PTC_Handler(void) __attribute__((weak, alias("Dummy_Handler")));
+DUMMY void NMI_Handler(void);
+DUMMY void HardFault_Handler(void);
+DUMMY void SVC_Handler(void);
+DUMMY void PendSV_Handler(void);
+DUMMY void SysTick_Handler(void);
 
-/* Exception Table */
-__attribute__((section(".vectors"))) const DeviceVectors exception_table = {
+DUMMY void PM_Handler(void);
+DUMMY void SYSCTRL_Handler(void);
+DUMMY void WDT_Handler(void);
+DUMMY void RTC_Handler(void);
+DUMMY void EIC_Handler(void);
+DUMMY void NVMCTRL_Handler(void);
+DUMMY void DMAC_Handler(void);
+DUMMY void USB_Handler(void);
+DUMMY void EVSYS_Handler(void);
+DUMMY void SERCOM0_Handler(void);
+DUMMY void SERCOM1_Handler(void);
+DUMMY void SERCOM2_Handler(void);
+DUMMY void TCC0_Handler(void);
+DUMMY void TC1_Handler(void);
+DUMMY void TC2_Handler(void);
+DUMMY void ADC_Handler(void);
+DUMMY void AC_Handler(void);
+DUMMY void DAC_Handler(void);
+DUMMY void PTC_Handler(void);
 
-    /* Configure Initial Stack Pointer, using linker-generated symbols */
-    //.pvStack = (void *)(&_estack),
-    .pvStack = (void *)(&_stack_top),
+extern int main(void);
 
-    .pfnReset_Handler          = (void *)Reset_Handler,
-    .pfnNonMaskableInt_Handler = (void *)NonMaskableInt_Handler,
-    .pfnHardFault_Handler      = (void *)HardFault_Handler,
-    .pvReservedM12             = (void *)(0UL), /* Reserved */
-    .pvReservedM11             = (void *)(0UL), /* Reserved */
-    .pvReservedM10             = (void *)(0UL), /* Reserved */
-    .pvReservedM9              = (void *)(0UL), /* Reserved */
-    .pvReservedM8              = (void *)(0UL), /* Reserved */
-    .pvReservedM7              = (void *)(0UL), /* Reserved */
-    .pvReservedM6              = (void *)(0UL), /* Reserved */
-    .pfnSVCall_Handler         = (void *)SVCall_Handler,
-    .pvReservedM4              = (void *)(0UL), /* Reserved */
-    .pvReservedM3              = (void *)(0UL), /* Reserved */
-    .pfnPendSV_Handler         = (void *)PendSV_Handler,
-    .pfnSysTick_Handler        = (void *)SysTick_Handler,
+extern void __stack_end__(void);
+extern unsigned int __data_load_start__;
+extern unsigned int __data_start__;
+extern unsigned int __data_end__;
+extern unsigned int __bss_start__;
+extern unsigned int __bss_end__;
 
-    /* Configurable interrupts */
-    .pfnPM_Handler      = (void *)PM_Handler,      /*  0 Power Manager */
-    .pfnSYSCTRL_Handler = (void *)SYSCTRL_Handler, /*  1 System Control */
-    .pfnWDT_Handler     = (void *)WDT_Handler,     /*  2 Watchdog Timer */
-    .pfnRTC_Handler     = (void *)RTC_Handler,     /*  3 Real-Time Counter */
-    .pfnEIC_Handler     = (void *)EIC_Handler,     /*  4 External Interrupt Controller */
-    .pfnNVMCTRL_Handler = (void *)NVMCTRL_Handler, /*  5 Non-Volatile Memory Controller */
-    .pfnDMAC_Handler    = (void *)DMAC_Handler,    /*  6 Direct Memory Access Controller */
-#ifdef ID_USB
-    .pfnUSB_Handler = (void *)USB_Handler, /*  7 Universal Serial Bus */
+//-----------------------------------------------------------------------------
+__attribute__ ((used, section(".vectors")))
+void (* const vectors[])(void) =
+{
+  &__stack_end__,            // 0 - Initial Stack Pointer Value
+
+  // Cortex-M0+ handlers
+#ifdef STARTUP_FROM_RESET
+  Reset_Handler,             // 1 - Reset
 #else
-    .pvReserved7  = (void *)(0UL), /*  7 Reserved */
+  Reset_Wait,
 #endif
-    .pfnEVSYS_Handler   = (void *)EVSYS_Handler,   /*  8 Event System Interface */
-    .pfnSERCOM0_Handler = (void *)SERCOM0_Handler, /*  9 Serial Communication Interface 0 */
-    .pfnSERCOM1_Handler = (void *)SERCOM1_Handler, /* 10 Serial Communication Interface 1 */
-#ifdef ID_SERCOM2
-    .pfnSERCOM2_Handler = (void *)SERCOM2_Handler, /* 11 Serial Communication Interface 2 */
-#else
-    .pvReserved11 = (void *)(0UL), /* 11 Reserved */
-#endif
-    .pfnTCC0_Handler = (void *)TCC0_Handler, /* 12 Timer Counter Control */
-    .pfnTC1_Handler  = (void *)TC1_Handler,  /* 13 Basic Timer Counter 0 */
-    .pfnTC2_Handler  = (void *)TC2_Handler,  /* 14 Basic Timer Counter 1 */
-    .pfnADC_Handler  = (void *)ADC_Handler,  /* 15 Analog Digital Converter */
-    .pfnAC_Handler   = (void *)AC_Handler,   /* 16 Analog Comparators */
-#ifdef ID_DAC
-    .pfnDAC_Handler = (void *)DAC_Handler, /* 17 Digital Analog Converter */
-#else
-    .pvReserved17 = (void *)(0UL), /* 17 Reserved */
-#endif
-    .pfnPTC_Handler = (void *)PTC_Handler /* 18 Peripheral Touch Controller */
+  NMI_Handler,               // 2 - NMI
+  HardFault_Handler,         // 3 - Hard Fault
+  0,                         // 4 - Reserved
+  0,                         // 5 - Reserved
+  0,                         // 6 - Reserved
+  0,                         // 7 - Reserved
+  0,                         // 8 - Reserved
+  0,                         // 9 - Reserved
+  0,                         // 10 - Reserved
+  SVC_Handler,               // 11 - SVCall
+  0,                         // 12 - Reserved
+  0,                         // 13 - Reserved
+  PendSV_Handler,            // 14 - PendSV
+  SysTick_Handler,           // 15 - SysTick
+
+  // Peripheral handlers
+  PM_Handler,                // 0 - Power Manager
+  SYSCTRL_Handler,           // 1 - System Controller
+  WDT_Handler,               // 2 - Watchdog Timer
+  RTC_Handler,               // 3 - Real Time Counter
+  EIC_Handler,               // 4 - External Interrupt Controller
+  NVMCTRL_Handler,           // 5 - Non-Volatile Memory Controller
+  DMAC_Handler,              // 6 - Direct Memory Access Controller
+  USB_Handler,               // 7 - USB Controller
+  EVSYS_Handler,             // 8 - Event System
+  SERCOM0_Handler,           // 9 - Serial Communication Interface 0
+  SERCOM1_Handler,           // 10 - Serial Communication Interface 1
+  SERCOM2_Handler,           // 11 - Serial Communication Interface 2
+  TCC0_Handler,              // 12 - Timer/Counter for Control 0
+  TC1_Handler,               // 13 - Timer/Counter 1
+  TC2_Handler,               // 14 - Timer/Counter 2
+  ADC_Handler,               // 15 - Analog-to-Digital Converter
+  AC_Handler,                // 16 - Analog Comparator
+  DAC_Handler,               // 17 - Digital-to-Analog Converter
+  PTC_Handler,               // 18 - Peripheral Touch Controller
 };
 
-/**
- * \brief This is the code that gets called on processor reset.
- * To initialize the device, and call the main() routine.
- */
+//-----------------------------------------------------------------------------
 void Reset_Handler(void)
 {
-	uint32_t *pSrc, *pDest;
+  unsigned int *src, *dst;
 
-	/* Initialize the relocate segment */
-	pSrc  = &_etext;
-	pDest = &_srelocate;
+  src = &__data_load_start__;
+  dst = &__data_start__;
+  while (dst < &__data_end__)
+    *dst++ = *src++;
 
-	if (pSrc != pDest) {
-		for (; pDest < &_erelocate;) {
-			*pDest++ = *pSrc++;
-		}
-	}
+  dst = &__bss_start__;
+  while (dst < &__bss_end__)
+    *dst++ = 0;
 
-	/* Clear the zero segment */
-	for (pDest = &_szero; pDest < &_ezero;) {
-		*pDest++ = 0;
-	}
-
-	/* Set the vector table base address */
-	pSrc      = (uint32_t *)&_sfixed;
-	SCB->VTOR = ((uint32_t)pSrc & SCB_VTOR_TBLOFF_Msk);
-
-	/* Change default QOS values to have the best performance and correct USB behaviour */
-	SBMATRIX->SFR[SBMATRIX_SLAVE_HMCRAMC0].reg = 2;
-#if defined(ID_USB)
-	USB->DEVICE.QOSCTRL.bit.CQOS = 2;
-	USB->DEVICE.QOSCTRL.bit.DQOS = 2;
-#endif
-	DMAC->QOSCTRL.bit.DQOS   = 2;
-	DMAC->QOSCTRL.bit.FQOS   = 2;
-	DMAC->QOSCTRL.bit.WRBQOS = 2;
-
-	/* Overwriting the default value of the NVMCTRL.CTRLB.MANW bit (errata reference 13134) */
-	NVMCTRL->CTRLB.bit.MANW = 1;
-
-	/* Initialize the C library */
-	__libc_init_array();
-
-	/* Branch to main function */
-	main();
-
-	/* Infinite loop */
-	while (1)
-		;
+  main();
+  while (1);
 }
 
-/**
- * \brief Default interrupt handler for unused IRQs.
- */
-void Dummy_Handler(void)
+//-----------------------------------------------------------------------------
+void irq_handler_dummy(void)
 {
-	while (1) {
-	}
+  while (1);
+}
+
+//-----------------------------------------------------------------------------
+void _exit(int status)
+{
+  (void)status;
+  while (1);
 }
