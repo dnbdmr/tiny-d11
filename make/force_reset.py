@@ -52,8 +52,7 @@ elif args.uf2:
 
 else:
         if args.verbose: print('Setting DTR high on %s for %ss' % (args.port[0],args.period))
-        ser = serial.Serial(args.port[0], 115200)
-        ser.setDTR(False)
+        ser = serial.Serial(args.port[0], 1200)
+        ser.dtr = 1
         sleep(args.period)
-        ser.setDTR(True)
         ser.close()

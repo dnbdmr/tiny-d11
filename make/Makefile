@@ -9,8 +9,8 @@ CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
 SIZE = arm-none-eabi-size
 
-CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og
-#CFLAGS += -Wextra -Wall --std=gnu11 -Os
+#CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og
+CFLAGS += -Wextra -Wall --std=gnu11 -Os
 #CFLAGS += -fno-diagnostics-show-caret
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -funsigned-char -funsigned-bitfields
@@ -68,10 +68,14 @@ $(BUILD)/$(BIN).bin: $(BUILD)/$(BIN).elf
 	@echo OBJCOPY $@
 	@$(OBJCOPY) -O binary $^ $@
 
-program: $(BUILD)/$(BIN).bin
+$(BUILD)/$(BIN).dfu: $(BUILD)/$(BIN).elf
+	./dx1elf2dfu  $^ $@
+
+program: $(BUILD)/$(BIN).dfu
 	@echo PROGRAM $^
-	./force_reset.py --caterina /dev/ttyACM1
-	./boss.sh $^
+	./force_reset.py /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11_123456-if00 
+	sleep 1
+	dfu-util -D $^
 
 %.o:
 	@echo CC $@
