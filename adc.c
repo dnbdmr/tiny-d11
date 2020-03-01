@@ -56,11 +56,12 @@ void adc_init(void)
   while (ADC->CTRLA.reg & ADC_CTRLA_SWRST);
 
   //Configuration for maxish accuracy
-  ADC->REFCTRL.reg = ADC_REFCTRL_REFSEL_INTVCC1 | ADC_REFCTRL_REFCOMP;
+  ADC->REFCTRL.reg = ADC_REFCTRL_REFSEL_INT1V | ADC_REFCTRL_REFCOMP;
   ADC->CTRLB.reg = ADC_CTRLB_RESSEL_16BIT | ADC_CTRLB_PRESCALER_DIV512;
-  ADC->AVGCTRL.reg = ADC_AVGCTRL_SAMPLENUM_1024;
+  ADC->AVGCTRL.reg = ADC_AVGCTRL_SAMPLENUM_1024 | ADC_AVGCTRL_ADJRES(4);
+  SYSCTRL->VREF.bit.TSEN = 1;
   ADC->INPUTCTRL.reg = ADC_INPUTCTRL_MUXPOS_TEMP | ADC_INPUTCTRL_MUXNEG_GND |
-      ADC_INPUTCTRL_GAIN_DIV2;
+      ADC_INPUTCTRL_GAIN_1X;
   ADC->SAMPCTRL.reg = ADC_SAMPCTRL_SAMPLEN(63);					// Max sample time
   ADC->CALIB.reg = ADC_CALIB_BIAS_CAL(NVM_READ_CAL(ADC_BIASCAL)) |
       ADC_CALIB_LINEARITY_CAL(NVM_READ_CAL(ADC_LINEARITY));
@@ -78,3 +79,24 @@ uint16_t adc_read(void)
   return ADC->RESULT.reg;
 }
 
+/* takes a 12 bit unsigned reading from adc
+ * returns calculated temp in C * 1000 as signed int
+ * adapted from https://github.com/ElectronicCats/ElectronicCats_InternalTemperatureZero 
+ */
+int32_t calculate_temperature(uint32_t reading)
+{
+	int32_t adcReading = (int32_t)reading;
+	// Factory room temperature readings
+	uint8_t roomInteger = (*(uint32_t*)FUSES_ROOM_TEMP_VAL_INT_ADDR & FUSES_ROOM_TEMP_VAL_INT_Msk) >> FUSES_ROOM_TEMP_VAL_INT_Pos;
+	uint8_t roomDecimal = (*(uint32_t*)FUSES_ROOM_TEMP_VAL_DEC_ADDR & FUSES_ROOM_TEMP_VAL_DEC_Msk) >> FUSES_ROOM_TEMP_VAL_DEC_Pos;
+	int32_t roomReading = ((*(uint32_t*)FUSES_ROOM_ADC_VAL_ADDR & FUSES_ROOM_ADC_VAL_Msk) >> FUSES_ROOM_ADC_VAL_Pos);
+	int32_t roomTemperature = 1000 * roomInteger + 100 * roomDecimal;
+	// Factory hot temperature readings
+	uint8_t hotInteger = (*(uint32_t*)FUSES_HOT_TEMP_VAL_INT_ADDR & FUSES_HOT_TEMP_VAL_INT_Msk) >> FUSES_HOT_TEMP_VAL_INT_Pos;
+	uint8_t hotDecimal = (*(uint32_t*)FUSES_HOT_TEMP_VAL_DEC_ADDR & FUSES_HOT_TEMP_VAL_DEC_Msk) >> FUSES_HOT_TEMP_VAL_DEC_Pos;
+	int32_t hotReading = ((*(uint32_t*)FUSES_HOT_ADC_VAL_ADDR & FUSES_HOT_ADC_VAL_Msk) >> FUSES_HOT_ADC_VAL_Pos);
+	int32_t hotTemperature = 1000 * hotInteger + 100 * hotDecimal;
+	// Linear interpolation of temperature using factory room temperature and hot temperature
+	int32_t temperature = roomTemperature + ((hotTemperature - roomTemperature) * (adcReading - roomReading)) / (hotReading - roomReading);
+	return temperature;
+}

@@ -32,6 +32,7 @@
 /*- Prototypes --------------------------------------------------------------*/
 void adc_init(void);
 uint16_t adc_read(void);
+int32_t calculate_temperature(uint32_t);
 
 #endif // _ADC_H_
 
