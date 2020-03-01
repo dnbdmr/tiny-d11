@@ -4,6 +4,7 @@
 
 from __future__ import print_function
 import serial
+import sys
 import os.path
 import argparse
 from time import sleep
@@ -53,6 +54,9 @@ elif args.uf2:
 else:
         if args.verbose: print('Setting DTR high on %s for %ss' % (args.port[0],args.period))
         ser = serial.Serial(args.port[0], 1200)
+        if ser.isOpen():
+            print('Serial port already open. Quitting.')
+            sys.exit(1)
         ser.dtr = 1
         sleep(args.period)
         ser.close()
