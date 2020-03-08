@@ -57,7 +57,7 @@ tusb_desc_device_t const desc_device =
     .bDeviceProtocol    = 0x00,
   #endif
 
-    .bMaxPacketSize0    = CFG_TUD_ENDOINT0_SIZE,
+    .bMaxPacketSize0    = CFG_TUD_ENDPOINT0_SIZE,
 
     .idVendor           = 0xCafe,
     .idProduct          = USB_PID,
@@ -134,7 +134,7 @@ enum
 
 uint8_t const desc_configuration[] =
 {
-  // Interface count, string index, total length, attribute, power in mA
+  // interface count, string index, total length, attribute, power in mA
   TUD_CONFIG_DESCRIPTOR(ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
 
 #if CFG_TUD_CDC
@@ -144,7 +144,7 @@ uint8_t const desc_configuration[] =
 
 #if CFG_TUD_MSC
   // Interface number, string index, EP Out & EP In address, EP size
-  TUD_MSC_DESCRIPTOR(ITF_NUM_MSC, 5, EPNUM_MSC, 0x80 | EPNUM_MSC, (CFG_TUSB_RHPORT0_MODE & OPT_MODE_HIGH_SPEED) ? 512 : 64),
+  TUD_MSC_DESCRIPTOR(ITF_NUM_MSC, 5, EPNUM_MSC, 0x80 | EPNUM_MSC, 64), // highspeed 512
 #endif
 
 #if CFG_TUD_HID
@@ -183,8 +183,10 @@ static uint16_t _desc_str[32];
 
 // Invoked when received GET STRING DESCRIPTOR request
 // Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
-uint16_t const* tud_descriptor_string_cb(uint8_t index)
+uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid)
 {
+  (void) langid;
+
   uint8_t chr_count;
 
   if ( index == 0)
