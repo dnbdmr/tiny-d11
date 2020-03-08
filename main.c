@@ -36,12 +36,11 @@
 #include "hal_gpio.h"
 #include "nvm_data.h"
 #include "tusb.h"
-#include "usb_descriptors.h"
 #include "adc.h"
 
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 5);
-HAL_GPIO_PIN(LED2, 	A, 14);
+HAL_GPIO_PIN(LED2,	A, 8);
 
 /*- Implementations ---------------------------------------------------------*/
 
@@ -77,11 +76,13 @@ void TC1_Handler(void)
 void adc_task(void) 
 {
 	static uint32_t time = 0;
-	if (((millis() - time) > 2000) && tud_cdc_connected()) {
+	if (((millis() - time) > 10000) && tud_cdc_connected()) {
 		time = millis();
-		uint32_t v = (adc_read() * 3300) / 65536;
-		char s[10];
-		itoa(v, s, 10);
+		int32_t a = calculate_temperature(adc_read());
+		a = (a * 9 / 5) + 32000;
+		char s[15];
+		itoa(a, s, 10);
+		tud_cdc_write_str("CPU Tempx1000=");
 		tud_cdc_write_str(s);
 		tud_cdc_write_char('\n');
 	}
@@ -140,11 +141,6 @@ static void sys_init(void)
 		GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
 	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
 	
-	//Disable OSC8M and generator 2 (enabled by UF2 bootloader)
-	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(2);
-	GCLK->GENCTRL.bit.GENEN = 0;
-	SYSCTRL->OSC8M.bit.ENABLE = 0;
-
 	SysTick_Config(48000); //systick at 1ms
 }
 
@@ -177,7 +173,7 @@ void tud_suspend_cb(bool remote_wakeup_en)
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	uint32_t *a = (uint32_t *)(0x40000838); // Disable BOD12, SAMD11 errata #15513
 	*a = 0x00000004;
-	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk << SCB_SCR_SLEEPDEEP_Pos;
+	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 	__WFI();
 	*a = 0x00000006; // Enable BOD12, SAMD11 errata #15513
 }
@@ -256,8 +252,10 @@ int main(void)
 	adc_init();
 
 	HAL_GPIO_LED1_out();
+	HAL_GPIO_LED1_set();
+
 	HAL_GPIO_LED2_out();
-	HAL_GPIO_LED2_set();
+	HAL_GPIO_LED2_clr();
 
 	while (1)
 	{
