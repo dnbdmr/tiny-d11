@@ -196,6 +196,7 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 	if ( dtr && rts )
 	{
 		// print initial message when connected
+		tud_cdc_write_str("Hello!\n");
 	}
 
 	//Reset into bootloader when baud is 1200 and dtr unasserted
@@ -203,8 +204,6 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 		cdc_line_coding_t lc;
 		tud_cdc_get_line_coding(&lc);
 		if (lc.bit_rate == 1200) {
-			unsigned long *a = (unsigned long *)(HMCRAMC0_ADDR + HMCRAMC0_SIZE - 4); // Make a boot key at end of RAM
-			*a = 0x07738135; // Set boot key to mattair magic value
 			NVIC_SystemReset();
 		}
 	}
