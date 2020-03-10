@@ -41,6 +41,8 @@
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 5);
 HAL_GPIO_PIN(LED2,	A, 8);
+HAL_GPIO_PIN(LED3,	A, 9);
+HAL_GPIO_PIN(LED4,	A, 14);
 
 /*- Implementations ---------------------------------------------------------*/
 
@@ -70,6 +72,10 @@ void TC1_Handler(void)
 		HAL_GPIO_LED1_toggle();
 		HAL_GPIO_LED2_toggle();
 		TC1->COUNT16.INTFLAG.reg = TC_INTFLAG_MC(1);
+		if (TCC0->CC[0].reg < 3000) 
+			TCC0->CC[0].reg += 300;
+		else
+			TCC0->CC[0].reg = 0;
 	}
 }
 
@@ -93,7 +99,8 @@ static void timer_init(void)
 {
 	PM->APBCMASK.reg |= PM_APBCMASK_TC1;
 
-	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(TC1_GCLK_ID) |
+	//GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(TC1_GCLK_ID) |
+	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID_TC1_TC2 |
 		GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(0);
 
 	TC1->COUNT16.CTRLA.reg = TC_CTRLA_MODE_COUNT16 | TC_CTRLA_WAVEGEN_MFRQ |
@@ -140,6 +147,25 @@ static void sys_init(void)
 	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(0) | GCLK_GENCTRL_SRC(GCLK_SOURCE_DFLL48M) |
 		GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
 	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
+
+	// gclk1 at 512k
+	GCLK->GENDIV.reg = GCLK_GENDIV_ID(1) | GCLK_GENDIV_DIV(15635);
+	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(1) | GCLK_GENCTRL_SRC(GCLK_SOURCE_OSC8M) | GCLK_GENCTRL_GENEN;
+	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
+
+	PM->APBCMASK.reg |= PM_APBCMASK_TCC0;
+	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID_TCC0 | GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0;
+	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
+	TCC0->CTRLA.reg |= TCC_CTRLA_PRESCALER(TCC_CTRLA_PRESCALER_DIV64_Val);
+	TCC0->WAVE.reg = TCC_WAVE_WAVEGEN_NPWM;
+	TCC0->PER.reg = 3000;
+	TCC0->CC[0].reg = 0;
+	while (TCC0->SYNCBUSY.reg);
+	HAL_GPIO_LED4_out();
+	HAL_GPIO_LED4_pmuxen(HAL_GPIO_PMUX_F);
+	TCC0->CTRLA.reg |= TCC_CTRLA_ENABLE;
+	while (TCC0->SYNCBUSY.bit.ENABLE);
+	
 	
 	SysTick_Config(48000); //systick at 1ms
 }
@@ -217,11 +243,11 @@ void tud_cdc_rx_cb(uint8_t itf)
 	//tud_cdc_write_str("Stop That!!\n");
 	//tud_cdc_read_flush();
 
-	if ( tud_cdc_connected() )
-	{
+	//if ( tud_cdc_connected() )
+	//{
 		// connected and there are data available
-		if ( tud_cdc_available() )
-		{
+	//	if ( tud_cdc_available() )
+	//	{
 			uint8_t buf[64];
 			// read and echo back
 			uint8_t count = tud_cdc_read(buf, sizeof(buf));
@@ -230,9 +256,11 @@ void tud_cdc_rx_cb(uint8_t itf)
 			{
 				tud_cdc_write_char(buf[i]);
 			}
-		}
-	}
+	//	}
+	//}
 }
+
+void tud_cdc_rx_wanted_cb(uint8_t itf, char wanted_char);
 
 void cdc_task(void)
 {
@@ -253,14 +281,20 @@ int main(void)
 	HAL_GPIO_LED1_out();
 	HAL_GPIO_LED1_set();
 
+	HAL_GPIO_LED3_out();
+	HAL_GPIO_LED3_set();
+
 	HAL_GPIO_LED2_out();
 	HAL_GPIO_LED2_clr();
+
+	tud_cdc_set_wanted_char('\n');
 
 	while (1)
 	{
 		adc_task();
 		tud_task();
 		cdc_task();
+		HAL_GPIO_LED3_toggle();
 	}
 
 	return 0;
