@@ -36,13 +36,13 @@
 #include "hal_gpio.h"
 
 /*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(SDA,             A, 22); //ItsyBitsy pin 
-HAL_GPIO_PIN(SCL,             A, 23); //ItsyBitsy pin
-#define I2C_SERCOM            SERCOM3
+HAL_GPIO_PIN(SDA,             A, 14); //ItsyBitsy pin 
+HAL_GPIO_PIN(SCL,             A, 15); //ItsyBitsy pin
+#define I2C_SERCOM            SERCOM0
 #define I2C_SERCOM_PMUX       PORT_PMUX_PMUXE_C_Val
-#define I2C_SERCOM_GCLK_ID    SERCOM3_GCLK_ID_CORE
+#define I2C_SERCOM_GCLK_ID    SERCOM0_GCLK_ID_CORE
 #define I2C_SERCOM_CLK_GEN    0
-#define I2C_SERCOM_APBCMASK   PM_APBCMASK_SERCOM3
+#define I2C_SERCOM_APBCMASK   PM_APBCMASK_SERCOM0
 
 #define T_RISE                215e-9 // Depends on the board, actually
 

@@ -37,6 +37,7 @@
 #include "nvm_data.h"
 #include "tusb.h"
 #include "adc.h"
+#include "htu21.h"
 
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 5);
@@ -91,6 +92,28 @@ void adc_task(void)
 		tud_cdc_write_str("CPU Tempx1000=");
 		tud_cdc_write_str(s);
 		tud_cdc_write_char('\n');
+	}
+}
+
+void htu21_task(void)
+{
+	static uint32_t time = 0;
+	if (((millis() - time) > 10000) && tud_cdc_connected()) {
+		time = millis();
+		char s[25];
+		uint32_t temp;
+
+		temp = htu21_readtemp();
+		itoa(temp, s, 10);
+		tud_cdc_write_str("TempX100: ");
+		tud_cdc_write_str(s);
+		tud_cdc_write_char('\t');
+
+		temp = htu21_readhumidity();
+		itoa(temp, s, 10);
+		tud_cdc_write_str("HumX100: ");
+		tud_cdc_write_str(s);
+		tud_cdc_write_char('\t');
 	}
 }
 
@@ -237,11 +260,19 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 
 //-----------------------------------------------------------------------------
 // Invoked when CDC interface received data from host
+/*
 void tud_cdc_rx_cb(uint8_t itf)
 {
 	(void) itf;
 	//tud_cdc_write_str("Stop That!!\n");
 	//tud_cdc_read_flush();
+}
+*/
+
+void cdc_task(void)
+{
+	static uint8_t line[20];
+	static uint8_t pos = 0;
 
 	//if ( tud_cdc_connected() )
 	//{
@@ -254,18 +285,17 @@ void tud_cdc_rx_cb(uint8_t itf)
 
 			for(uint32_t i=0; i<count; i++)
 			{
-				tud_cdc_write_char(buf[i]);
+				//tud_cdc_write_char(buf[i]);
+				line[pos+i] = buf[i];
+				if (buf[i] == '\n') {
+					tud_cdc_write(line, pos+i+1);
+					pos = 0;
+					return;
+				}
 			}
-	//	}
-	//}
-}
+			pos += count;
 
-void tud_cdc_rx_wanted_cb(uint8_t itf, char wanted_char);
-
-void cdc_task(void)
-{
-	if ( tud_cdc_connected() )
-	{
+		}
 		tud_cdc_write_flush(); // Freeze without this
 	}
 }
@@ -276,6 +306,7 @@ int main(void)
 	usb_setup();
 	tusb_init();
 	timer_init();
+	htu21_init();
 	adc_init();
 
 	HAL_GPIO_LED1_out();
@@ -291,6 +322,7 @@ int main(void)
 
 	while (1)
 	{
+		htu21_task();
 		adc_task();
 		tud_task();
 		cdc_task();
