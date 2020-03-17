@@ -211,11 +211,19 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 
 //-----------------------------------------------------------------------------
 // Invoked when CDC interface received data from host
+/*
 void tud_cdc_rx_cb(uint8_t itf)
 {
 	(void) itf;
 	//tud_cdc_write_str("Stop That!!\n");
 	//tud_cdc_read_flush();
+}
+*/
+
+void cdc_task(void)
+{
+	static uint8_t line[20];
+	static uint8_t pos = 0;
 
 	if ( tud_cdc_connected() )
 	{
@@ -228,16 +236,17 @@ void tud_cdc_rx_cb(uint8_t itf)
 
 			for(uint32_t i=0; i<count; i++)
 			{
-				tud_cdc_write_char(buf[i]);
+				//tud_cdc_write_char(buf[i]);
+				line[pos+i] = buf[i];
+				if (buf[i] == '\n') {
+					tud_cdc_write(line, pos+i+1);
+					pos = 0;
+					return;
+				}
 			}
-		}
-	}
-}
+			pos += count;
 
-void cdc_task(void)
-{
-	if ( tud_cdc_connected() )
-	{
+		}
 		tud_cdc_write_flush(); // Freeze without this
 	}
 }
