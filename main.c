@@ -37,6 +37,7 @@
 #include "nvm_data.h"
 #include "tusb.h"
 #include "adc.h"
+#include "htu21.h"
 
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 5);
@@ -85,6 +86,28 @@ void adc_task(void)
 		tud_cdc_write_str("CPU Tempx1000=");
 		tud_cdc_write_str(s);
 		tud_cdc_write_char('\n');
+	}
+}
+
+void htu21_task(void)
+{
+	static uint32_t time = 0;
+	if (((millis() - time) > 10000) && tud_cdc_connected()) {
+		time = millis();
+		char s[25];
+		uint32_t temp;
+
+		temp = htu21_readtemp();
+		itoa(temp, s, 10);
+		tud_cdc_write_str("TempX100: ");
+		tud_cdc_write_str(s);
+		tud_cdc_write_char('\t');
+
+		temp = htu21_readhumidity();
+		itoa(temp, s, 10);
+		tud_cdc_write_str("HumX100: ");
+		tud_cdc_write_str(s);
+		tud_cdc_write_char('\t');
 	}
 }
 
@@ -248,6 +271,7 @@ int main(void)
 	usb_setup();
 	tusb_init();
 	timer_init();
+	htu21_init();
 	adc_init();
 
 	HAL_GPIO_LED1_out();
@@ -258,6 +282,7 @@ int main(void)
 
 	while (1)
 	{
+		htu21_task();
 		adc_task();
 		tud_task();
 		cdc_task();

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "samd21.h"
+#include "sam.h"
 #include "i2c_master.h"
 
 #include "tusb.h"

@@ -42,7 +42,9 @@ SRCS += \
   ../tinyusb/src/portable/microchip/samd/dcd_samd.c \
   ../tinyusb/src/class/cdc/cdc_device.c \
   ../usb_descriptors.c \
-  ../adc.c
+  ../adc.c \
+  ../i2c_master.c \
+  ../htu21.c
 
 DEFINES += \
   -D__SAMD11C14A__ \
