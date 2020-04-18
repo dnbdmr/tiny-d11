@@ -1,6 +1,7 @@
 ##############################################################################
 BUILD = build
 BIN = dgw
+PORT = /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11_123456-if00 
 
 ##############################################################################
 .PHONY: all directory clean size
@@ -75,7 +76,7 @@ $(BUILD)/$(BIN).dfu: $(BUILD)/$(BIN).elf
 
 program: $(BUILD)/$(BIN).dfu
 	@echo PROGRAM $^
-	./force_reset.py /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11_123456-if00 
+	./force_reset.py $(PORT)
 	sleep 1
 	dfu-util -D $^
 
