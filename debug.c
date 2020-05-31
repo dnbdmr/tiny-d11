@@ -31,13 +31,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
-#include "samd21.h"
+#include "sam.h"
 #include "debug.h"
 #include "hal_gpio.h"
 
 /*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(UART_TX,  A, 10)
-HAL_GPIO_PIN(UART_RX,  A, 11)
+HAL_GPIO_PIN(UART_TX,  A, 30)
+HAL_GPIO_PIN(UART_RX,  A, 31)
 
 /*- Implementations ---------------------------------------------------------*/
 
@@ -51,30 +51,33 @@ void debug_init(void)
   HAL_GPIO_UART_RX_in();
   HAL_GPIO_UART_RX_pmuxen(PORT_PMUX_PMUXE_C_Val);
 
-  PM->APBCMASK.reg |= PM_APBCMASK_SERCOM0;
+  PM->APBCMASK.reg |= PM_APBCMASK_SERCOM1;
 
-  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(SERCOM0_GCLK_ID_CORE) |
+  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(SERCOM1_GCLK_ID_CORE) |
       GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(0);
 
-  SERCOM0->USART.CTRLA.reg =
+  SERCOM1->USART.CTRLA.reg = SERCOM_USART_CTRLA_SWRST;
+  while(SERCOM1->USART.SYNCBUSY.reg & SERCOM_USART_SYNCBUSY_SWRST);
+
+  SERCOM1->USART.CTRLA.reg =
       SERCOM_USART_CTRLA_DORD | SERCOM_USART_CTRLA_MODE_USART_INT_CLK |
-      SERCOM_USART_CTRLA_RXPO(0x3/*PAD3*/) | SERCOM_USART_CTRLA_TXPO(0x1/*PAD2*/);
+      SERCOM_USART_CTRLA_RXPO(0x1/*PAD1*/) | SERCOM_USART_CTRLA_TXPO(0x0/*PAD0*/);
 
-  SERCOM0->USART.CTRLB.reg = SERCOM_USART_CTRLB_RXEN | SERCOM_USART_CTRLB_TXEN |
+  SERCOM1->USART.CTRLB.reg = SERCOM_USART_CTRLB_RXEN | SERCOM_USART_CTRLB_TXEN |
       SERCOM_USART_CTRLB_CHSIZE(0/*8 bits*/);
-  while(SERCOM0->USART.SYNCBUSY.reg & SERCOM_USART_SYNCBUSY_CTRLB);
+  while(SERCOM1->USART.SYNCBUSY.reg & SERCOM_USART_SYNCBUSY_CTRLB);
 
-  SERCOM0->USART.BAUD.reg = (uint16_t)br;
+  SERCOM1->USART.BAUD.reg = (uint16_t)br;
 
-  SERCOM0->USART.CTRLA.reg |= SERCOM_USART_CTRLA_ENABLE;
-  while(SERCOM0->USART.SYNCBUSY.reg & SERCOM_USART_SYNCBUSY_ENABLE);
+  SERCOM1->USART.CTRLA.reg |= SERCOM_USART_CTRLA_ENABLE;
+  while(SERCOM1->USART.SYNCBUSY.reg & SERCOM_USART_SYNCBUSY_ENABLE);
 }
 
 //-----------------------------------------------------------------------------
 void debug_putc(char c)
 {
-  while (!(SERCOM0->USART.INTFLAG.reg & SERCOM_USART_INTFLAG_DRE));
-  SERCOM0->USART.DATA.reg = c;
+  while (!(SERCOM1->USART.INTFLAG.reg & SERCOM_USART_INTFLAG_DRE));
+  SERCOM1->USART.DATA.reg = c;
 }
 
 //-----------------------------------------------------------------------------

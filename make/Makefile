@@ -45,7 +45,9 @@ SRCS += \
   ../usb_descriptors.c \
   ../adc.c \
   ../i2c_master.c \
-  ../htu21.c
+  ../htu21.c \
+  ../debug.c \
+  ../dma.c
 
 DEFINES += \
   -D__SAMD11C14A__ \

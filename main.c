@@ -38,6 +38,8 @@
 #include "tusb.h"
 #include "adc.h"
 #include "htu21.h"
+#include "debug.h"
+#include "dma.h"
 
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 5);
@@ -305,6 +307,7 @@ uint8_t cdc_task(uint8_t line[], uint8_t max)
 	else
 		return 0;
 }
+
 //-----------------------------------------------------------------------------
 int main(void)
 {
@@ -314,6 +317,8 @@ int main(void)
 	timer_init();
 	htu21_init();
 	adc_init();
+	debug_init();
+	dma_init();
 
 	HAL_GPIO_LED1_out();
 	HAL_GPIO_LED1_set();
@@ -337,6 +342,19 @@ int main(void)
 				uint32_t ms = atoi((const char *)&line[1]);
 				if (ms > 0 && ms < 50000)
 					timer_ms(ms);
+			}
+			else if (line[0] == 'h') {
+				debug_puts("Hello! Help!\n");
+			}
+			else if (line[0] == 'c') {
+				debug_putc('a');
+				debug_putc('\n');
+			}
+			else if (line[0] == 'd') {
+				dma_ch_enable(0);
+			}
+			else if (line[0] == 'D') {
+				dma_ch_disable(0);
 			}
 		}
 	}
