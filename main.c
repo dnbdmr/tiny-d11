@@ -122,6 +122,7 @@ void htu21_task(void)
 //-----------------------------------------------------------------------------
 static void timer_ms(uint32_t ms) {
 	TC1->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * ms;
+	TC1->COUNT16.COUNT.reg = 0;
 }
 
 static void timer_init(void)
