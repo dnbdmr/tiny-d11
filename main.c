@@ -67,6 +67,17 @@ uint32_t millis(void)
 	return m;
 }
 
+void delay_us(uint32_t us)
+{
+	if (!us || (us >= SysTick->LOAD))
+		return;
+	if(!(SysTick->CTRL & SysTick_CTRL_ENABLE_Msk))
+		return;
+	us = F_CPU/1000000*us;
+	uint32_t time = SysTick->VAL;
+	while ((time - SysTick->VAL) < us);
+}
+
 //-----------------------------------------------------------------------------
 void TC1_Handler(void)
 {
@@ -337,6 +348,12 @@ int main(void)
 		htu21_task();
 		adc_task();
 		tud_task();
+
+		HAL_GPIO_LED3_clr();
+		delay_us(100);
+		HAL_GPIO_LED3_set();
+		delay_us(100);
+
 
 		if (cdc_task(line, 25)) {
 			if (line[0] == 'b') {
