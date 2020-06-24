@@ -42,7 +42,7 @@
 #include "dma.h"
 
 /*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(LED1,	A, 5);
+HAL_GPIO_PIN(LED1,	A, 27);
 HAL_GPIO_PIN(LED2,	A, 8);
 HAL_GPIO_PIN(LED3,	A, 9);
 HAL_GPIO_PIN(LED4,	A, 14);
@@ -327,10 +327,10 @@ int main(void)
 	usb_setup();
 	tusb_init();
 	timer_init();
-	htu21_init();
+	//htu21_init();
 	adc_init();
-	debug_init();
-	dma_init();
+	//debug_init();
+	//dma_init();
 
 	HAL_GPIO_LED1_out();
 	HAL_GPIO_LED1_set();
@@ -345,7 +345,7 @@ int main(void)
 
 	while (1)
 	{
-		htu21_task();
+		//htu21_task();
 		adc_task();
 		tud_task();
 

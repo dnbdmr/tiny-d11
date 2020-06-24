@@ -1,7 +1,7 @@
 ##############################################################################
 BUILD = build
 BIN = dgw
-PORT = /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11_123456-if00 
+PORT = /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11-wam_123456-if00 
 
 ##############################################################################
 .PHONY: all directory clean size
@@ -50,7 +50,7 @@ SRCS += \
   ../dma.c
 
 DEFINES += \
-  -D__SAMD11C14A__ \
+  -D__SAMD11D14AM__ \
   -DDONT_USE_CMSIS_INIT \
   -DF_CPU=48000000 \
   -DSTARTUP_FROM_RESET
