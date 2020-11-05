@@ -179,7 +179,7 @@ char const* string_desc_arr [] =
   "TinyUSB HID"                  // 6: HID
 };
 
-static uint16_t _desc_str[32];
+static uint16_t _desc_str[33];
 
 // Invoked when received GET STRING DESCRIPTOR request
 // Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
@@ -189,12 +189,22 @@ uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid)
 
   uint8_t chr_count;
 
-  if ( index == 0)
-  {
+  if (index == 0) { // Language id
     memcpy(&_desc_str[1], string_desc_arr[0], 2);
     chr_count = 1;
-  }else
-  {
+  } else if (index == 3) { // Serial number
+	  uint32_t* addresses[4] = {(uint32_t *) 0x0080A00C, (uint32_t *) 0x0080A040,
+		  (uint32_t *) 0x0080A044, (uint32_t *) 0x0080A048};
+
+	  chr_count = 1;
+
+	  for (int i = 0; i < 4; ++i) { // cycle through adresses
+		  for (int sh = 28; sh >= 0; sh -= 4) { // cycle through nibbles
+			  int d = (*(addresses[i]) >> sh) & 0xf;
+			  _desc_str[chr_count++] = d > 9 ? 'A' + d - 10 : '0' + d;
+		  }
+	  }
+  } else {
     // Convert ASCII string into UTF-16
 
     if ( !(index < sizeof(string_desc_arr)/sizeof(string_desc_arr[0])) ) return NULL;
