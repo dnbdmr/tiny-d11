@@ -196,12 +196,13 @@ uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid)
 	  uint32_t* addresses[4] = {(uint32_t *) 0x0080A00C, (uint32_t *) 0x0080A040,
 		  (uint32_t *) 0x0080A044, (uint32_t *) 0x0080A048};
 
-	  chr_count = 1;
+	  chr_count = 0;
 
-	  for (int i = 0; i < 4; ++i) { // cycle through adresses
-		  for (int sh = 28; sh >= 0; sh -= 4) { // cycle through nibbles
-			  int d = (*(addresses[i]) >> sh) & 0xf;
-			  _desc_str[chr_count++] = d > 9 ? 'A' + d - 10 : '0' + d;
+	  for (uint8_t i = 0; i < 4; ++i) { // cycle through addresses
+		  for (int8_t sh = 28; sh >= 0; sh -= 4) { // cycle through nibbles
+			  uint8_t d = (*(addresses[i]) >> sh) & 0xf;
+			  _desc_str[1 + chr_count] = d > 9 ? 'A' + d - 10 : '0' + d;
+			  chr_count++;
 		  }
 	  }
   } else {
