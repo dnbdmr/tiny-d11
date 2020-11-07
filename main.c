@@ -321,6 +321,27 @@ uint8_t cdc_task(uint8_t line[], uint8_t max)
 		return 0;
 }
 
+const char help_msg[] = \
+						"Tiny usb test commands:\n" \
+						"b [ms]\ttimer blink rate\n" \
+						"d [0-3000]\tled pwm\n" \
+						"h\tprint humidity\n" \
+						"t\tprint local temp\n" \
+						"o\tprint remote temp\n" \
+						"c\tprint to debug uart\n" \
+						"d\tDMA uart enable\n" \
+						"D\tDMA uart disable\n";
+
+void print_help(void)
+{
+	size_t len = strlen(help_msg);
+	for (size_t pos = 0; pos < len; pos += CFG_TUD_CDC_EPSIZE) {
+		tud_cdc_write(&help_msg[pos], ((pos+CFG_TUD_CDC_EPSIZE) >= len) ? (len - pos) : CFG_TUD_CDC_EPSIZE);
+		while(!tud_cdc_write_flush())
+			tud_task();
+	}
+}
+
 //-----------------------------------------------------------------------------
 int main(void)
 {
@@ -392,6 +413,9 @@ int main(void)
 			}
 			else if (line[0] == 'D') {
 				dma_ch_disable(0);
+			}
+			else if (line[0] == '?') {
+				print_help();
 			}
 		}
 	}
