@@ -34,7 +34,7 @@
 // COMMON CONFIGURATION
 //--------------------------------------------------------------------
 
-#define CFG_TUSB_MCU	OPT_MCU_SAMD21
+#define CFG_TUSB_MCU	OPT_MCU_SAMD11
 
 // defined by compiler flags for flexibility
 #ifndef CFG_TUSB_MCU

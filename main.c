@@ -226,6 +226,10 @@ void usb_setup(void)
 	PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg |= MUX_PA25G_USB_DP << (4 * (PIN_PA25G_USB_DP & 0x01u));
 }
 
+void USB_Handler(void)
+{
+	dcd_int_handler(0);
+}
 //-----------------------------------------------------------------------------
 // Invoked when usb bus is suspended
 // remote_wakeup_en : if host allow us	to perform remote wakeup
@@ -335,10 +339,16 @@ const char help_msg[] = \
 void print_help(void)
 {
 	size_t len = strlen(help_msg);
-	for (size_t pos = 0; pos < len; pos += CFG_TUD_CDC_EPSIZE) {
-		tud_cdc_write(&help_msg[pos], ((pos+CFG_TUD_CDC_EPSIZE) >= len) ? (len - pos) : CFG_TUD_CDC_EPSIZE);
-		while(!tud_cdc_write_flush())
-			tud_task();
+	size_t pos = 0;
+	while (pos < len) {
+		uint32_t avail = tud_cdc_write_available();
+		if ((len - pos) > avail) {
+		   tud_cdc_write(&help_msg[pos], avail);
+		} else {
+			tud_cdc_write(&help_msg[pos], len - pos);
+		}	
+		pos += avail;
+		tud_task();
 	}
 }
 
