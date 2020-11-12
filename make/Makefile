@@ -1,7 +1,7 @@
 ##############################################################################
 BUILD = build
 BIN = dgw
-PORT = /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11_3C1FA499514E4B3257202020FF0F082D-if00
+PORT = /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11_28F5BB24514D4B53334A2020FF074244-if00
 
 ##############################################################################
 .PHONY: all directory clean size program
