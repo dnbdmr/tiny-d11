@@ -1,10 +1,10 @@
 ##############################################################################
 BUILD = build
 BIN = dgw
-PORT = /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11-wam_123456-if00 
+PORT = /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11_3C1FA499514E4B3257202020FF0F082D-if00
 
 ##############################################################################
-.PHONY: all directory clean size
+.PHONY: all directory clean size program
 
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy

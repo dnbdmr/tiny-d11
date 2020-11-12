@@ -45,7 +45,6 @@
 HAL_GPIO_PIN(LED1,	A, 27);
 HAL_GPIO_PIN(LED2,	A, 8);
 HAL_GPIO_PIN(LED3,	A, 9);
-HAL_GPIO_PIN(LED4,	A, 14);
 
 /*- Implementations ---------------------------------------------------------*/
 
@@ -86,10 +85,10 @@ void TC1_Handler(void)
 		HAL_GPIO_LED1_toggle();
 		HAL_GPIO_LED2_toggle();
 		TC1->COUNT16.INTFLAG.reg = TC_INTFLAG_MC(1);
-		if (TCC0->CC[0].reg < 3000) 
-			TCC0->CC[0].reg += 300;
+		if (TCC0->CC[1].reg < 3000) 
+			TCC0->CC[1].reg += 300;
 		else
-			TCC0->CC[0].reg = 0;
+			TCC0->CC[1].reg = 0;
 	}
 }
 
@@ -200,13 +199,12 @@ static void sys_init(void)
 	TCC0->CTRLA.reg |= TCC_CTRLA_PRESCALER(TCC_CTRLA_PRESCALER_DIV64_Val);
 	TCC0->WAVE.reg = TCC_WAVE_WAVEGEN_NPWM;
 	TCC0->PER.reg = 3000;
-	TCC0->CC[0].reg = 0;
+	TCC0->CC[1].reg = 1500;
 	while (TCC0->SYNCBUSY.reg);
-	HAL_GPIO_LED4_out();
-	HAL_GPIO_LED4_pmuxen(HAL_GPIO_PMUX_F);
+	HAL_GPIO_LED3_out();
+	HAL_GPIO_LED3_pmuxen(HAL_GPIO_PMUX_F);
 	TCC0->CTRLA.reg |= TCC_CTRLA_ENABLE;
 	while (TCC0->SYNCBUSY.bit.ENABLE);
-	
 	
 	SysTick_Config(48000); //systick at 1ms
 }
@@ -228,6 +226,10 @@ void usb_setup(void)
 	PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg |= MUX_PA25G_USB_DP << (4 * (PIN_PA25G_USB_DP & 0x01u));
 }
 
+void USB_Handler(void)
+{
+	dcd_int_handler(0);
+}
 //-----------------------------------------------------------------------------
 // Invoked when usb bus is suspended
 // remote_wakeup_en : if host allow us	to perform remote wakeup
@@ -237,10 +239,11 @@ void tud_suspend_cb(bool remote_wakeup_en)
 	(void) remote_wakeup_en;
 	HAL_GPIO_LED1_in();
 	HAL_GPIO_LED2_in();
+	HAL_GPIO_LED3_pmuxdis();
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	uint32_t *a = (uint32_t *)(0x40000838); // Disable BOD12, SAMD11 errata #15513
 	*a = 0x00000004;
-	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+	//SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 	__WFI();
 	*a = 0x00000006; // Enable BOD12, SAMD11 errata #15513
 }
@@ -250,6 +253,8 @@ void tud_resume_cb(void)
 {
 	HAL_GPIO_LED1_out();
 	HAL_GPIO_LED2_out();
+	HAL_GPIO_LED3_pmuxen(HAL_GPIO_PMUX_F);
+	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	SysTick_Config(48000); //systick at 1ms
 }
 
@@ -263,7 +268,7 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
 	if ( dtr && rts )
 	{
 		// print initial message when connected
-		tud_cdc_write_str("Hello!\n");
+		//tud_cdc_write_str("Hello!\n");
 	}
 
 	//Reset into bootloader when baud is 1200 and dtr unasserted
@@ -320,6 +325,33 @@ uint8_t cdc_task(uint8_t line[], uint8_t max)
 		return 0;
 }
 
+const char help_msg[] = \
+						"Tiny usb test commands:\n" \
+						"b [ms]\ttimer blink rate\n" \
+						"d [0-3000]\tled pwm\n" \
+						"h\tprint humidity\n" \
+						"t\tprint local temp\n" \
+						"o\tprint remote temp\n" \
+						"c\tprint to debug uart\n" \
+						"d\tDMA uart enable\n" \
+						"D\tDMA uart disable\n";
+
+void print_help(void)
+{
+	size_t len = strlen(help_msg);
+	size_t pos = 0;
+	while (pos < len) {
+		uint32_t avail = tud_cdc_write_available();
+		if ((len - pos) > avail) {
+		   tud_cdc_write(&help_msg[pos], avail);
+		} else {
+			tud_cdc_write(&help_msg[pos], len - pos);
+		}	
+		pos += avail;
+		tud_task();
+	}
+}
+
 //-----------------------------------------------------------------------------
 int main(void)
 {
@@ -336,7 +368,6 @@ int main(void)
 	HAL_GPIO_LED1_set();
 
 	HAL_GPIO_LED3_out();
-	HAL_GPIO_LED3_set();
 
 	HAL_GPIO_LED2_out();
 	HAL_GPIO_LED2_clr();
@@ -346,14 +377,8 @@ int main(void)
 	while (1)
 	{
 		//htu21_task();
-		adc_task();
+		//adc_task();
 		tud_task();
-
-		HAL_GPIO_LED3_clr();
-		delay_us(100);
-		HAL_GPIO_LED3_set();
-		delay_us(100);
-
 
 		if (cdc_task(line, 25)) {
 			if (line[0] == 'b') {
@@ -361,8 +386,33 @@ int main(void)
 				if (ms > 0 && ms < 50000)
 					timer_ms(ms);
 			}
+			else if (line[0] == 'l') {
+				uint32_t dim = atoi((const char *)&line[1]);
+				if (dim <= 3000)
+					TCC0->CC[1].reg = dim;
+			}
 			else if (line[0] == 'h') {
-				debug_puts("Hello! Help!\n");
+				char s[10];
+				uint32_t hum = htu21_readhumidity();
+				hum /= 100;
+				itoa(hum, s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
+			}
+			else if (line[0] == 't') {
+				char s[10];
+				uint32_t temp = htu21_readtemp();
+				temp /= 100;
+				itoa(temp, s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
+			}
+			else if (line[0] == 'o') {
+				char s[10];
+				uint32_t temp = adc_read()/74 - 460;
+				itoa(temp, s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
 			}
 			else if (line[0] == 'c') {
 				debug_putc('a');
@@ -373,6 +423,9 @@ int main(void)
 			}
 			else if (line[0] == 'D') {
 				dma_ch_disable(0);
+			}
+			else if (line[0] == '?') {
+				print_help();
 			}
 		}
 	}
