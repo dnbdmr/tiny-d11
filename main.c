@@ -40,11 +40,11 @@
 #include "htu21.h"
 #include "debug.h"
 #include "dma.h"
+#include "pwm.h"
 
 /*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(LED1,	A, 4); // Timer ISR
-HAL_GPIO_PIN(LED2,	A, 27); //Timer ISR
-HAL_GPIO_PIN(LED3,	A, 5); // PWM
+HAL_GPIO_PIN(LED1,	A, 4)	// Timer ISR
+HAL_GPIO_PIN(LED2,	A, 27)	// Timer ISR
 
 /*- Implementations ---------------------------------------------------------*/
 
@@ -80,15 +80,22 @@ void delay_us(uint32_t us)
 //-----------------------------------------------------------------------------
 void TC1_Handler(void)
 {
+	static bool pwmdir = false;
+	static int pwm = 0;
 	if (TC1->COUNT16.INTFLAG.reg & TC_INTFLAG_MC(1))
 	{
+		TC1->COUNT16.INTFLAG.reg = TC_INTFLAG_MC(1);
 		HAL_GPIO_LED1_toggle();
 		HAL_GPIO_LED2_toggle();
-		TC1->COUNT16.INTFLAG.reg = TC_INTFLAG_MC(1);
-		if (TCC0->CC[1].reg < 3000) 
-			TCC0->CC[1].reg += 300;
+		if (pwm >= 223)
+			pwmdir = false;
+		if (pwm <= 47)
+			pwmdir = true;
+		if (pwmdir)
+			pwm += 16;
 		else
-			TCC0->CC[1].reg = 0;
+			pwm -= 16;
+		pwm_write(1, pwm);
 	}
 }
 
@@ -193,19 +200,6 @@ static void sys_init(void)
 	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(1) | GCLK_GENCTRL_SRC(GCLK_SOURCE_OSC8M) | GCLK_GENCTRL_GENEN;
 	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
 
-	PM->APBCMASK.reg |= PM_APBCMASK_TCC0;
-	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID_TCC0 | GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0;
-	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
-	TCC0->CTRLA.reg |= TCC_CTRLA_PRESCALER(TCC_CTRLA_PRESCALER_DIV64_Val);
-	TCC0->WAVE.reg = TCC_WAVE_WAVEGEN_NPWM;
-	TCC0->PER.reg = 3000;
-	TCC0->CC[1].reg = 1500;
-	while (TCC0->SYNCBUSY.reg);
-	HAL_GPIO_LED3_out();
-	HAL_GPIO_LED3_pmuxen(HAL_GPIO_PMUX_F);
-	TCC0->CTRLA.reg |= TCC_CTRLA_ENABLE;
-	while (TCC0->SYNCBUSY.bit.ENABLE);
-	
 	SysTick_Config(48000); //systick at 1ms
 }
 
@@ -239,7 +233,6 @@ void tud_suspend_cb(bool remote_wakeup_en)
 	(void) remote_wakeup_en;
 	HAL_GPIO_LED1_in();
 	HAL_GPIO_LED2_in();
-	HAL_GPIO_LED3_pmuxdis();
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	uint32_t *a = (uint32_t *)(0x40000838); // Disable BOD12, SAMD11 errata #15513
 	*a = 0x00000004;
@@ -253,7 +246,6 @@ void tud_resume_cb(void)
 {
 	HAL_GPIO_LED1_out();
 	HAL_GPIO_LED2_out();
-	HAL_GPIO_LED3_pmuxen(HAL_GPIO_PMUX_F);
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	SysTick_Config(48000); //systick at 1ms
 }
@@ -328,7 +320,7 @@ uint8_t cdc_task(uint8_t line[], uint8_t max)
 const char help_msg[] = \
 						"Tiny usb test commands:\n" \
 						"b [ms]\ttimer blink rate\n" \
-						"d [0-3000]\tled pwm\n" \
+						"d [0-255]\tled pwm\n" \
 						"h\tprint humidity\n" \
 						"t\tprint local temp\n" \
 						"o\tprint remote temp\n" \
@@ -359,15 +351,9 @@ int main(void)
 	usb_setup();
 	tusb_init();
 	timer_init();
-	//htu21_init();
-	//adc_init();
-	//debug_init();
-	//dma_init();
+	pwm_init(TCC_CTRLA_PRESCALER_DIV1024_Val, 255);
 
 	HAL_GPIO_LED1_out();
-	//HAL_GPIO_LED1_set();
-
-	HAL_GPIO_LED3_out();
 
 	HAL_GPIO_LED2_out();
 	HAL_GPIO_LED2_clr();
@@ -376,8 +362,6 @@ int main(void)
 
 	while (1)
 	{
-		//htu21_task();
-		//adc_task();
 		tud_task();
 
 		if (cdc_task(line, 25)) {

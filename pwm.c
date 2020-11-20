@@ -30,13 +30,13 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "samd21.h"
+#include "sam.h"
 #include "hal_gpio.h"
 #include "pwm.h"
 
 /*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(PWM_0,   A, 10)
-HAL_GPIO_PIN(PWM_1,   A, 11)
+HAL_GPIO_PIN(PWM_0,   A, 14)
+HAL_GPIO_PIN(PWM_1,   A, 5)
 
 /*- Implementations ---------------------------------------------------------*/
 
@@ -61,8 +61,8 @@ void pwm_init(int prescaler, int period)
   TCC0->WAVE.reg = TCC_WAVE_WAVEGEN_NPWM;
   TCC0->PER.reg = period;
   TCC0->COUNT.reg = 0;
-  TCC0->CC[2].reg = 0;
-  TCC0->CC[3].reg = 0;
+  TCC0->CC[0].reg = 0;
+  TCC0->CC[1].reg = 0;
   TCC0->CTRLA.reg |= TCC_CTRLA_ENABLE;
 }
 
@@ -71,7 +71,7 @@ void pwm_write(int channel, int value)
 {
   TCC0->CTRLA.reg &= ~TCC_CTRLA_ENABLE;
   TCC0->COUNT.reg = 0;
-  TCC0->CC[channel + 2].reg = value;
+  TCC0->CC[channel].reg = value;
   TCC0->CTRLA.reg |= TCC_CTRLA_ENABLE;
 }
 

@@ -47,7 +47,8 @@ SRCS += \
   ../i2c_master.c \
   ../htu21.c \
   ../debug.c \
-  ../dma.c
+  ../dma.c \
+  ../pwm.c
 
 DEFINES += \
   -D__SAMD11D14AM__ \
