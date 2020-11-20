@@ -4,14 +4,14 @@ BIN = dgw
 PORT = /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11_3C1FA499514E4B3257202020FF0F082D-if00
 
 ##############################################################################
-.PHONY: all directory clean size program
+.PHONY: all directory clean size program dfu
 
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
 SIZE = arm-none-eabi-size
 
 #CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og
-CFLAGS += -Wextra -Wall --std=gnu11 -Os
+CFLAGS += -Wextra -Wall --std=gnu11 -Os -ggdb
 #CFLAGS += -fno-diagnostics-show-caret
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -funsigned-char -funsigned-bitfields
@@ -43,11 +43,12 @@ SRCS += \
   ../tinyusb/src/portable/microchip/samd/dcd_samd.c \
   ../tinyusb/src/class/cdc/cdc_device.c \
   ../usb_descriptors.c \
-  ../adc.c \
   ../i2c_master.c \
   ../htu21.c \
   ../debug.c \
-  ../dma.c
+  ../dma.c \
+  ../adc.c \
+  ../rtc.c
 
 DEFINES += \
   -D__SAMD11C14A__ \
@@ -80,6 +81,9 @@ program: $(BUILD)/$(BIN).dfu
 	@echo PROGRAM $^
 	./force_reset.py $(PORT)
 	sleep 1
+	dfu-util -D $^
+
+dfu: $(BUILD)/$(BIN).dfu
 	dfu-util -D $^
 
 %.o:

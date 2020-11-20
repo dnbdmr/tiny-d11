@@ -40,6 +40,7 @@
 #include "htu21.h"
 #include "debug.h"
 #include "dma.h"
+#include "rtc.h"
 
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 5);
@@ -356,6 +357,8 @@ void print_help(void)
 int main(void)
 {
 	sys_init();
+	//rtc_init(); // DEBUG: before usb incase of stall
+
 	usb_setup();
 	tusb_init();
 	timer_init();
@@ -426,6 +429,13 @@ int main(void)
 			}
 			else if (line[0] == '?') {
 				print_help();
+			}
+			else if (line[0] == 'c') {
+				char s[10];
+				uint32_t temp = RTC->MODE2.CLOCK.reg;
+				itoa(temp, s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
 			}
 		}
 	}
