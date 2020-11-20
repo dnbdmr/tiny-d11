@@ -349,7 +349,7 @@ void print_help(void)
 int main(void)
 {
 	sys_init();
-	//rtc_init(); // DEBUG: before usb incase of stall
+	rtc_init(); // DEBUG: before usb incase of stall
 
 	usb_setup();
 	tusb_init();
