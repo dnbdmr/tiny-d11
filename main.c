@@ -42,9 +42,9 @@
 #include "dma.h"
 
 /*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(LED1,	A, 27);
-HAL_GPIO_PIN(LED2,	A, 8);
-HAL_GPIO_PIN(LED3,	A, 9);
+HAL_GPIO_PIN(LED1,	A, 4); // Timer ISR
+HAL_GPIO_PIN(LED2,	A, 27); //Timer ISR
+HAL_GPIO_PIN(LED3,	A, 5); // PWM
 
 /*- Implementations ---------------------------------------------------------*/
 
@@ -360,12 +360,12 @@ int main(void)
 	tusb_init();
 	timer_init();
 	//htu21_init();
-	adc_init();
+	//adc_init();
 	//debug_init();
 	//dma_init();
 
 	HAL_GPIO_LED1_out();
-	HAL_GPIO_LED1_set();
+	//HAL_GPIO_LED1_set();
 
 	HAL_GPIO_LED3_out();
 
