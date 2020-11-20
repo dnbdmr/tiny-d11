@@ -1,7 +1,7 @@
 ##############################################################################
 BUILD = build
 BIN = dgw
-PORT = /dev/serial/by-id/usb-TinyUSB_TinyUSB_D11_3C1FA499514E4B3257202020FF0F082D-if00
+PORT = /dev/serial/by-id/usb-DNBDMR_TinyUSB_D11D_28F5BB24514D4B53334A2020FF074244-if00
 
 ##############################################################################
 .PHONY: all directory clean size program dfu
@@ -48,10 +48,11 @@ SRCS += \
   ../debug.c \
   ../dma.c \
   ../adc.c \
-  ../rtc.c
+  ../rtc.c \
+  ../pwm.c
 
 DEFINES += \
-  -D__SAMD11C14A__ \
+  -D__SAMD11D14AM__ \
   -DDONT_USE_CMSIS_INIT \
   -DF_CPU=48000000 \
   -DSTARTUP_FROM_RESET
