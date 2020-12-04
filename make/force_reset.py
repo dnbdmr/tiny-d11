@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser(description='Reset an Arduino')
 parser.add_argument('--caterina', action='store_true', help='Reset a Leonardo, Micro, Robot or LilyPadUSB.')
 parser.add_argument('--uf2', action='store_true', help='Reset an Atmel SAMD board with UF2 bootloader')
 parser.add_argument('--verbose', action='store_true', help="Watch what's going on on STDERR.")
-parser.add_argument('--period', default=0.1, help='Specify the DTR pulse width in seconds.')
+parser.add_argument('--period', type=float, default=0.1, help='Specify the DTR pulse width in seconds.')
 parser.add_argument('port', nargs=1, help='Serial device e.g. /dev/ttyACM0')
 args = parser.parse_args()
 
