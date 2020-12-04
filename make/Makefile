@@ -1,7 +1,7 @@
 ##############################################################################
 BUILD = build
 BIN = dgw
-PORT = /dev/serial/by-id/usb-DNBDMR_TinyUSB_D11D_28F5BB24514D4B53334A2020FF074244-if00
+PORT = /dev/serial/by-id/usb-DNBDMR_TinyUSB_D11D_CEF3EF1D514D4B53334A2020FF071B46-if00
 
 ##############################################################################
 .PHONY: all directory clean size fdfu dump
@@ -81,7 +81,8 @@ fdfu: $(BUILD)/$(BIN).dfu
 	-./force_reset.py --period 0.5 $(PORT)
 	dfu-util -D $^
 
-dump: $(BUILD)/$(BIN).elf
+disasm: $(BUILD)/$(BIN).elf
+	@echo DISASSEMBLE $^
 	$(OBJDUMP) -d -S $^ > $(BUILD)/$(BIN).lss
 
 $(OBJS): | $(BUILD)
