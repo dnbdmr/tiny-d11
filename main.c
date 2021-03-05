@@ -345,6 +345,32 @@ void print_help(void)
 	}
 }
 
+int atoi2(const char *str)
+{
+	if (*str == '\0')
+		return 0;
+
+	int res = 0;  // Initialize result
+	int sign = 1;  // Initialize sign as positive
+	int i = 0;   // Initialize index of first digit
+
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v')
+		i++; // Skip whitespace
+
+	if (str[i] == '-') {
+		sign = -1;
+		i++;
+	}
+
+	for (; str[i] != '\0'; ++i)	{
+		if (str[i] < '0' || str[i] > '9') // If string contain character it will terminate
+			break; 
+		res = res*10 + str[i] - '0';
+	}
+
+	return sign*res;
+}
+
 //-----------------------------------------------------------------------------
 int main(void)
 {
@@ -369,12 +395,12 @@ int main(void)
 
 		if (cdc_task(line, 25)) {
 			if (line[0] == 'b') {
-				uint32_t ms = atoi((const char *)&line[1]);
+				uint32_t ms = atoi2((char *)&line[1]);
 				if (ms > 0 && ms < 50000)
 					timer_ms(ms);
 			}
 			else if (line[0] == 'l') {
-				uint32_t dim = atoi((const char *)&line[1]);
+				uint32_t dim = atoi2((char *)&line[1]);
 				if (dim <= 3000)
 					TCC0->CC[1].reg = dim;
 			}

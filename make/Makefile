@@ -1,36 +1,35 @@
 ##############################################################################
 BUILD = build
 BIN = dgw
-PORT = /dev/serial/by-id/usb-DNBDMR_TinyUSB_D11D_28F5BB24514D4B53334A2020FF074244-if00
+PORT = /dev/serial/by-id/usb-DNBDMR_TinyUSB_D11D_CEF3EF1D514D4B53334A2020FF071B46-if00
 
 ##############################################################################
-.PHONY: all directory clean size program dfu
+.PHONY: all directory clean size fdfu dump
 
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
+OBJDUMP = arm-none-eabi-objdump
 SIZE = arm-none-eabi-size
 
 #CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og
 CFLAGS += -Wextra -Wall --std=gnu11 -Os -ggdb
-#CFLAGS += -fno-diagnostics-show-caret
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -funsigned-char -funsigned-bitfields
 CFLAGS += -mcpu=cortex-m0plus -mthumb
-#CFLAGS += --specs=nano.specs -u _printf_float -u _scanf_float
 CFLAGS += -MD -MP -MT $(BUILD)/$(*F).o -MF $(BUILD)/$(@F).d
 
 LDFLAGS += -mcpu=cortex-m0plus -mthumb
 LDFLAGS += -Wl,--gc-sections
-#LDFLAGS += --specs=nano.specs -u _printf_float -u _scanf_float
-#LDFLAGS += --specs=nosys.specs
-#LDFLAGS += --specs=rdimon.specs
 LDFLAGS += -Wl,--start-group -lm -Wl,--end-group
 LDFLAGS += -Wl,-Map=$(BUILD)/$(BIN).map
 LDFLAGS += -Wl,--script=../linker/samd11c14.ld
 
+#LIBS = --specs=nano.specs -u _printf_float -u _scanf_float
+
 INCLUDES += \
-  -I../include \
   -I../tinyusb/src \
+  -I../tinyusb/hw/mcu/microchip/samd11/include/ \
+  -I../tinyusb/hw/mcu/microchip/samd11/CMSIS/Core/Include/ \
   -I..
 
 SRCS += \
@@ -61,7 +60,7 @@ CFLAGS += $(INCLUDES) $(DEFINES)
 
 OBJS = $(addprefix $(BUILD)/, $(notdir %/$(subst .c,.o, $(SRCS))))
 
-all: directory $(BUILD)/$(BIN).elf $(BUILD)/$(BIN).hex $(BUILD)/$(BIN).bin size
+all: $(BUILD)/$(BIN).elf size
 
 $(BUILD)/$(BIN).elf: $(OBJS)
 	@echo LD $@
@@ -76,22 +75,23 @@ $(BUILD)/$(BIN).bin: $(BUILD)/$(BIN).elf
 	@$(OBJCOPY) -O binary $^ $@
 
 $(BUILD)/$(BIN).dfu: $(BUILD)/$(BIN).elf
+	@echo DFU $@
 	./dx1elf2dfu  $^ $@
 
-program: $(BUILD)/$(BIN).dfu
-	@echo PROGRAM $^
-	./force_reset.py $(PORT)
-	sleep 1
+fdfu: $(BUILD)/$(BIN).dfu
+	@echo Flash DFU $^
+	-./force_reset.py --period 0.5 $(PORT)
 	dfu-util -D $^
 
-dfu: $(BUILD)/$(BIN).dfu
-	dfu-util -D $^
+disasm: $(BUILD)/$(BIN).elf
+	@echo DISASSEMBLE $^
+	$(OBJDUMP) -d -S $^ > $(BUILD)/$(BIN).lss
 
-%.o:
+$(OBJS): | $(BUILD)
 	@echo CC $@
 	@$(CC) $(CFLAGS) $(filter %/$(subst .o,.c,$(notdir $@)), $(SRCS)) -c -o $@
 
-directory:
+$(BUILD):
 	@mkdir -p $(BUILD)
 
 size: $(BUILD)/$(BIN).elf
@@ -103,4 +103,3 @@ clean:
 	@-rm -rf $(BUILD)
 
 -include $(wildcard $(BUILD)/*.d)
-
