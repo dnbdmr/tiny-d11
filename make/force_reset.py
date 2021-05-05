@@ -17,6 +17,9 @@ parser.add_argument('--period', type=float, default=0.1, help='Specify the DTR p
 parser.add_argument('port', nargs=1, help='Serial device e.g. /dev/ttyACM0')
 args = parser.parse_args()
 
+if not os.path.exists(args.port[0]):
+    exit()
+
 if args.caterina:
         if args.verbose: print('Forcing reset using 1200bps open/close on port %s' % args.port[0])
         ser = serial.Serial(args.port[0], 57600)
