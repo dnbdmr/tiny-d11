@@ -196,11 +196,6 @@ static void sys_init(void)
 		GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
 	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
 
-	// gclk1 at 512k
-	GCLK->GENDIV.reg = GCLK_GENDIV_ID(1) | GCLK_GENDIV_DIV(15635);
-	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(1) | GCLK_GENCTRL_SRC(GCLK_SOURCE_OSC8M) | GCLK_GENCTRL_GENEN;
-	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
-
 	SysTick_Config(48000); //systick at 1ms
 }
 
@@ -225,6 +220,7 @@ void USB_Handler(void)
 {
 	dcd_int_handler(0);
 }
+
 //-----------------------------------------------------------------------------
 // Invoked when usb bus is suspended
 // remote_wakeup_en : if host allow us	to perform remote wakeup
@@ -404,22 +400,6 @@ int main(void)
 				if (dim <= 3000)
 					TCC0->CC[1].reg = dim;
 			}
-			else if (line[0] == 'h') {
-				char s[10];
-				uint32_t hum = htu21_readhumidity();
-				hum /= 100;
-				itoa(hum, s, 10);
-				tud_cdc_write_str(s);
-				tud_cdc_write_char('\n');
-			}
-			else if (line[0] == 't') {
-				char s[10];
-				uint32_t temp = htu21_readtemp();
-				temp /= 100;
-				itoa(temp, s, 10);
-				tud_cdc_write_str(s);
-				tud_cdc_write_char('\n');
-			}
 			else if (line[0] == 'o') {
 				char s[10];
 				uint32_t temp = adc_read()/74 - 460;
@@ -446,6 +426,45 @@ int main(void)
 				itoa(temp, s, 10);
 				tud_cdc_write_str(s);
 				tud_cdc_write_char('\n');
+			}
+			else if (line[0] == 'S') {
+				uint32_t time;
+				time = atoi2((char *)&line[2]);
+				RTC->MODE2.CLOCK.reg = time;
+			}
+			else if (line[0] == 's') {
+				char s[20];
+				itoa(RTC->MODE2.CLOCK.bit.SECOND, s, 10);
+				while (RTC->MODE0.STATUS.bit.SYNCBUSY);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
+			}
+			else if (line[0] == 'm') {
+				char s[10];
+				itoa(RTC->MODE2.CLOCK.bit.MINUTE, s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
+			}
+			else if (line[0] == 'h') {
+				char s[10];
+				itoa(RTC->MODE2.CLOCK.bit.HOUR, s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
+			}
+			else if (line[0] == 't') {
+				char s[10];
+				itoa(RTC->MODE2.CLOCK.bit.HOUR, s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char(':');
+				itoa(RTC->MODE2.CLOCK.bit.MINUTE, s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char(':');
+				itoa(RTC->MODE2.CLOCK.bit.SECOND, s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
+			}
+			else if (line[0] == '0') {
+				RTC->MODE2.CLOCK.reg = 0;
 			}
 		}
 	}
