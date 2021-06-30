@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, DNBDMR <alex@taradov.com>
+ * Copyright (c) 2020, DNBDMR <dnbdmr@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,5 +28,20 @@
 
 #ifndef _RTC_H_
 #define _RTC_H_
+
+#include <stdint.h>
+
+// Default correction values
+#define CORR_VALUE	8
+#define CORR_SIGN	0
+
 void rtc_init(void);
+
+/* Set RTC correction value in PPM.
+ * Valid range is [-127, 127].
+ * Negative slows RTC.
+ */
+void rtc_setCorrection(int8_t correction);
+int8_t rtc_getCorrection(void);
+
 #endif // _RTC_H_

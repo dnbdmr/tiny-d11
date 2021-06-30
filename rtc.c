@@ -30,10 +30,9 @@
 #include "nvm_data.h"
 #include  "sam.h"
 
-// debug
-#include "hal_gpio.h"
-HAL_GPIO_PIN(CLK, A, 16)
-// HAL_GPIO_PIN(TICK, A, 15)
+// DEBUG
+// #include "hal_gpio.h"
+// HAL_GPIO_PIN(CLK, A, 16)
 
 void rtc_init(void)
 {
@@ -59,6 +58,7 @@ void rtc_init(void)
 	while (GCLK->STATUS.bit.SYNCBUSY);
 	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_GEN(2) | GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_ID_RTC;
 
+	// DEBUG
 	// HAL_GPIO_CLK_out();
 	// HAL_GPIO_CLK_pmuxen(HAL_GPIO_PMUX_H);
 
@@ -66,6 +66,29 @@ void rtc_init(void)
 
 	RTC->MODE2.CTRL.reg = RTC_MODE2_CTRL_MODE_CLOCK | RTC_MODE2_CTRL_PRESCALER_DIV512 | RTC_MODE2_CTRL_ENABLE;
 	RTC->MODE2.READREQ.reg |= RTC_READREQ_RREQ | RTC_READREQ_RCONT;
-	RTC->MODE2.FREQCORR.reg |= RTC_FREQCORR_VALUE(120) | RTC_FREQCORR_SIGN;
-	while (RTC->MODE0.STATUS.bit.SYNCBUSY);
+	RTC->MODE2.FREQCORR.bit.VALUE = CORR_VALUE;
+	RTC->MODE2.FREQCORR.bit.SIGN = CORR_SIGN;
+
+	while (RTC->MODE2.STATUS.bit.SYNCBUSY);
 }
+
+int8_t rtc_getCorrection(void)
+{
+	RTC_FREQCORR_Type correction = RTC->MODE2.FREQCORR;
+	return correction.bit.SIGN ? -correction.bit.VALUE : correction.bit.VALUE;
+}
+
+void rtc_setCorrection(int8_t correction)
+{
+	RTC_FREQCORR_Type temp = {0};
+	if (correction < 0) {
+		temp.bit.SIGN = 1;
+		if (correction == -128)	// invalid value, change to 127
+			correction++;
+		correction = -correction;
+	}
+	temp.bit.VALUE = correction;
+
+	RTC->MODE2.FREQCORR = temp;
+}
+

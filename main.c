@@ -407,10 +407,6 @@ int main(void)
 				tud_cdc_write_str(s);
 				tud_cdc_write_char('\n');
 			}
-			else if (line[0] == 'c') {
-				debug_putc('a');
-				debug_putc('\n');
-			}
 			else if (line[0] == 'd') {
 				dma_ch_enable(0);
 			}
@@ -419,13 +415,6 @@ int main(void)
 			}
 			else if (line[0] == '?') {
 				print_help();
-			}
-			else if (line[0] == 'c') {
-				char s[10];
-				uint32_t temp = RTC->MODE2.CLOCK.reg;
-				itoa(temp, s, 10);
-				tud_cdc_write_str(s);
-				tud_cdc_write_char('\n');
 			}
 			else if (line[0] == 'S') {
 				uint32_t time;
@@ -462,6 +451,23 @@ int main(void)
 				itoa(RTC->MODE2.CLOCK.bit.SECOND, s, 10);
 				tud_cdc_write_str(s);
 				tud_cdc_write_char('\n');
+			}
+			else if (line[0] == 'T') {
+				// Print raw RTC CLOCK register
+				char s[20];
+				itoa(RTC->MODE2.CLOCK.reg, s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
+			}
+			else if (line[0] == 'c') {
+				char s[10];
+				itoa(rtc_getCorrection(), s, 10);
+				tud_cdc_write_str(s);
+				tud_cdc_write_char('\n');
+			}
+			else if (line[0] == 'C') {
+				int8_t corr = atoi2((char *)&line[2]);
+				rtc_setCorrection(corr);
 			}
 			else if (line[0] == '0') {
 				RTC->MODE2.CLOCK.reg = 0;
