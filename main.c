@@ -314,6 +314,13 @@ uint8_t cdc_task(uint8_t line[], uint8_t max)
 		return 0;
 }
 
+void cdc_write_num(int32_t num)
+{
+	char s[20];
+	itoa(num, s, 10);
+	tud_cdc_write_str(s);
+}
+
 const char help_msg[] = \
 						"Tiny usb test commands:\n" \
 						"b [ms]\ttimer blink rate\n" \
@@ -400,13 +407,6 @@ int main(void)
 				if (dim <= 3000)
 					TCC0->CC[1].reg = dim;
 			}
-			else if (line[0] == 'o') {
-				char s[10];
-				uint32_t temp = adc_read()/74 - 460;
-				itoa(temp, s, 10);
-				tud_cdc_write_str(s);
-				tud_cdc_write_char('\n');
-			}
 			else if (line[0] == 'd') {
 				dma_ch_enable(0);
 			}
@@ -422,55 +422,38 @@ int main(void)
 				RTC->MODE2.CLOCK.reg = time;
 			}
 			else if (line[0] == 's') {
-				char s[20];
-				itoa(RTC->MODE2.CLOCK.bit.SECOND, s, 10);
+				cdc_write_num(RTC->MODE2.CLOCK.bit.SECOND, s, 10);
 				while (RTC->MODE0.STATUS.bit.SYNCBUSY);
-				tud_cdc_write_str(s);
 				tud_cdc_write_char('\n');
 			}
 			else if (line[0] == 'm') {
-				char s[10];
-				itoa(RTC->MODE2.CLOCK.bit.MINUTE, s, 10);
-				tud_cdc_write_str(s);
+				cdc_write_num(RTC->MODE2.CLOCK.bit.MINUTE, s, 10);
 				tud_cdc_write_char('\n');
 			}
 			else if (line[0] == 'h') {
-				char s[10];
-				itoa(RTC->MODE2.CLOCK.bit.HOUR, s, 10);
-				tud_cdc_write_str(s);
+				cdc_write_num(RTC->MODE2.CLOCK.bit.HOUR);
 				tud_cdc_write_char('\n');
 			}
 			else if (line[0] == 't') {
-				char s[10];
-				itoa(RTC->MODE2.CLOCK.bit.HOUR, s, 10);
-				tud_cdc_write_str(s);
+				cdc_write_num(RTC->MODE2.CLOCK.bit.HOUR);
 				tud_cdc_write_char(':');
-				itoa(RTC->MODE2.CLOCK.bit.MINUTE, s, 10);
-				tud_cdc_write_str(s);
+				cdc_write_num(RTC->MODE2.CLOCK.bit.MINUTE);
 				tud_cdc_write_char(':');
-				itoa(RTC->MODE2.CLOCK.bit.SECOND, s, 10);
-				tud_cdc_write_str(s);
+				cdc_write_num(RTC->MODE2.CLOCK.bit.SECOND);
 				tud_cdc_write_char('\n');
 			}
 			else if (line[0] == 'T') {
 				// Print raw RTC CLOCK register
-				char s[20];
-				itoa(RTC->MODE2.CLOCK.reg, s, 10);
-				tud_cdc_write_str(s);
+				cdc_write_num(RTC->MODE2.CLOCK.reg);
 				tud_cdc_write_char('\n');
 			}
 			else if (line[0] == 'c') {
-				char s[10];
-				itoa(rtc_getCorrection(), s, 10);
-				tud_cdc_write_str(s);
+				cdc_write_num(rtc_getCorrection());
 				tud_cdc_write_char('\n');
 			}
 			else if (line[0] == 'C') {
 				int8_t corr = atoi2((char *)&line[2]);
 				rtc_setCorrection(corr);
-			}
-			else if (line[0] == '0') {
-				RTC->MODE2.CLOCK.reg = 0;
 			}
 		}
 	}
