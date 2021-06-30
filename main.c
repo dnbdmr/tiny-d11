@@ -396,65 +396,73 @@ int main(void)
 	{
 		tud_task();
 
-		if (cdc_task(line, 25)) {
-			if (line[0] == 'b') {
+		if (!cdc_task(line, 25))
+			continue;
+		switch (line[0]) {
+			case 'b': {
 				uint32_t ms = atoi2((char *)&line[1]);
 				if (ms > 0 && ms < 50000)
 					timer_ms(ms);
-			}
-			else if (line[0] == 'l') {
+				break;
+					  }
+			case 'l': {
 				uint32_t dim = atoi2((char *)&line[1]);
 				if (dim <= 3000)
 					TCC0->CC[1].reg = dim;
-			}
-			else if (line[0] == 'd') {
+				break;
+					  }
+			case 'd':
 				dma_ch_enable(0);
-			}
-			else if (line[0] == 'D') {
+				break;
+			case 'D':
 				dma_ch_disable(0);
-			}
-			else if (line[0] == '?') {
+				break;
+			case '?':
 				print_help();
-			}
-			else if (line[0] == 'S') {
+				break;
+			case 'S': {
 				uint32_t time;
 				time = atoi2((char *)&line[2]);
 				RTC->MODE2.CLOCK.reg = time;
-			}
-			else if (line[0] == 's') {
-				cdc_write_num(RTC->MODE2.CLOCK.bit.SECOND, s, 10);
+				break;
+					  }
+			case 's':
+				cdc_write_num(RTC->MODE2.CLOCK.bit.SECOND);
 				while (RTC->MODE0.STATUS.bit.SYNCBUSY);
 				tud_cdc_write_char('\n');
-			}
-			else if (line[0] == 'm') {
-				cdc_write_num(RTC->MODE2.CLOCK.bit.MINUTE, s, 10);
+				break;
+			case 'm':
+				cdc_write_num(RTC->MODE2.CLOCK.bit.MINUTE);
 				tud_cdc_write_char('\n');
-			}
-			else if (line[0] == 'h') {
+				break;
+			case 'h':
 				cdc_write_num(RTC->MODE2.CLOCK.bit.HOUR);
 				tud_cdc_write_char('\n');
-			}
-			else if (line[0] == 't') {
+				break;
+			case 't':
 				cdc_write_num(RTC->MODE2.CLOCK.bit.HOUR);
 				tud_cdc_write_char(':');
 				cdc_write_num(RTC->MODE2.CLOCK.bit.MINUTE);
 				tud_cdc_write_char(':');
 				cdc_write_num(RTC->MODE2.CLOCK.bit.SECOND);
 				tud_cdc_write_char('\n');
-			}
-			else if (line[0] == 'T') {
+				break;
+			case 'T':
 				// Print raw RTC CLOCK register
 				cdc_write_num(RTC->MODE2.CLOCK.reg);
 				tud_cdc_write_char('\n');
-			}
-			else if (line[0] == 'c') {
+				break;
+			case 'c':
 				cdc_write_num(rtc_getCorrection());
 				tud_cdc_write_char('\n');
-			}
-			else if (line[0] == 'C') {
+				break;
+			case 'C': {
 				int8_t corr = atoi2((char *)&line[2]);
 				rtc_setCorrection(corr);
-			}
+				break;
+					  }
+			default:
+				break;
 		}
 	}
 
