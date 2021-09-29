@@ -11,7 +11,7 @@ OBJDUMP = /home/daniel/src/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi-
 SIZE = /home/daniel/src/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi-size
 
 CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og
-#CFLAGS += -Wextra -Wall --std=gnu11 -Os
+#CFLAGS += -Wextra -Wall --std=gnu11 -Os -flto
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -funsigned-char -funsigned-bitfields
 CFLAGS += -mcpu=cortex-m0plus -mthumb
@@ -22,6 +22,7 @@ LDFLAGS += -Wl,--gc-sections
 LDFLAGS += -Wl,--start-group -lm -Wl,--end-group
 LDFLAGS += -Wl,-Map=$(BUILD)/$(BIN).map
 LDFLAGS += -Wl,--script=../linker/samd11c14.ld
+#LDFLAGS += -Wl,-flto
 
 #LIBS = --specs=nano.specs -u _printf_float -u _scanf_float
 
@@ -47,7 +48,9 @@ SRCS += \
   ../dma.c \
   ../adc.c \
   ../rtc.c \
-  ../pwm.c
+  ../pwm.c \
+  ../utils.c \
+  ../usb_utils.c
 
 DEFINES += \
   -D__SAMD11D14AM__ \

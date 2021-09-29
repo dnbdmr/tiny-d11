@@ -27,20 +27,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef _USB_UTILS_H_
+#define _USB_UTILS_H_
 
-/*- Definitions -------------------------------------------------------------*/
-#define PACK            __attribute__((packed))
-#define INLINE          static inline __attribute__((always_inline))
-#define LIMIT(a, b)     (((a) > (b)) ? (b) : (a))
+#include "stdbool.h"
+#include "stdint.h"
 
-void sys_init(void);
+void usb_setup(void);
+void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts);
+uint8_t cdc_task(uint8_t line[], uint8_t max);
+void cdc_write_num(int32_t num);
 
-uint32_t millis(void);
-void delay_us(uint32_t us);
-
-int atoi2(const char *str);
-
-#endif // _UTILS_H_
+#endif // _USB_UTILS_H_
 

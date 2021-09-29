@@ -42,43 +42,14 @@
 #include "dma.h"
 #include "rtc.h"
 #include "pwm.h"
+#include "utils.h"
+#include "usb_utils.h"
 
 /*- Definitions -------------------------------------------------------------*/
 HAL_GPIO_PIN(LED1,	A, 4)	// Timer ISR
 HAL_GPIO_PIN(LED2,	A, 27)	// Timer ISR
 
 /*- Implementations ---------------------------------------------------------*/
-
-volatile uint32_t msticks = 0;
-
-void SysTick_Handler(void)
-{
-	msticks++;
-}
-
-uint32_t millis(void)
-{
-	uint32_t m;
-	__disable_irq();
-	__DMB();
-	m = msticks;
-	__enable_irq();
-	__DMB();
-	return m;
-}
-
-void delay_us(uint32_t us)
-{
-	if (!us || (us >= SysTick->LOAD))
-		return;
-	if(!(SysTick->CTRL & SysTick_CTRL_ENABLE_Msk))
-		return;
-	us = F_CPU/1000000*us;
-	uint32_t time = SysTick->VAL;
-	while ((time - SysTick->VAL) < us);
-}
-
-//-----------------------------------------------------------------------------
 void TC1_Handler(void)
 {
 	static bool pwmdir = false;
@@ -100,6 +71,34 @@ void TC1_Handler(void)
 	}
 }
 
+static void timer_ms(uint32_t ms) {
+	TC1->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * ms;
+	TC1->COUNT16.COUNT.reg = 0;
+}
+
+static void timer_init(void)
+{
+	PM->APBCMASK.reg |= PM_APBCMASK_TC1;
+
+	//GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(TC1_GCLK_ID) |
+	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID_TC1_TC2 |
+		GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(0);
+
+	TC1->COUNT16.CTRLA.reg = TC_CTRLA_MODE_COUNT16 | TC_CTRLA_WAVEGEN_MFRQ |
+		TC_CTRLA_PRESCALER_DIV1024 | TC_CTRLA_PRESCSYNC_RESYNC;
+
+	TC1->COUNT16.COUNT.reg = 0;
+
+	TC1->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * 500; // 500ms
+	TC1->COUNT16.COUNT.reg = 0;
+
+	TC1->COUNT16.CTRLA.reg |= TC_CTRLA_ENABLE;
+
+	TC1->COUNT16.INTENSET.reg = TC_INTENSET_MC(1);
+	NVIC_EnableIRQ(TC1_IRQn);
+}
+
+//-----------------------------------------------------------------------------
 void adc_task(void) 
 {
 	static uint32_t time = 0;
@@ -138,189 +137,6 @@ void htu21_task(void)
 }
 
 //-----------------------------------------------------------------------------
-static void timer_ms(uint32_t ms) {
-	TC1->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * ms;
-	TC1->COUNT16.COUNT.reg = 0;
-}
-
-static void timer_init(void)
-{
-	PM->APBCMASK.reg |= PM_APBCMASK_TC1;
-
-	//GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(TC1_GCLK_ID) |
-	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID_TC1_TC2 |
-		GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(0);
-
-	TC1->COUNT16.CTRLA.reg = TC_CTRLA_MODE_COUNT16 | TC_CTRLA_WAVEGEN_MFRQ |
-		TC_CTRLA_PRESCALER_DIV1024 | TC_CTRLA_PRESCSYNC_RESYNC;
-
-	TC1->COUNT16.COUNT.reg = 0;
-
-	TC1->COUNT16.CC[0].reg = (F_CPU / 1000ul / 1024) * 500; // 500ms
-	TC1->COUNT16.COUNT.reg = 0;
-
-	TC1->COUNT16.CTRLA.reg |= TC_CTRLA_ENABLE;
-
-	TC1->COUNT16.INTENSET.reg = TC_INTENSET_MC(1);
-	NVIC_EnableIRQ(TC1_IRQn);
-}
-
-//-----------------------------------------------------------------------------
-static void sys_init(void)
-{
-
-	NVMCTRL->CTRLB.bit.RWS = 1; // Set Flash Wait States to 1 for 3.3V operation @ 48MHz
-
-	SYSCTRL->DFLLCTRL.reg = 0; // See Errata 9905
-	while (0 == (SYSCTRL->PCLKSR.reg & SYSCTRL_PCLKSR_DFLLRDY)); // Wait for DFLL sync complete
-
-	SYSCTRL->DFLLMUL.reg = SYSCTRL_DFLLMUL_MUL(48000); // Set to multiply USB SOF frequency (when USB attached)
-	
-	uint32_t coarse, fine;
-	coarse = NVM_READ_CAL(DFLL48M_COARSE_CAL); // Read factory cals for DFLL48M
-	fine = NVM_READ_CAL(DFLL48M_FINE_CAL);
-	SYSCTRL->DFLLVAL.reg = SYSCTRL_DFLLVAL_COARSE(coarse) | SYSCTRL_DFLLVAL_FINE(fine); // Load factory cals
-
-	SYSCTRL->DFLLCTRL.reg = SYSCTRL_DFLLCTRL_ENABLE | 
-							SYSCTRL_DFLLCTRL_USBCRM | // Set DFLL for USB Clock Recovery Mode
-							SYSCTRL_DFLLCTRL_BPLCKC | // Bypass Coarse Lock, ignored with USBCRM
-							SYSCTRL_DFLLCTRL_CCDIS |  // Disable Chill Cycle
-							SYSCTRL_DFLLCTRL_RUNSTDBY |  // Run during standby for USB wakeup interrupts
-							SYSCTRL_DFLLCTRL_MODE;   // Set Closed Loop Mode
-							//SYSCTRL_DFLLCTRL_STABLE; // Fine calibration register locks (stable) after fine lock, ignored with USBCRM
-
-	while (!(SYSCTRL->PCLKSR.reg & SYSCTRL_PCLKSR_DFLLRDY)); // Wait for DFLL sync complete
-
-	//Setup Generic Clock Generator 0 with DFLL48M as source:
-	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(0) | GCLK_GENCTRL_SRC(GCLK_SOURCE_DFLL48M) |
-		GCLK_GENCTRL_RUNSTDBY | GCLK_GENCTRL_GENEN;
-	while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
-
-	SysTick_Config(48000); //systick at 1ms
-}
-
-void usb_setup(void)
-{
-	// Enable USB Clocks
-	PM->APBBMASK.reg |= PM_APBBMASK_USB;
-	PM->AHBMASK.reg |= PM_AHBMASK_USB;
-	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_ID(USB_GCLK_ID) |
-		GCLK_CLKCTRL_GEN(0);
-
-	// Enable USB pins
-	PORT->Group[0].PINCFG[PIN_PA24G_USB_DM].bit.PMUXEN = 1;
-	PORT->Group[0].PMUX[PIN_PA24G_USB_DM/2].reg &= ~(0xF << (4 * (PIN_PA24G_USB_DM & 0x01u)));
-	PORT->Group[0].PMUX[PIN_PA24G_USB_DM/2].reg |= MUX_PA24G_USB_DM << (4 * (PIN_PA24G_USB_DM & 0x01u));
-	PORT->Group[0].PINCFG[PIN_PA25G_USB_DP].bit.PMUXEN = 1;
-	PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg &= ~(0xF << (4 * (PIN_PA25G_USB_DP & 0x01u)));
-	PORT->Group[0].PMUX[PIN_PA25G_USB_DP/2].reg |= MUX_PA25G_USB_DP << (4 * (PIN_PA25G_USB_DP & 0x01u));
-}
-
-void USB_Handler(void)
-{
-	dcd_int_handler(0);
-}
-
-//-----------------------------------------------------------------------------
-// Invoked when usb bus is suspended
-// remote_wakeup_en : if host allow us	to perform remote wakeup
-// Within 7ms, device must draw an average of current less than 2.5 mA from bus
-void tud_suspend_cb(bool remote_wakeup_en)
-{
-	(void) remote_wakeup_en;
-	HAL_GPIO_LED1_in();
-	HAL_GPIO_LED2_in();
-	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
-	uint32_t *a = (uint32_t *)(0x40000838); // Disable BOD12, SAMD11 errata #15513
-	*a = 0x00000004;
-	//SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-	__WFI();
-	*a = 0x00000006; // Enable BOD12, SAMD11 errata #15513
-}
-
-// Invoked when usb bus is resumed
-void tud_resume_cb(void)
-{
-	HAL_GPIO_LED1_out();
-	HAL_GPIO_LED2_out();
-	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
-	SysTick_Config(48000); //systick at 1ms
-}
-
-//-----------------------------------------------------------------------------
-// Invoked when cdc when line state changed e.g connected/disconnected
-void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts)
-{
-	(void) itf;
-
-	// connected
-	if ( dtr && rts )
-	{
-		// print initial message when connected
-		//tud_cdc_write_str("Hello!\n");
-	}
-
-	//Reset into bootloader when baud is 1200 and dtr unasserted
-	if (!dtr) {
-		cdc_line_coding_t lc;
-		tud_cdc_get_line_coding(&lc);
-		if (lc.bit_rate == 1200) {
-			NVIC_SystemReset();
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Invoked when CDC interface received data from host
-/*
-void tud_cdc_rx_cb(uint8_t itf)
-{
-	(void) itf;
-	//tud_cdc_write_str("Stop That!!\n");
-	//tud_cdc_read_flush();
-}
-*/
-
-/* Retrieves full line from cdc, returns true when found */
-uint8_t cdc_task(uint8_t line[], uint8_t max)
-{
-	static uint8_t pos = 0;
-	uint8_t success = 0;
-
-	if (tud_cdc_connected() && tud_cdc_available()) {	// connected and there are data available
-		uint8_t buf[64];
-		uint8_t count = tud_cdc_read(buf, sizeof(buf));
-
-		for (uint8_t i=0; i<count; i++) {
-			tud_cdc_write_char(buf[i]);
-			if (pos < max-1) {
-				if ((line[pos] = buf[i]) == '\n') {
-					success = 1;
-				}
-				pos++;
-			}
-		}
-	}
-
-	tud_cdc_write_flush(); // Freeze without this
-
-	if (success) {
-		success = 0;
-		line[pos] = '\0';
-		pos = 0;
-		return 1;
-	}
-	else
-		return 0;
-}
-
-void cdc_write_num(int32_t num)
-{
-	char s[20];
-	itoa(num, s, 10);
-	tud_cdc_write_str(s);
-}
-
 const char help_msg[] = \
 						"Tiny usb test commands:\n" \
 						"b [ms]\ttimer blink rate\n" \
@@ -346,32 +162,6 @@ void print_help(void)
 		pos += avail;
 		tud_task();
 	}
-}
-
-int atoi2(const char *str)
-{
-	if (*str == '\0')
-		return 0;
-
-	int res = 0;  // Initialize result
-	int sign = 1;  // Initialize sign as positive
-	int i = 0;   // Initialize index of first digit
-
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v')
-		i++; // Skip whitespace
-
-	if (str[i] == '-') {
-		sign = -1;
-		i++;
-	}
-
-	for (; str[i] != '\0'; ++i)	{
-		if (str[i] < '0' || str[i] > '9') // If string contain character it will terminate
-			break; 
-		res = res*10 + str[i] - '0';
-	}
-
-	return sign*res;
 }
 
 //-----------------------------------------------------------------------------
