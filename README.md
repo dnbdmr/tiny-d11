@@ -8,7 +8,7 @@ https://github.com/hathach/tinyusb
 
 
 __TODO__
-- move gpio go separate file
++ move gpio go separate file
 + set up systick/millis/delay
 + on resume from linux host, cdc receive ATPORTCFG#, or #ATPORTCFG, etc... removed modemmanager
 + clean up inclue/ and startup, move to atmel style

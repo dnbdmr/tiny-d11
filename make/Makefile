@@ -16,6 +16,7 @@ CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -funsigned-char -funsigned-bitfields
 CFLAGS += -mcpu=cortex-m0plus -mthumb
 CFLAGS += -MD -MP -MT $(BUILD)/$(*F).o -MF $(BUILD)/$(@F).d
+CFLAGS += --specs=nano.specs
 
 LDFLAGS += -mcpu=cortex-m0plus -mthumb
 LDFLAGS += -Wl,--gc-sections
@@ -50,7 +51,8 @@ SRCS += \
   ../rtc.c \
   ../pwm.c \
   ../utils.c \
-  ../usb_utils.c
+  ../usb_utils.c \
+  ../gpio.c
 
 DEFINES += \
   -D__SAMD11D14AM__ \

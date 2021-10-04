@@ -30,21 +30,21 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "samd21.h"
+#include "sam.h"
 #include "hal_gpio.h"
 #include "gpio.h"
 
 /*- Definitions -------------------------------------------------------------*/
-#define GPIO_COUNT   8
+#define GPIO_COUNT   2
 
-HAL_GPIO_PIN(0,   B, 0);
-HAL_GPIO_PIN(1,   B, 1);
-HAL_GPIO_PIN(2,   B, 2);
-HAL_GPIO_PIN(3,   B, 3);
-HAL_GPIO_PIN(4,   B, 4);
-HAL_GPIO_PIN(5,   B, 5);
-HAL_GPIO_PIN(6,   B, 6);
-HAL_GPIO_PIN(7,   B, 7);
+HAL_GPIO_PIN(0,   A, 4);
+HAL_GPIO_PIN(1,   A, 27);
+// HAL_GPIO_PIN(2,   B, 2);
+// HAL_GPIO_PIN(3,   B, 3);
+// HAL_GPIO_PIN(4,   B, 4);
+// HAL_GPIO_PIN(5,   B, 5);
+// HAL_GPIO_PIN(6,   B, 6);
+// HAL_GPIO_PIN(7,   B, 7);
 
 enum
 {
@@ -56,17 +56,6 @@ enum
   GPIO_5_MSK   = (1 << 5),
   GPIO_6_MSK   = (1 << 6),
   GPIO_7_MSK   = (1 << 7),
-};
-
-enum
-{
-  GPIO_CONF_DISABLE  = 1 << 0,
-  GPIO_CONF_INPUT    = 1 << 1,
-  GPIO_CONF_OUTPUT   = 1 << 2,
-  GPIO_CONF_PULLUP   = 1 << 3,
-  GPIO_CONF_PULLDOWN = 1 << 4,
-  GPIO_CONF_SET      = 1 << 3, // Intentional overlap with PULLUP / PULLDOWN
-  GPIO_CONF_CLR      = 1 << 4,
 };
 
 /*- Variables ---------------------------------------------------------------*/
@@ -102,12 +91,6 @@ static void gpio_config_fn_##i(int conf) \
 //-----------------------------------------------------------------------------
 GEN_CONFIG_FN(0)
 GEN_CONFIG_FN(1)
-GEN_CONFIG_FN(2)
-GEN_CONFIG_FN(3)
-GEN_CONFIG_FN(4)
-GEN_CONFIG_FN(5)
-GEN_CONFIG_FN(6)
-GEN_CONFIG_FN(7)
 
 //-----------------------------------------------------------------------------
 void gpio_init(void)
@@ -123,18 +106,6 @@ void gpio_configure(int index, int conf)
     gpio_config_fn_0(conf);
   else if (1 == index)
     gpio_config_fn_1(conf);
-  else if (2 == index)
-    gpio_config_fn_2(conf);
-  else if (3 == index)
-    gpio_config_fn_3(conf);
-  else if (4 == index)
-    gpio_config_fn_4(conf);
-  else if (5 == index)
-    gpio_config_fn_5(conf);
-  else if (6 == index)
-    gpio_config_fn_6(conf);
-  else if (7 == index)
-    gpio_config_fn_7(conf);
 }
 
 //-----------------------------------------------------------------------------
@@ -144,18 +115,6 @@ int gpio_read(int index)
     return HAL_GPIO_0_read();
   else if (1 == index)
     return HAL_GPIO_1_read();
-  else if (2 == index)
-    return HAL_GPIO_2_read();
-  else if (3 == index)
-    return HAL_GPIO_3_read();
-  else if (4 == index)
-    return HAL_GPIO_4_read();
-  else if (5 == index)
-    return HAL_GPIO_5_read();
-  else if (6 == index)
-    return HAL_GPIO_6_read();
-  else if (7 == index)
-    return HAL_GPIO_7_read();
   else
     return 0;
 }
@@ -170,17 +129,17 @@ void gpio_write(int index, int value)
     HAL_GPIO_0_write(value);
   else if (1 == index)
     HAL_GPIO_1_write(value);
-  else if (2 == index)
-    HAL_GPIO_2_write(value);
-  else if (3 == index)
-    HAL_GPIO_3_write(value);
-  else if (4 == index)
-    HAL_GPIO_4_write(value);
-  else if (5 == index)
-    HAL_GPIO_5_write(value);
-  else if (6 == index)
-    HAL_GPIO_6_write(value);
-  else if (7 == index)
-    HAL_GPIO_7_write(value);
+}
+
+//-----------------------------------------------------------------------------
+void gpio_toggle(int index)
+{
+  if (0 == (gpio_config[index] & GPIO_CONF_OUTPUT))
+    return;
+
+  if (0 == index)
+    HAL_GPIO_0_toggle();
+  else if (1 == index)
+    HAL_GPIO_1_toggle();
 }
 

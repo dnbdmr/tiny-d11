@@ -30,24 +30,19 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <stdalign.h>
 #include <string.h>
 #include "sam.h"
-#include "hal_gpio.h"
-#include "nvm_data.h"
 #include "tusb.h"
 #include "adc.h"
 #include "htu21.h"
-#include "debug.h"
 #include "dma.h"
 #include "rtc.h"
 #include "pwm.h"
 #include "utils.h"
 #include "usb_utils.h"
+#include "gpio.h"
 
 /*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(LED1,	A, 4)	// Timer ISR
-HAL_GPIO_PIN(LED2,	A, 27)	// Timer ISR
 
 /*- Implementations ---------------------------------------------------------*/
 void TC1_Handler(void)
@@ -57,8 +52,8 @@ void TC1_Handler(void)
 	if (TC1->COUNT16.INTFLAG.reg & TC_INTFLAG_MC(1))
 	{
 		TC1->COUNT16.INTFLAG.reg = TC_INTFLAG_MC(1);
-		HAL_GPIO_LED1_toggle();
-		HAL_GPIO_LED2_toggle();
+		gpio_toggle(0);
+		gpio_toggle(1);
 		if (pwm >= 223)
 			pwmdir = false;
 		if (pwm <= 47)
@@ -170,15 +165,15 @@ int main(void)
 	sys_init();
 	rtc_init(); // DEBUG: before usb incase of stall
 
+	gpio_init();
+
 	usb_setup();
 	tusb_init();
 	timer_init();
 	pwm_init(TCC_CTRLA_PRESCALER_DIV1024_Val, 255);
 
-	HAL_GPIO_LED1_out();
-
-	HAL_GPIO_LED2_out();
-	HAL_GPIO_LED2_clr();
+	gpio_configure(0, GPIO_CONF_OUTPUT);
+	gpio_configure(1, GPIO_CONF_OUTPUT);
 
 	uint8_t line[25];
 

@@ -31,11 +31,10 @@
 #include "stdbool.h"
 #include "stdlib.h"
 #include "stdint.h"
-#include "hal_gpio.h"
+#include "gpio.h"
+#include "pwm.h"
 
 /*- Definitions -------------------------------------------------------------*/
-HAL_GPIO_PIN(LED1,	A, 4)	// Timer ISR
-HAL_GPIO_PIN(LED2,	A, 27)	// Timer ISR
 
 /*- Implementations ---------------------------------------------------------*/
 void usb_setup(void)
@@ -66,8 +65,9 @@ void USB_Handler(void)
 void tud_suspend_cb(bool remote_wakeup_en)
 {
 	(void) remote_wakeup_en;
-	HAL_GPIO_LED1_in();
-	HAL_GPIO_LED2_in();
+	gpio_configure(0, GPIO_CONF_INPUT);
+	gpio_configure(1, GPIO_CONF_INPUT);
+	pwm_write(1, 0);
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	uint32_t *a = (uint32_t *)(0x40000838); // Disable BOD12, SAMD11 errata #15513
 	*a = 0x00000004;
@@ -79,8 +79,8 @@ void tud_suspend_cb(bool remote_wakeup_en)
 // Invoked when usb bus is resumed
 void tud_resume_cb(void)
 {
-	HAL_GPIO_LED1_out();
-	HAL_GPIO_LED2_out();
+	gpio_configure(0, GPIO_CONF_OUTPUT);
+	gpio_configure(1, GPIO_CONF_OUTPUT);
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	SysTick_Config(48000); //systick at 1ms
 }
