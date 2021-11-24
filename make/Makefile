@@ -52,7 +52,8 @@ SRCS += \
   ../pwm.c \
   ../utils.c \
   ../usb_utils.c \
-  ../gpio.c
+  ../gpio.c \
+  ../timer.c
 
 DEFINES += \
   -D__SAMD11D14AM__ \
