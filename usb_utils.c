@@ -32,7 +32,6 @@
 #include "stdlib.h"
 #include "stdint.h"
 #include "gpio.h"
-#include "pwm.h"
 
 /*- Definitions -------------------------------------------------------------*/
 
@@ -66,8 +65,6 @@ void tud_suspend_cb(bool remote_wakeup_en)
 {
 	(void) remote_wakeup_en;
 	gpio_configure(0, GPIO_CONF_INPUT);
-	gpio_configure(1, GPIO_CONF_INPUT);
-	pwm_write(1, 0);
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	uint32_t *a = (uint32_t *)(0x40000838); // Disable BOD12, SAMD11 errata #15513
 	*a = 0x00000004;
@@ -80,7 +77,6 @@ void tud_suspend_cb(bool remote_wakeup_en)
 void tud_resume_cb(void)
 {
 	gpio_configure(0, GPIO_CONF_OUTPUT);
-	gpio_configure(1, GPIO_CONF_OUTPUT);
 	SysTick->CTRL &= ~(SysTick_CTRL_ENABLE_Msk); //disable systick
 	SysTick_Config(48000); //systick at 1ms
 }

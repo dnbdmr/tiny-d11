@@ -11,7 +11,7 @@ OBJDUMP = /home/daniel/src/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi-
 SIZE = /home/daniel/src/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi-size
 
 CFLAGS += -Wextra -Wall --std=gnu11 -DDEBUG -ggdb3 -Og
-#CFLAGS += -Wextra -Wall --std=gnu11 -Os -flto
+# CFLAGS += -Wextra -Wall --std=gnu11 -Os -flto
 CFLAGS += -fdata-sections -ffunction-sections
 CFLAGS += -funsigned-char -funsigned-bitfields
 CFLAGS += -mcpu=cortex-m0plus -mthumb
@@ -23,7 +23,7 @@ LDFLAGS += -Wl,--gc-sections
 LDFLAGS += -Wl,--start-group -lm -Wl,--end-group
 LDFLAGS += -Wl,-Map=$(BUILD)/$(BIN).map
 LDFLAGS += -Wl,--script=../linker/samd11c14.ld
-#LDFLAGS += -Wl,-flto
+# LDFLAGS += -Wl,-flto
 
 #LIBS = --specs=nano.specs -u _printf_float -u _scanf_float
 
@@ -43,13 +43,6 @@ SRCS += \
   ../tinyusb/src/portable/microchip/samd/dcd_samd.c \
   ../tinyusb/src/class/cdc/cdc_device.c \
   ../usb_descriptors.c \
-  ../i2c_master.c \
-  ../htu21.c \
-  ../debug.c \
-  ../dma.c \
-  ../adc.c \
-  ../rtc.c \
-  ../pwm.c \
   ../utils.c \
   ../usb_utils.c \
   ../gpio.c \

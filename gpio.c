@@ -35,10 +35,10 @@
 #include "gpio.h"
 
 /*- Definitions -------------------------------------------------------------*/
-#define GPIO_COUNT   2
+#define GPIO_COUNT   1
 
-HAL_GPIO_PIN(0,   A, 4);
-HAL_GPIO_PIN(1,   A, 27);
+HAL_GPIO_PIN(0,   A, 27);
+// HAL_GPIO_PIN(1,   A, 4);
 // HAL_GPIO_PIN(2,   B, 2);
 // HAL_GPIO_PIN(3,   B, 3);
 // HAL_GPIO_PIN(4,   B, 4);
@@ -90,7 +90,7 @@ static void gpio_config_fn_##i(int conf) \
 
 //-----------------------------------------------------------------------------
 GEN_CONFIG_FN(0)
-GEN_CONFIG_FN(1)
+// GEN_CONFIG_FN(1)
 
 //-----------------------------------------------------------------------------
 void gpio_init(void)
@@ -104,8 +104,8 @@ void gpio_configure(int index, int conf)
 {
   if (0 == index)
     gpio_config_fn_0(conf);
-  else if (1 == index)
-    gpio_config_fn_1(conf);
+  // else if (1 == index)
+  //   gpio_config_fn_1(conf);
 }
 
 //-----------------------------------------------------------------------------
@@ -113,8 +113,8 @@ int gpio_read(int index)
 {
   if (0 == index)
     return HAL_GPIO_0_read();
-  else if (1 == index)
-    return HAL_GPIO_1_read();
+  // else if (1 == index)
+  //   return HAL_GPIO_1_read();
   else
     return 0;
 }
@@ -127,8 +127,8 @@ void gpio_write(int index, int value)
 
   if (0 == index)
     HAL_GPIO_0_write(value);
-  else if (1 == index)
-    HAL_GPIO_1_write(value);
+  // else if (1 == index)
+  //   HAL_GPIO_1_write(value);
 }
 
 //-----------------------------------------------------------------------------
@@ -139,7 +139,7 @@ void gpio_toggle(int index)
 
   if (0 == index)
     HAL_GPIO_0_toggle();
-  else if (1 == index)
-    HAL_GPIO_1_toggle();
+  // else if (1 == index)
+  //   HAL_GPIO_1_toggle();
 }
 
