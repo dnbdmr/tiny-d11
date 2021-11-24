@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # source: https://github.com/sudar/Arduino-Makefile/blob/master/bin/ard-reset-arduino
 # 
 
