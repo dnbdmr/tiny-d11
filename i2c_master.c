@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "sam.h"
 #include "i2c_master.h"
 
 /*- Implementations ---------------------------------------------------------*/

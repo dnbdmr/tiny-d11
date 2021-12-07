@@ -46,7 +46,9 @@ SRCS += \
   ../utils.c \
   ../usb_utils.c \
   ../gpio.c \
-  ../timer.c
+  ../timer.c \
+  ../i2c_master.c \
+  ../pcf8566.c
 
 DEFINES += \
   -D__SAMD11D14AM__ \

@@ -35,6 +35,9 @@
 #include "usb_utils.h"
 #include "gpio.h"
 #include "timer.h"
+#include "hal_gpio.h"
+#include "adafruit_ptc.h"
+#include "sam.h"
 
 /*- Definitions -------------------------------------------------------------*/
 
@@ -50,7 +53,7 @@ void print_help(void)
 	while (pos < len) {
 		uint32_t avail = tud_cdc_write_available();
 		if ((len - pos) > avail) {
-		   tud_cdc_write(&help_msg[pos], avail);
+			tud_cdc_write(&help_msg[pos], avail);
 		} else {
 			tud_cdc_write(&help_msg[pos], len - pos);
 		}	
@@ -69,30 +72,46 @@ int main(void)
 	timer_init();
 	gpio_configure(0, GPIO_CONF_OUTPUT);
 
+	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID_PTC | GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(3);
+	GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(3) | GCLK_GENCTRL_SRC_DFLL48M | GCLK_GENCTRL_GENEN;
+	GCLK->GENDIV.reg = GCLK_GENDIV_ID(3) | GCLK_GENDIV_DIV(12);
+	while (GCLK->STATUS.bit.SYNCBUSY);
+	PM->APBCMASK.reg |= PM_APBCMASK_PTC;
+
+	struct adafruit_ptc_config touchA2;
+	adafruit_ptc_get_config_default(&touchA2);
+	touchA2.pin = 2;
+	touchA2.yline = 0;
+	adafruit_ptc_init(PTC, &touchA2);
+	touchA2.threshold = adafruit_ptc_single_conversion(&touchA2) + 100;
+	uint32_t touchtime = millis();
+
 	uint8_t line[25];
 
 	while (1)
 	{
+		if ((millis() - touchtime) > 100) {
+			touchtime = millis();
+			if (adafruit_ptc_single_conversion(&touchA2) > touchA2.threshold)
+				tud_cdc_write_str("Stop that!\n");
+		}
 		tud_task();
 
 		if (!cdc_task(line, 25))
 			continue;
 		switch (line[0]) {
 			case 'b': {
-				uint32_t ms = atoi2((char *)&line[1]);
-				if (ms > 0 && ms < 50000)
-					timer_ms(ms);
-				break;
+						  uint32_t ms = atoi2((char *)&line[1]);
+						  if (ms > 0 && ms < 50000)
+							  timer_ms(ms);
+						  break;
 					  }
-			case 'a':
-					  cdc_write_num(tud_cdc_write_available());
-					  tud_cdc_write_char('\n');
-					  break;
-			case '?':
-				print_help();
-				break;
+			case '?':{
+						 print_help();
+						 break;
+					 }
 			default:
-				break;
+					 break;
 		}
 	}
 
