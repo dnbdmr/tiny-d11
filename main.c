@@ -35,7 +35,6 @@
 #include "usb_utils.h"
 #include "gpio.h"
 #include "timer.h"
-#include "pcf8566.h"
 
 /*- Definitions -------------------------------------------------------------*/
 
@@ -51,7 +50,7 @@ void print_help(void)
 	while (pos < len) {
 		uint32_t avail = tud_cdc_write_available();
 		if ((len - pos) > avail) {
-		   tud_cdc_write(&help_msg[pos], avail);
+			tud_cdc_write(&help_msg[pos], avail);
 		} else {
 			tud_cdc_write(&help_msg[pos], len - pos);
 		}	
@@ -68,16 +67,7 @@ int main(void)
 	tusb_init();
 	gpio_init();
 	timer_init();
-	lcd_init();
 	gpio_configure(0, GPIO_CONF_OUTPUT);
-
-	lcd_write_str("*o*o\n");
-	lcd_update();
-	lcd_bank_select(1,0);
-	lcd_write_str("o*o*\n");
-	lcd_update();
-	lcd_blink_set(2, 1);
-
 
 	uint8_t line[25];
 
@@ -94,27 +84,12 @@ int main(void)
 							  timer_ms(ms);
 						  break;
 					  }
-			case '?':
-					  print_help();
-					  break;
-			case 'a':
-					  lcd_push_char(line[1]);
-					  lcd_update();
-					  break;
-			case 'p':
-					  lcd_write_str((char *)&line[1]);
-					  break;
-			case 'k':
-					  lcd_bank_select(line[1]-'0', line[2]-'0');
-					  break;
-			case 'l':
-					  lcd_blink_set(line[1]-'0', line[2]-'0');
-					  break;
-			case 'm':
-					  lcd_mode_set(line[1]-'0', line[2]-'0', line[3]-'0', line[4]-'0');
-					  break;
+			case '?':{
+						 print_help();
+						 break;
+					 }
 			default:
-					  break;
+					 break;
 		}
 	}
 
