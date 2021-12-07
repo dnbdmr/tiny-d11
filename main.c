@@ -50,7 +50,7 @@ void print_help(void)
 	while (pos < len) {
 		uint32_t avail = tud_cdc_write_available();
 		if ((len - pos) > avail) {
-		   tud_cdc_write(&help_msg[pos], avail);
+			tud_cdc_write(&help_msg[pos], avail);
 		} else {
 			tud_cdc_write(&help_msg[pos], len - pos);
 		}	
@@ -79,20 +79,17 @@ int main(void)
 			continue;
 		switch (line[0]) {
 			case 'b': {
-				uint32_t ms = atoi2((char *)&line[1]);
-				if (ms > 0 && ms < 50000)
-					timer_ms(ms);
-				break;
+						  uint32_t ms = atoi2((char *)&line[1]);
+						  if (ms > 0 && ms < 50000)
+							  timer_ms(ms);
+						  break;
 					  }
-			case 'a':
-					  cdc_write_num(tud_cdc_write_available());
-					  tud_cdc_write_char('\n');
-					  break;
-			case '?':
-				print_help();
-				break;
+			case '?':{
+						 print_help();
+						 break;
+					 }
 			default:
-				break;
+					 break;
 		}
 	}
 
