@@ -119,3 +119,31 @@ int atoi2(const char *str)
 
 	return sign*res;
 }
+
+/* from: https://gist.github.com/madex/c5cd5c6a23965a845d6e */
+static const uint32_t subtractors[] = {1000000000, 100000000, 10000000, 1000000,
+		100000, 10000, 1000, 100, 10, 1};
+char *itoa2(int32_t num, char *string) {
+	char n, *str = string;
+	const uint32_t *sub = subtractors;
+	uint32_t u = num < 0 ? (uint32_t) -num : (uint32_t) num;    
+	uint8_t  i = 10;
+	while (i > 1 && u < *sub) {
+		i--;
+		sub++;
+	}
+	if (num < 0) {
+		*str++ = '-';
+	}
+	while (i--) {
+		n = '0';
+		while (u >= *sub) {
+			u -= *sub;
+			n++;
+		}
+		*str++ = n;
+		sub++;
+	}
+	*str = 0;
+	return string;
+}

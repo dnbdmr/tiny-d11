@@ -42,5 +42,9 @@ void delay_us(uint32_t us);
 
 int atoi2(const char *str);
 
+/* Base 10 only, max 10 digits with negative.
+ * Needs at least 12 chars */
+char *itoa2(int32_t num, char *str);
+
 #endif // _UTILS_H_
 

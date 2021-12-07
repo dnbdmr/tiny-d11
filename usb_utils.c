@@ -28,10 +28,11 @@
 
 #include "sam.h"
 #include "tusb.h"
-#include "stdbool.h"
-#include "stdlib.h"
-#include "stdint.h"
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include "gpio.h"
+#include "utils.h"
 
 /*- Definitions -------------------------------------------------------------*/
 
@@ -149,7 +150,7 @@ uint8_t cdc_task(uint8_t line[], uint8_t max)
 void cdc_write_num(int32_t num)
 {
 	char s[20];
-	itoa(num, s, 10);
+	itoa2(num, s);
 	tud_cdc_write_str(s);
 }
 
