@@ -28,7 +28,7 @@
 #ifndef ADAFRUIT_FREETOUCH_PTC_COMPONENT_H
 #define ADAFRUIT_FREETOUCH_PTC_COMPONENT_H
 
-#include "samd21.h"
+#include "sam.h"
 
 /*************** CTRL A register ***************/
 #define PTC_REG_CTRLA   0x42004C00

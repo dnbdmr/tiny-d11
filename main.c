@@ -35,6 +35,8 @@
 #include "usb_utils.h"
 #include "gpio.h"
 #include "timer.h"
+#include "hal_gpio.h"
+#include "sam.h"
 
 /*- Definitions -------------------------------------------------------------*/
 

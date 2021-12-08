@@ -26,22 +26,29 @@
 /*
  * This is similar to the drivers found in sam0/drivers but for the PTC.
  * _Usage_
+ * - inits pin internally
  * - set a touch channel with an adafruit_ptc_config struct
  * - Must set up a gclk between 400kHz to 4MHz
  * - Enable APBC clock
- * - Optionally, set a threshold with .threshold member
+ * - Optionally, set a threshold with threshold member
  */
 /*
-	struct adafruit_ptc_config touchA4;
-	adafruit_ptc_get_config_default(&touchA4);
-	touchA4.pin = 5;
-	touchA4.yline = 3;
-	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(PTC_GCLK_ID) | 	\
-      GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(3);
-	PM->APBCMASK.reg |= PM_APBCMASK_PTC;
-	adafruit_ptc_init(PTC, &touchA4);
-	touchA4.threshold = adafruit_ptc_single_conversion(&touchA4) + 100;
-	*/
+
+   // Initialize clocks
+   GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID_PTC | GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN(3);
+   GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(3) | GCLK_GENCTRL_SRC_DFLL48M | GCLK_GENCTRL_GENEN;
+   GCLK->GENDIV.reg = GCLK_GENDIV_ID(3) | GCLK_GENDIV_DIV(12);
+   while (GCLK->STATUS.bit.SYNCBUSY);
+   PM->APBCMASK.reg |= PM_APBCMASK_PTC;
+
+   // Init pins
+   struct adafruit_ptc_config touchA2;
+   adafruit_ptc_get_config_default(&touchA2);
+   touchA2.pin = 2;
+   touchA2.yline = 0;
+   adafruit_ptc_init(PTC, &touchA2);
+   touchA2.threshold = adafruit_ptc_single_conversion(&touchA2) + 100;
+   */
 
 #ifndef ADAFRUIT_FREETOUCH_ADAFRUIT_PTC_H
 #define ADAFRUIT_FREETOUCH_ADAFRUIT_PTC_H
